@@ -1,0 +1,280 @@
+@using ForgeFlow.Application.Users
+@using ForgeFlow.Infrastructure.Identity
+@using Microsoft.Extensions.DependencyInjection
+@implements IDisposable
+@inject IStringLocalizer<SharedResources> Text
+@inject IServiceProvider Services
+
+<AuthorizeView>
+    <Authorized Context="auth">
+        @{
+            var userName = auth.User.Identity?.Name ?? string.Empty;
+            var primaryName = !string.IsNullOrWhiteSpace(menuContext?.DisplayName) ? menuContext!.DisplayName! : userName;
+            var initials = Initial(primaryName);
+            var avatarUrl = menuContext?.HasAvatar == true ? $"/account/avatar?v={avatarVersion}" : null;
+        }
+        <div class="user-menu" data-authenticated-content @onkeydown="OnKeyDown">
+            <button type="button"
+                    id="user-menu-trigger"
+                    class="user-menu-trigger @(open ? "is-open" : string.Empty)"
+                    aria-haspopup="true"
+                    aria-expanded="@open.ToString().ToLowerInvariant()"
+                    aria-controls="user-menu-panel"
+                    aria-label="@Text["UserMenu"]"
+                    title="@primaryName"
+                    @onclick="Toggle">
+                <BitPersona HidePersonaDetails="true"
+                            Size="BitPersonaSize.Size32"
+                            CoinSize="36"
+                            ImageUrl="@avatarUrl"
+                            ImageInitials="@initials"
+                            Presence="BitPersonaPresence.None"
+                            Class="user-menu-persona-sm" />
+                <span class="ff-icon @(open ? "ff-icon--chevron-up" : "ff-icon--chevron-down") user-menu-caret" aria-hidden="true"></span>
+            </button>
+
+            @if (open)
+            {
+                <div class="user-menu-backdrop" @onclick="Close"></div>
+            }
+
+            <div id="user-menu-panel" class="user-menu-panel" role="group" aria-label="@Text["UserMenu"]" hidden="@(!open)">
+                <div class="user-menu-header">
+                    <div class="user-menu-identity">
+                        <BitPersona HidePersonaDetails="true"
+                                    Size="BitPersonaSize.Size48"
+                                    CoinSize="44"
+                                    ImageUrl="@avatarUrl"
+                                    ImageInitials="@initials"
+                                    Presence="BitPersonaPresence.None"
+                                    Class="user-menu-persona-hdr" />
+                        <div class="user-menu-identity-text">
+                            <div class="user-menu-name" title="@primaryName" dir="ltr">@primaryName</div>
+                            @if (!string.IsNullOrWhiteSpace(menuContext?.ActiveRoleName) || !string.IsNullOrWhiteSpace(menuContext?.ActiveSiteName))
+                            {
+                                <div class="user-menu-scope-row">
+                                    @if (!string.IsNullOrWhiteSpace(menuContext?.ActiveRoleName))
+                                    {
+                                        <span class="user-menu-role-badge">@menuContext!.ActiveRoleName</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(menuContext?.ActiveSiteName))
+                                    {
+                                        <span class="user-menu-site-name">@menuContext!.ActiveSiteName</span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="user-menu-subtitle">@Text["UserAccountSubtitle"]</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                @if (menuContext is not null && menuContext.AccessibleSites.Count > 1)
+                {
+                    <div class="user-menu-site-switcher">
+                        <label class="user-menu-site-label" for="user-menu-site-select">@Text["UserMenuActiveSiteLabel"]</label>
+                        <select id="user-menu-site-select"
+                                class="user-menu-site-select"
+                                disabled="@switchingSite"
+                                value="@SelectedSiteKey"
+                                @onchange="OnSiteSelectedAsync">
+                            @foreach (var site in menuContext.AccessibleSites)
+                            {
+                                <option value="@($"{site.OrganizationId}:{site.SiteId}")">
+                                    @($"{site.SiteCode} — {site.SiteName}")
+                                </option>
+                            }
+                        </select>
+                    </div>
+                }
+
+                @if (contextLoaded && menuContext is not null)
+                {
+                    if (menuContext.PreviousSignInUtc.HasValue)
+                    {
+                        <div class="user-menu-last-login" role="region" aria-label="@Text["UserMenuLastLoginTitle"]">
+                            <div class="user-menu-last-login-head">
+                                <span class="user-menu-last-login-title">@Text["UserMenuLastLoginTitle"]</span>
+                                <a class="user-menu-last-login-link" href="/account/sessions" @onclick="Close">
+                                    @Text["UserMenuViewSessionsLink"]
+                                </a>
+                            </div>
+                            <div class="user-menu-last-login-row">
+                                <span class="ff-icon ff-icon--clock" aria-hidden="true"></span>
+                                <bdi dir="ltr">@FormatLoginTime(menuContext.PreviousSignInUtc.Value)</bdi>
+                            </div>
+                            <div class="user-menu-last-login-row">
+                                <span class="ff-icon ff-icon--globe" aria-hidden="true"></span>
+                                <span class="user-menu-last-login-ip" dir="ltr">@(menuContext.PreviousSignInIp ?? "—")</span>
+                            </div>
+                            @if (menuContext.FailedSignInsSincePrevious > 0)
+                            {
+                                <div class="user-menu-failed-alert" role="alert">
+                                    <span class="ff-icon ff-icon--warning" aria-hidden="true"></span>
+                                    <span>@Text["UserMenuFailedAttemptsWarning", menuContext.FailedSignInsSincePrevious]</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="user-menu-first-login" role="status">
+                            @Text["UserMenuFirstLoginNotice"]
+                        </div>
+                    }
+                }
+
+                <div class="user-menu-actions">
+                    <a class="user-menu-item-link" href="/account/profile" @onclick="Close">
+                        <span class="ff-icon ff-icon--settings" aria-hidden="true"></span>
+                        <span class="user-menu-item-text">@Text["MySettingsMenuTitle"]</span>
+                        @if (menuContext is not null && !menuContext.TwoFactorEnabled)
+                        {
+                            <span class="user-menu-rec-pill">@Text["RecommendedBadge"]</span>
+                        }
+                        <span class="ff-icon ff-icon--chevron-end user-menu-item-arrow" aria-hidden="true"></span>
+                    </a>
+
+                    <div class="user-menu-divider" role="separator"></div>
+
+                    <form action="/account/logout" method="post" data-auth-logout>
+                        <input type="hidden" name="returnUrl" value="/" />
+                        <input type="hidden" name="__RequestVerificationToken" value="" />
+                        <BitButton Variant="BitVariant.Text"
+                                   ButtonType="BitButtonType.Submit"
+                                   Icon="@LogoutIcon"
+                                   Class="user-menu-item user-menu-item--danger"
+                                   data-auth-submit="true">
+                            @Text["Logout"]
+                        </BitButton>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private static readonly BitIconInfo LogoutIcon = BitIconInfo.Css("ff-icon ff-icon--logout");
+
+    private bool open;
+    private bool contextLoaded;
+    private bool switchingSite;
+    private UserMenuContextSnapshot? menuContext;
+    private int avatarVersion;
+    private UserDisplayPreferences? subscribedPrefs;
+
+    private string SelectedSiteKey => menuContext?.ActiveOrganizationId is { } orgId && menuContext?.ActiveSiteId is { } siteId
+        ? $"{orgId}:{siteId}"
+        : string.Empty;
+
+    protected override void OnInitialized()
+    {
+        subscribedPrefs = Services.GetService<UserDisplayPreferences>();
+        if (subscribedPrefs is not null)
+        {
+            subscribedPrefs.Changed += OnPreferencesChanged;
+            avatarVersion = subscribedPrefs.AvatarVersion;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || contextLoaded) return;
+        await RefreshContextAsync();
+    }
+
+    private async Task RefreshContextAsync()
+    {
+        try
+        {
+            var sessionSource = Services.GetService<ICurrentAuthenticatedSession>();
+            var sessions = Services.GetService<RuntimeSessions>();
+            if (sessionSource is null || sessions is null)
+                return;
+
+            var reference = await sessionSource.GetAsync(CancellationToken.None);
+            if (reference is not null)
+                menuContext = await sessions.GetUserMenuContextAsync(reference, CancellationToken.None);
+        }
+        catch
+        {
+            menuContext = null;
+        }
+        finally
+        {
+            contextLoaded = Services.GetService<RuntimeSessions>() is not null;
+            if (contextLoaded)
+                StateHasChanged();
+        }
+    }
+
+    private async Task OnSiteSelectedAsync(ChangeEventArgs args)
+    {
+        var raw = args.Value?.ToString();
+        if (string.IsNullOrWhiteSpace(raw)) return;
+        var parts = raw.Split(':');
+        if (parts.Length != 2
+            || !long.TryParse(parts[0], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var orgId)
+            || !long.TryParse(parts[1], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var siteId))
+            return;
+
+        var sessionSource = Services.GetService<ICurrentAuthenticatedSession>();
+        var sessions = Services.GetService<RuntimeSessions>();
+        if (sessionSource is null || sessions is null) return;
+
+        var reference = await sessionSource.GetAsync(CancellationToken.None);
+        if (reference is null) return;
+
+        switchingSite = true;
+        try
+        {
+            var outcome = await sessions.SwitchActiveSiteAsync(reference, orgId, siteId, CancellationToken.None);
+            if (outcome == "Site.Switched")
+            {
+                menuContext = await sessions.GetUserMenuContextAsync(reference, CancellationToken.None);
+            }
+        }
+        finally
+        {
+            switchingSite = false;
+        }
+    }
+
+    private void OnPreferencesChanged()
+    {
+        if (subscribedPrefs is not null)
+            avatarVersion = subscribedPrefs.AvatarVersion;
+        _ = InvokeAsync(RefreshContextAsync);
+    }
+
+    private string FormatLoginTime(DateTime utcTime)
+    {
+        var formatter = Services.GetService<DisplayFormatter>();
+        if (formatter is not null)
+            return formatter.Timestamp(utcTime, " - ");
+
+        var prefs = Services.GetService<ForgeFlow.Web.Localization.UserDisplayPreferences>();
+        var tz = prefs?.TimeZoneInfo ?? ForgeFlow.Domain.Common.OrganizationCalendarUtils.DefaultTimeZone;
+        return TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcTime, DateTimeKind.Utc), tz)
+            .ToString("yyyy/MM/dd - HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    private void Toggle() => open = !open;
+    private void Close() => open = false;
+    private void OnKeyDown(KeyboardEventArgs e) { if (e.Key == "Escape") open = false; }
+
+    private static string Initial(string? name)
+    {
+        var trimmed = name?.Trim();
+        return string.IsNullOrEmpty(trimmed) ? "?" : char.ToUpperInvariant(trimmed[0]).ToString();
+    }
+
+    public void Dispose()
+    {
+        if (subscribedPrefs is not null)
+            subscribedPrefs.Changed -= OnPreferencesChanged;
+    }
+}

@@ -1,0 +1,1026 @@
+@page "/boms"
+@page "/organizations/{OrganizationId:long}/boms"
+@using System.Globalization
+@using ForgeFlow.Application.Boms
+@using ForgeFlow.Application.Items
+@using ForgeFlow.Application.Organizations
+@using ForgeFlow.Application.Units
+@using ForgeFlow.Domain.Boms
+@using ForgeFlow.Web.Components.Pages.BomSections
+@using ForgeFlow.Web.Roles
+@implements IDisposable
+@inject BomUseCases BomService
+@inject ItemUseCases ItemService
+@inject UnitUseCases UnitService
+@inject ForgeFlow.Web.Organizations.ReadScopes Scopes
+@inject ITrustedActorAccessor Actors
+@inject IOrganizationPermissionEvaluator Permissions
+@inject CulturePolicy Culture
+@inject DisplayFormatter Formatter
+@inject IStringLocalizer<SharedResources> Text
+
+<PageTitle>@Text["Boms"] - @Text["AppTitle"]</PageTitle>
+
+<section class="organization-reader" aria-labelledby="boms-title">
+    <div class="read-page-head">
+        <div>
+            <h1 id="boms-title">@Text["Boms"]</h1>
+            <p class="write-hint">@Text["BomsCaption"]</p>
+        </div>
+        @if (!initialLoading && pageError is null && available.Count > 0 && scopeCanManage)
+        {
+            <div class="read-head-actions">
+                @if (activeTab == TabBoms)
+                {
+                    <BitButton Size="BitSize.Small" IconName="Add" Class="read-create-btn"
+                               IsEnabled="@(manufacturableItems.Count > 0)" OnClick="OpenCreateBom">
+                        @Text["BomCreateButton"]
+                    </BitButton>
+                }
+                else if (activeTab == TabDimensions)
+                {
+                    <BitButton Variant="BitVariant.Outline" Size="BitSize.Small" Class="read-create-btn"
+                               IsEnabled="@(!seedingDimensions)" OnClick="SeedStandardDimensionsAsync">
+                        @(seedingDimensions ? Text["WriteSaving"] : Text["BomDimSeedButton"])
+                    </BitButton>
+                    <BitButton Size="BitSize.Small" IconName="Add" Class="read-create-btn" OnClick="OpenCreateDim">
+                        @Text["BomDimCreateButton"]
+                    </BitButton>
+                }
+            </div>
+        }
+    </div>
+
+    @if (pageNotice is not null)
+    {
+        <p role="status" class="read-page-notice write-saved">@pageNotice</p>
+    }
+
+    @if (initialLoading)
+    {
+        <p role="status" aria-live="polite">@Text["ReadLoading"]</p>
+    }
+    else if (pageError is not null)
+    {
+        <div class="read-state" role="alert">
+            <p>@Text[pageError]</p>
+            <BitButton Variant="BitVariant.Outline" Size="BitSize.Small" OnClick="ReloadScopeAsync">@Text["WriteReload"]</BitButton>
+        </div>
+    }
+    else
+    {
+        <div class="read-tab-bar" role="tablist" aria-label="@Text["Boms"]">
+            <button type="button" role="tab" aria-selected="@(activeTab == TabBoms)"
+                    class="read-tab-btn @(activeTab == TabBoms ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabBoms)">@Text["BomsTab"]</button>
+            <button type="button" role="tab" aria-selected="@(activeTab == TabDimensions)"
+                    class="read-tab-btn @(activeTab == TabDimensions ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabDimensions)">@Text["BomDimensionsTab"]</button>
+            <button type="button" role="tab" aria-selected="@(activeTab == TabSimulator)"
+                    class="read-tab-btn @(activeTab == TabSimulator ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabSimulator)">@Text["BomSimulatorTab"]</button>
+        </div>
+
+        @if (activeTab != TabSimulator || available.Count > 1)
+        {
+        <div class="read-toolbar-card">
+            @if (available.Count > 1)
+            {
+                <div class="read-field">
+                    <label for="boms-scope">@Text["ReadScope"]</label>
+                    <select id="boms-scope" aria-label="@Text["ReadScope"]" value="@scopeIndex" @onchange="ChangeScopeAsync">
+                        @for (var i = 0; i < available.Count; i++)
+                        {
+                            <option value="@i">@ScopeLabel(available[i])</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            @if (activeTab == TabBoms)
+            {
+                <div class="read-field">
+                    <label for="boms-item-filter">@Text["BomPrimaryItemLabel"]</label>
+                    <select id="boms-item-filter" value="@bomItemFilter" @onchange="ChangeBomItemFilterAsync">
+                        <option value="">@Text["BomPrimaryItemAll"]</option>
+                        @foreach (var item in manufacturableItems)
+                        {
+                            <option value="@item.Id">@item.Code — @item.Name</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            @if (activeTab != TabSimulator)
+            {
+                <div class="read-field">
+                    <label for="boms-search">@Text["ReadSearch"]</label>
+                    <input id="boms-search" type="search" value="@search" @oninput="OnSearchInput"
+                           maxlength="100" placeholder="@Text["BomSearchPlaceholder"]" />
+                </div>
+
+                <label class="read-inactive">
+                    <input type="checkbox" @bind="includeInactive" @bind:after="OnInactiveChanged" /> @Text["ReadInactive"]
+                </label>
+            }
+        </div>
+        }
+
+        @if (activeTab == TabBoms)
+        {
+            <BomGrid @ref="bomsGrid"
+                     OnRead="ReadBomsGridAsync"
+                     PageSizeOptions="@PageSizeOptions"
+                     GridStrings="@GridStrings"
+                     CanManage="@scopeCanManage"
+                     VersionsIcon="@VersionsIcon"
+                     EditIcon="@EditIcon"
+                     OnOpenDetails="OpenBomDetailsAsync"
+                     OnOpenEdit="OpenBomEditModalAsync" />
+        }
+        else if (activeTab == TabDimensions)
+        {
+            <ContextDimensionGrid @ref="dimsGrid"
+                                  OnRead="ReadDimsGridAsync"
+                                  PageSizeOptions="@PageSizeOptions"
+                                  GridStrings="@GridStrings"
+                                  CanManage="@scopeCanManage"
+                                  EditIcon="@EditIcon"
+                                  OnOpenEdit="OpenEditDim" />
+        }
+        else
+        {
+            <div class="write-card">
+                <h2 class="audit-section-heading">@Text["BomSimulatorHeading"]</h2>
+                <p class="write-hint">@Text["BomSimulatorHint"]</p>
+
+                <div class="write-grid">
+                    <div class="write-field">
+                        <label for="sim-item">@Text["BomPrimaryItemLabel"]</label>
+                        <select id="sim-item" @bind="simItemId">
+                            <option value="0">@Text["BomSelectItemOption"]</option>
+                            @foreach (var item in manufacturableItems)
+                            {
+                                <option value="@item.Id">@item.Code — @item.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="write-field">
+                        <label for="sim-date">@Text["BomProductionDateLabel"]</label>
+                        <BitDatePicker @bind-Value="SimDateOffset"
+                                       Culture="@Culture.PickerCulture"
+                                       DateFormat="@PickerDateFormat"
+                                       ShowTimePicker="false"
+                                       AllowTextInput="false"
+                                       AutoClose="true"
+                                       ShowGoToToday="true"
+                                       GoToTodayTitle="@Text["BomDateToday"]"
+                                       GoToTodayIcon="@TodayIcon"
+                                       Icon="@CalendarIcon"
+                                       NextMonthNavIcon="@NextNavIcon"
+                                       PrevMonthNavIcon="@PrevNavIcon"
+                                       NextYearNavIcon="@NextYearIcon"
+                                       PrevYearNavIcon="@PrevYearIcon"
+                                       ClearButtonIcon="@CloseIcon"
+                                       Class="bom-dtp" />
+                    </div>
+                    <div class="write-field">
+                        <label for="sim-qty">@Text["BomRequestedQtyLabel"]</label>
+                        <input id="sim-qty" type="text" inputmode="decimal" dir="ltr" @bind="simQtyText" />
+                    </div>
+                    <div class="write-field">
+                        <label for="sim-unit">@Text["BomRequestedUnitLabel"]</label>
+                        <select id="sim-unit" @bind="simUnitId">
+                            <option value="0">@Text["BomDefaultBaseUnitOption"]</option>
+                            @foreach (var u in activeUnits)
+                            {
+                                <option value="@u.Id">@u.Code — @u.Name (@u.Symbol)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="item-sub-card">
+                    <div class="audit-modal-title-row">
+                        <strong>@Text["BomContextPairsLabel"]</strong>
+                        <BitButton Variant="BitVariant.Outline" Size="BitSize.Small"
+                                   IsEnabled="@(activeDimensions.Count > 0)" OnClick="AddSimulatorContextPair">
+                            @Text["BomAddContextPairBtn"]
+                        </BitButton>
+                    </div>
+                    @if (simContextPairs.Count == 0)
+                    {
+                        <p class="write-hint">@Text["BomNoContextPairsHint"]</p>
+                    }
+                    else
+                    {
+                        @foreach (var pair in simContextPairs)
+                        {
+                            <div class="bom-cond-row">
+                                <select aria-label="@Text["BomDimLabel"]" @bind="pair.DimensionCode">
+                                    @foreach (var dim in activeDimensions)
+                                    {
+                                        <option value="@dim.Code">@RolePermissionLocalization.ContextDimensionDisplayName(dim.Code, dim.Name, Text) (@dim.Code)</option>
+                                    }
+                                </select>
+                                <span>=</span>
+                                <input type="text" dir="ltr" maxlength="100" @bind="pair.Value" placeholder="@Text["BomConditionValuePlaceholder"]" />
+                                <BitButton Variant="BitVariant.Text" Size="BitSize.Small" OnClick="() => simContextPairs.Remove(pair)">
+                                    @Text["BomRemoveRowBtn"]
+                                </BitButton>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <div class="write-actions">
+                    <BitButton Variant="BitVariant.Outline" Size="BitSize.Small"
+                               IsEnabled="@(!simRunning && simItemId > 0)" OnClick="RunResolveAsync">
+                        @Text["BomResolveBtn"]
+                    </BitButton>
+                    <BitButton Size="BitSize.Small"
+                               IsEnabled="@(!simRunning && simItemId > 0)" OnClick="RunExplodeAsync">
+                        @Text["BomExplodeBtn"]
+                    </BitButton>
+                </div>
+
+                @if (simError is not null)
+                {
+                    <p role="alert" class="write-error">@Text[simError]</p>
+                }
+
+                @if (simResolution is not null)
+                {
+                    <div class="converter-result-card" role="status">
+                        <div class="audit-modal-title-row">
+                            <span class="audit-modal-code"><bdi dir="ltr">@simResolution.BomCode</bdi> — @simResolution.BomName</span>
+                            <span class="read-badge active">v@(simResolution.VersionNumber)</span>
+                        </div>
+                        <div class="converter-meta">
+                            @Text["BomBaseOutputSummary", simResolution.BaseOutputQuantity.ToString("G29", CultureInfo.InvariantCulture), simResolution.BaseOutputUnitSymbol, Formatter.Date(simResolution.EffectiveFromDate), simResolution.EffectiveToDate is DateOnly toDate ? Formatter.Date(toDate) : "∞"]
+                        </div>
+                    </div>
+                }
+
+                @if (simExplosion is not null)
+                {
+                    <div class="item-sub-card">
+                        <h3 class="audit-section-heading">@Text["BomExplosionInputsHeading"]</h3>
+                        @if (simExplosion.ConsumedInputs.Count == 0)
+                        {
+                            <p class="read-empty">@Text["ReadEmpty"]</p>
+                        }
+                        else
+                        {
+                            <div class="audit-fields-box" style="overflow-x:auto;">
+                                <table class="audit-fields-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">@Text["BomLevelColumn"]</th>
+                                            <th scope="col">@Text["BomParentItemColumn"]</th>
+                                            <th scope="col">@Text["BomLineItemColumn"]</th>
+                                            <th scope="col">@Text["BomNetQtyColumn"]</th>
+                                            <th scope="col">@Text["BomScrapColumn"]</th>
+                                            <th scope="col">@Text["BomGrossQtyColumn"]</th>
+                                            <th scope="col">@Text["BomLineUnitColumn"]</th>
+                                            <th scope="col">@Text["ReadStatus"]</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <Virtualize Items="simExplosion.ConsumedInputs.AsCollection()" Context="line" ItemSize="40" OverscanCount="5" SpacerElement="tr">
+                                            <tr>
+                                                <td><span class="bom-tree-level">L@(line.Level)</span></td>
+                                                <td><bdi dir="ltr">@line.ParentItemCode</bdi></td>
+                                                <td><bdi dir="ltr">@line.ItemCode</bdi> — @line.ItemName</td>
+                                                <td><bdi dir="ltr">@line.NetQuantity.ToString("G29", CultureInfo.InvariantCulture)</bdi></td>
+                                                <td><bdi dir="ltr">@line.ScrapPercentage.ToString("G29", CultureInfo.InvariantCulture)%</bdi></td>
+                                                <td><strong><bdi dir="ltr">@line.GrossQuantity.ToString("G29", CultureInfo.InvariantCulture)</bdi></strong></td>
+                                                <td><bdi dir="ltr">@line.UnitSymbol</bdi></td>
+                                                <td>
+                                                    <div class="cap-badge-row">
+                                                        @if (line.IsSubAssembly)
+                                                        {
+                                                            <span class="cap-badge">@Text["BomSubAssemblyBadge"]</span>
+                                                        }
+                                                        @if (line.IsOptional)
+                                                        {
+                                                            <span class="cap-badge">@Text["BomOptionalBadge"]</span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </Virtualize>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                        <h3 class="audit-section-heading">@Text["BomExplosionOutputsHeading"]</h3>
+                        @if (simExplosion.ProducedOutputs.Count == 0)
+                        {
+                            <p class="read-empty">@Text["ReadEmpty"]</p>
+                        }
+                        else
+                        {
+                            <div class="audit-fields-box" style="overflow-x:auto;">
+                                <table class="audit-fields-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">@Text["BomLevelColumn"]</th>
+                                            <th scope="col">@Text["BomLineItemColumn"]</th>
+                                            <th scope="col">@Text["BomOutputTypeColumn"]</th>
+                                            <th scope="col">@Text["BomProducedQtyColumn"]</th>
+                                            <th scope="col">@Text["BomLineUnitColumn"]</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <Virtualize Items="simExplosion.ProducedOutputs.AsCollection()" Context="line" ItemSize="40" OverscanCount="5" SpacerElement="tr">
+                                            <tr>
+                                                <td><span class="bom-tree-level">L@(line.Level)</span></td>
+                                                <td><bdi dir="ltr">@line.ItemCode</bdi> — @line.ItemName</td>
+                                                <td><span class="read-badge @OutputTypeCss(line.OutputType)">@Text[OutputTypeKey(line.OutputType)]</span></td>
+                                                <td><strong><bdi dir="ltr">@line.ProducedQuantity.ToString("G29", CultureInfo.InvariantCulture)</bdi></strong></td>
+                                                <td><bdi dir="ltr">@line.UnitSymbol</bdi></td>
+                                            </tr>
+                                        </Virtualize>
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    }
+
+    @* Create BOM Modal *@
+    <CreateBomModal @ref="createBomModal"
+                    @bind-IsOpen="createBomOpen"
+                    DialogClasses="@DialogClasses"
+                    CurrentScope="@CurrentScope"
+                    CurrentOrgId="@CurrentOrgId"
+                    ManufacturableItems="@manufacturableItems"
+                    OnCreated="OnBomCreatedAsync" />
+
+    @* Rename / Activate BOM Modal *@
+    <BomEditModal @ref="bomEditModal"
+                  @bind-IsOpen="bomEditOpen"
+                  DialogClasses="@DialogClasses"
+                  CurrentScope="@CurrentScope"
+                  CurrentOrgId="@CurrentOrgId"
+                  OnUpdated="OnBomUpdatedAsync" />
+
+    @* BOM Details & Versions Modal *@
+    <BomVersionsModal @ref="bomVersionsModal"
+                      @bind-IsOpen="bomVersionsOpen"
+                      @bind-IsOpen:after="OnBomVersionsOpenChanged"
+                      DialogClasses="@DialogClasses"
+                      CurrentScope="@CurrentScope"
+                      CurrentOrgId="@CurrentOrgId"
+                      SelectedBom="@selectedBom"
+                      ScopeCanManage="@scopeCanManage"
+                      ActiveUnits="@activeUnits"
+                      AllActiveItems="@allActiveItems"
+                      OnOpenWorkbench="OpenVersionWorkbenchAsync"
+                      OnVersionCreated="OnVersionCreatedFromModalAsync" />
+
+    @* BOM Version Workbench Modal *@
+    <BomVersionWorkbenchModal @ref="versionWorkbenchModal"
+                             @bind-IsOpen="versionModalOpen"
+                             CurrentScope="CurrentScope"
+                             CurrentOrgId="CurrentOrgId"
+                             ScopeCanManage="scopeCanManage"
+                             SelectedBom="selectedBom"
+                             ActiveUnits="activeUnits"
+                             ConsumableItems="consumableItems"
+                             AllActiveItems="allActiveItems"
+                             ActiveDimensions="activeDimensions"
+                             OnVersionUpdated="OnVersionUpdatedAsync"
+                             OnError="OnVersionError" />
+
+    @* Create Context Dimension Modal *@
+    <CreateContextDimensionModal @ref="createDimModal"
+                                @bind-IsOpen="createDimOpen"
+                                DialogClasses="@DialogClasses"
+                                CurrentScope="@CurrentScope"
+                                CurrentOrgId="@CurrentOrgId"
+                                OnCreated="OnDimCreatedAsync" />
+
+    @* Edit Context Dimension Modal *@
+    <EditContextDimensionModal @ref="editDimModal"
+                              @bind-IsOpen="editDimOpen"
+                              DialogClasses="@DialogClasses"
+                              CurrentScope="@CurrentScope"
+                              CurrentOrgId="@CurrentOrgId"
+                              OnSaved="OnDimSavedAsync" />
+</section>
+
+@code {
+    [Parameter] public long? OrganizationId { get; set; }
+
+    private const byte TabBoms = 0;
+    private const byte TabDimensions = 1;
+    private const byte TabSimulator = 2;
+
+    private static readonly int[] PageSizeOptions = [10, 25, 50, 100];
+    private static readonly BitIconInfo EditIcon = BitIconInfo.Css("ff-icon ff-icon--edit");
+    private static readonly BitIconInfo VersionsIcon = BitIconInfo.Css("ff-icon ff-icon--versions");
+    private static readonly BitIconInfo CalendarIcon = BitIconInfo.Css("ff-icon ff-icon--calendar");
+    private static readonly BitIconInfo TodayIcon = BitIconInfo.Css("ff-icon ff-icon--today");
+    private static readonly BitIconInfo CloseIcon = BitIconInfo.Css("ff-icon ff-icon--close");
+    private BitIconInfo NextNavIcon => BitIconInfo.Css(Culture.Direction == "rtl" ? "ff-icon ff-icon--chevron-prev" : "ff-icon ff-icon--chevron-next");
+    private BitIconInfo PrevNavIcon => BitIconInfo.Css(Culture.Direction == "rtl" ? "ff-icon ff-icon--chevron-next" : "ff-icon ff-icon--chevron-prev");
+    private BitIconInfo NextYearIcon => BitIconInfo.Css(Culture.Direction == "rtl" ? "ff-icon ff-icon--chevrons-prev" : "ff-icon ff-icon--chevrons-next");
+    private BitIconInfo PrevYearIcon => BitIconInfo.Css(Culture.Direction == "rtl" ? "ff-icon ff-icon--chevrons-next" : "ff-icon ff-icon--chevrons-prev");
+    private string PickerDateFormat => Culture.Language == CulturePolicy.Persian ? "yyyy/MM/dd" : "yyyy-MM-dd";
+
+    private DateTimeOffset? SimDateOffset
+    {
+        get => ToDateTimeOffset(simDate);
+        set { if (value.HasValue) simDate = DateOnly.FromDateTime(value.Value.Date); }
+    }
+    private static DateTimeOffset ToDateTimeOffset(DateOnly date) =>
+        new(date.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
+    private static readonly BitDialogClassStyles DialogClasses = new()
+    {
+        Container = "read-dialog",
+        Header = "read-dialog-header",
+        Body = "read-dialog-body",
+        CloseButton = "read-dialog-close",
+        Overlay = "read-dialog-overlay"
+    };
+
+    private BomGrid? bomsGrid;
+    private ContextDimensionGrid? dimsGrid;
+
+    private IReadOnlyList<OrganizationScope> available = [];
+    private IReadOnlyDictionary<OrganizationScope, ForgeFlow.Web.Organizations.ScopeDisplayInfo> scopeLabels =
+        new Dictionary<OrganizationScope, ForgeFlow.Web.Organizations.ScopeDisplayInfo>();
+    private int scopeIndex;
+    private bool initialLoading = true;
+    private bool scopeCanManage;
+    private string? pageError;
+    private string? pageNotice;
+
+    private byte activeTab = TabBoms;
+    private string search = string.Empty;
+    private bool includeInactive;
+    private readonly DebouncedSearchController _searchController = new(300);
+
+    public void Dispose()
+    {
+        _searchController.Dispose();
+        selectedBom = null;
+        simExplosion = null;
+        simResolution = null;
+        selectedDim = null;
+        activeUnits.Clear();
+        allActiveItems.Clear();
+        manufacturableItems.Clear();
+        consumableItems.Clear();
+        activeDimensions.Clear();
+        simContextPairs.Clear();
+    }
+    private string bomItemFilter = string.Empty;
+
+    private List<UnitSummary> activeUnits = [];
+    private List<ItemSummary> allActiveItems = [];
+    private List<ItemSummary> manufacturableItems = [];
+    private List<ItemSummary> consumableItems = [];
+    private List<ContextDimensionSummary> activeDimensions = [];
+
+    private CreateBomModal? createBomModal;
+    private BomEditModal? bomEditModal;
+    private BomVersionsModal? bomVersionsModal;
+    private CreateContextDimensionModal? createDimModal;
+    private EditContextDimensionModal? editDimModal;
+    private BomVersionWorkbenchModal? versionWorkbenchModal;
+
+    private bool createBomOpen, bomEditOpen, bomVersionsOpen, versionModalOpen;
+    private bool createDimOpen, editDimOpen, seedingDimensions;
+    private BomDetails? selectedBom;
+    private ContextDimensionSummary? selectedDim;
+
+    private long simItemId, simUnitId;
+    private DateOnly simDate = DateOnly.FromDateTime(DateTime.UtcNow);
+    private string simQtyText = "1";
+    private readonly List<SimContextPair> simContextPairs = [];
+    private bool simRunning;
+    private string? simError;
+    private BomResolutionResultDto? simResolution;
+    private BomExplosionResultDto? simExplosion;
+
+    private OrganizationScope? CurrentScope => scopeIndex >= 0 && scopeIndex < available.Count ? available[scopeIndex] : null;
+    private long CurrentOrgId => CurrentScope switch
+    {
+        OrganizationScope.Organization o => o.OrganizationId,
+        OrganizationScope.Site s => s.OrganizationId,
+        _ => 0
+    };
+
+    private BitDataGridStrings GridStrings => new()
+    {
+        GridLabel = Text["Boms"],
+        EmptyText = Text["ReadEmpty"],
+        NoMatchesText = Text["ReadEmpty"],
+        LoadingText = Text["ReadLoading"],
+        PagerRangeFormat = Text["GridPagerRange"],
+        PagerPageFormat = Text["GridPagerPage"],
+        PerPageFormat = Text["GridPerPage"],
+        RowsPerPageLabel = Text["GridRowsPerPage"],
+        FirstPageLabel = Text["GridFirstPage"],
+        PreviousPageLabel = Text["GridPreviousPage"],
+        NextPageLabel = Text["GridNextPage"],
+        LastPageLabel = Text["GridLastPage"],
+        AnnouncementPage = Text["GridPagerPage"]
+    };
+
+    protected override async Task OnParametersSetAsync() => await LoadAllAsync();
+
+    private async Task LoadAllAsync()
+    {
+        initialLoading = true;
+        pageError = null;
+        pageNotice = null;
+        try
+        {
+            available = await Scopes.LoadBomScopesAsync();
+            scopeLabels = await Scopes.LoadDisplayInfoAsync(available);
+        }
+        catch when (OrganizationId is long requestedOrgId)
+        {
+            available = [new OrganizationScope.Organization(requestedOrgId)];
+        }
+        catch
+        {
+            pageError = "ReadError";
+            initialLoading = false;
+            return;
+        }
+
+        if (available.Count == 0)
+        {
+            if (OrganizationId is long requestedOrgId)
+            {
+                available = [new OrganizationScope.Organization(requestedOrgId)];
+                scopeIndex = 0;
+            }
+            else
+            {
+                pageError = "ReadDenied";
+                initialLoading = false;
+                return;
+            }
+        }
+        else if (OrganizationId is long orgId)
+        {
+            var idx = -1;
+            for (var i = 0; i < available.Count; i++)
+            {
+                var scopeOrg = available[i] switch
+                {
+                    OrganizationScope.Organization o => o.OrganizationId,
+                    OrganizationScope.Site s => s.OrganizationId,
+                    _ => 0
+                };
+                if (scopeOrg == orgId) { idx = i; break; }
+            }
+            if (idx >= 0) scopeIndex = idx;
+            else
+            {
+                available = [new OrganizationScope.Organization(orgId)];
+                scopeIndex = 0;
+            }
+        }
+        else
+        {
+            scopeIndex = Math.Clamp(scopeIndex, 0, available.Count - 1);
+        }
+
+        await RefreshScopeContextAsync();
+        initialLoading = false;
+    }
+
+    private async Task RefreshScopeContextAsync()
+    {
+        scopeCanManage = false;
+        activeUnits = [];
+        allActiveItems = [];
+        manufacturableItems = [];
+        consumableItems = [];
+        activeDimensions = [];
+        if (CurrentScope is null || CurrentOrgId <= 0) return;
+
+        var actor = await Actors.ResolveAsync(default);
+
+        Task<PermissionDecision>? manageTask = actor is not null && CurrentScope is OrganizationScope.Organization orgScope
+            ? Permissions.EvaluateAsync(actor, orgScope, BomPermissions.BomsManage, default).AsTask()
+            : null;
+
+        var probeTask = BomService.ListBoms(CurrentScope, CurrentOrgId, new BomListQuery(Page: 1, PageSize: 1));
+        var unitTask = UnitService.ListActiveUnits(CurrentScope, CurrentOrgId);
+        var itemTask = ItemService.ListActiveItems(CurrentScope, CurrentOrgId);
+        var dimTask = BomService.ListActiveContextDimensions(CurrentScope, CurrentOrgId);
+
+        var tasks = new List<Task> { probeTask, unitTask, itemTask, dimTask };
+        if (manageTask is not null) tasks.Add(manageTask);
+
+        await Task.WhenAll(tasks);
+
+        if (manageTask is not null)
+            scopeCanManage = (await manageTask).IsAllowed;
+
+        var probe = await probeTask;
+        if (!probe.Succeeded)
+        {
+            pageError = RolePermissionLocalization.FailureKey(probe.Error!.Code);
+            return;
+        }
+
+        var unitRes = await unitTask;
+        if (unitRes.Succeeded && unitRes.Value is not null)
+        {
+            activeUnits = unitRes.Value.ToList();
+        }
+
+        var itemRes = await itemTask;
+        if (itemRes.Succeeded && itemRes.Value is not null)
+        {
+            allActiveItems = itemRes.Value.ToList();
+            manufacturableItems = allActiveItems.Where(x => x.CanBeManufactured).ToList();
+            consumableItems = allActiveItems.Where(x => x.CanBeConsumed).ToList();
+            if (simItemId == 0 && manufacturableItems.Count > 0) simItemId = manufacturableItems[0].Id;
+        }
+
+        var dimRes = await dimTask;
+        if (dimRes.Succeeded && dimRes.Value is not null)
+            activeDimensions = dimRes.Value.ToList();
+    }
+
+    private Task ReloadScopeAsync() => LoadAllAsync();
+
+    private async Task ChangeScopeAsync(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var idx) && idx >= 0 && idx < available.Count)
+        {
+            scopeIndex = idx;
+            pageError = null;
+            pageNotice = null;
+            await RefreshScopeContextAsync();
+            await RefreshActiveGridAsync();
+        }
+    }
+
+    private async Task SwitchTabAsync(byte tab)
+    {
+        if (activeTab == tab) return;
+        activeTab = tab;
+        pageNotice = null;
+        if (tab != TabSimulator)
+        {
+            simExplosion = null;
+            simResolution = null;
+        }
+        await RefreshActiveGridAsync();
+    }
+
+    private void OnBomVersionsOpenChanged()
+    {
+        if (!bomVersionsOpen)
+        {
+            selectedBom = null;
+        }
+    }
+
+    private async Task OnSearchInput(ChangeEventArgs e)
+    {
+        await _searchController.OnInputDebouncedAsync(
+            e,
+            val => search = val,
+            async _ =>
+            {
+                await RefreshActiveGridAsync();
+                await InvokeAsync(StateHasChanged);
+            });
+    }
+
+    private async Task OnInactiveChanged()
+    {
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeBomItemFilterAsync(ChangeEventArgs e)
+    {
+        bomItemFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ApplySearchAsync()
+    {
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task RefreshActiveGridAsync()
+    {
+        if (activeTab == TabBoms && bomsGrid is not null)
+            await bomsGrid.RefreshFromFirstPageAsync();
+        else if (activeTab == TabDimensions && dimsGrid is not null)
+            await dimsGrid.RefreshFromFirstPageAsync();
+    }
+
+    private async Task<BitDataGridReadResult<BomSummary>> ReadBomsGridAsync(BitDataGridReadRequest req)
+    {
+        if (CurrentScope is null || CurrentOrgId <= 0)
+            return new([], 0);
+
+        long? primaryItemId = long.TryParse(bomItemFilter, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed) && parsed > 0 ? parsed : null;
+        var pageSize = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / pageSize) + 1;
+        var res = await BomService.ListBoms(CurrentScope, CurrentOrgId,
+            new BomListQuery(search, primaryItemId, includeInactive, page, pageSize), req.CancellationToken);
+        if (!res.Succeeded)
+        {
+            pageError = RolePermissionLocalization.FailureKey(res.Error!.Code);
+            StateHasChanged();
+            return new([], 0);
+        }
+        return res.Value is not null ? new(res.Value.Items.ToList(), res.Value.Total) : new([], 0);
+    }
+
+    private async Task<BitDataGridReadResult<ContextDimensionSummary>> ReadDimsGridAsync(BitDataGridReadRequest req)
+    {
+        if (CurrentScope is null || CurrentOrgId <= 0)
+            return new([], 0);
+
+        var pageSize = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / pageSize) + 1;
+        var res = await BomService.ListContextDimensions(CurrentScope, CurrentOrgId,
+            new ContextDimensionListQuery(search, includeInactive, page, pageSize), req.CancellationToken);
+        if (!res.Succeeded)
+        {
+            pageError = RolePermissionLocalization.FailureKey(res.Error!.Code);
+            StateHasChanged();
+            return new([], 0);
+        }
+        return res.Value is not null ? new(res.Value.Items.ToList(), res.Value.Total) : new([], 0);
+    }
+
+    private void OpenCreateBom()
+    {
+        if (createBomModal is not null)
+        {
+            createBomModal.Open();
+        }
+        else
+        {
+            createBomOpen = true;
+        }
+    }
+
+    private async Task OnBomCreatedAsync(long bomId)
+    {
+        pageNotice = Text["WriteSaved"];
+        await RefreshActiveGridAsync();
+        await OpenBomDetailsAsync(bomId);
+    }
+
+    private async Task OpenBomEditModalAsync(long bomId)
+    {
+        if (CurrentScope is null) return;
+        var res = await BomService.GetBom(CurrentScope, CurrentOrgId, bomId);
+        if (!res.Succeeded || res.Value is null)
+        {
+            pageError = RolePermissionLocalization.FailureKey(res.Error!.Code);
+            return;
+        }
+        selectedBom = res.Value;
+        bomEditModal?.Open(res.Value);
+    }
+
+    private async Task OnBomUpdatedAsync()
+    {
+        pageNotice = Text["WriteSaved"];
+        await RefreshActiveGridAsync();
+    }
+
+    private async Task OpenBomDetailsAsync(long bomId)
+    {
+        if (CurrentScope is null) return;
+        var res = await BomService.GetBom(CurrentScope, CurrentOrgId, bomId);
+        if (!res.Succeeded)
+        {
+            pageError = RolePermissionLocalization.FailureKey(res.Error!.Code);
+            return;
+        }
+        selectedBom = res.Value;
+        bomVersionsModal?.Open(res.Value!);
+        bomVersionsOpen = true;
+    }
+
+    private async Task OnVersionCreatedFromModalAsync(long versionId)
+    {
+        if (selectedBom is not null) await OpenBomDetailsAsync(selectedBom.Summary.Id);
+        await RefreshActiveGridAsync();
+        await OpenVersionWorkbenchAsync(versionId);
+    }
+
+    private async Task OpenVersionWorkbenchAsync(long versionId)
+    {
+        if (CurrentScope is null || versionWorkbenchModal is null) return;
+        await versionWorkbenchModal.OpenVersionAsync(versionId);
+    }
+
+    private async Task OnVersionUpdatedAsync()
+    {
+        if (selectedBom is not null) await OpenBomDetailsAsync(selectedBom.Summary.Id);
+        await RefreshActiveGridAsync();
+    }
+
+    private void OnVersionError(string errKey)
+    {
+        pageError = errKey;
+    }
+
+    private void OpenCreateDim()
+    {
+        createDimModal?.Open();
+    }
+
+    private async Task OnDimCreatedAsync()
+    {
+        pageNotice = Text["WriteSaved"];
+        await RefreshScopeContextAsync();
+        await RefreshActiveGridAsync();
+    }
+
+    private void OpenEditDim(ContextDimensionSummary dim)
+    {
+        selectedDim = dim;
+        editDimModal?.Open(dim);
+    }
+
+    private async Task OnDimSavedAsync()
+    {
+        pageNotice = Text["WriteSaved"];
+        await RefreshScopeContextAsync();
+        await RefreshActiveGridAsync();
+    }
+
+    private async Task SeedStandardDimensionsAsync()
+    {
+        if (CurrentScope is null) return;
+        seedingDimensions = true;
+        pageNotice = null;
+        try
+        {
+            var res = await BomService.SeedStandardContextDimensions(CurrentScope, CurrentOrgId);
+            if (!res.Succeeded)
+            {
+                pageError = RolePermissionLocalization.FailureKey(res.Error!.Code);
+                return;
+            }
+            pageNotice = Text["BomDimSeededNotice", res.Value!.CreatedCount];
+            await RefreshScopeContextAsync();
+            await RefreshActiveGridAsync();
+        }
+        finally { seedingDimensions = false; }
+    }
+
+    private void AddSimulatorContextPair()
+    {
+        if (activeDimensions.Count == 0) return;
+        simContextPairs.Add(new SimContextPair { DimensionCode = activeDimensions[0].Code, Value = string.Empty });
+    }
+
+    private Dictionary<string, string>? BuildSimulatorContext()
+    {
+        if (simContextPairs.Count == 0) return null;
+        var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var pair in simContextPairs)
+        {
+            if (!string.IsNullOrWhiteSpace(pair.DimensionCode) && !string.IsNullOrWhiteSpace(pair.Value))
+                dict[pair.DimensionCode] = pair.Value.Trim();
+        }
+        return dict.Count == 0 ? null : dict;
+    }
+
+    private async Task RunResolveAsync()
+    {
+        if (CurrentScope is null || simItemId <= 0) return;
+        simRunning = true;
+        simError = null;
+        simExplosion = null;
+        try
+        {
+            var res = await BomService.ResolveBom(CurrentScope,
+                new ResolveBomRequest(CurrentOrgId, simItemId, simDate, BuildSimulatorContext()));
+            if (!res.Succeeded)
+            {
+                simResolution = null;
+                simError = RolePermissionLocalization.FailureKey(res.Error!.Code);
+                return;
+            }
+            simResolution = res.Value;
+        }
+        finally { simRunning = false; }
+    }
+
+    private async Task RunExplodeAsync()
+    {
+        if (CurrentScope is null || simItemId <= 0) return;
+        if (!TryParsePositiveDecimal(simQtyText, out var qty))
+        {
+            simError = "BomErrorQuantityInvalid";
+            return;
+        }
+        simRunning = true;
+        simError = null;
+        try
+        {
+            long? unitId = simUnitId > 0 ? simUnitId : null;
+            var res = await BomService.ExplodeBom(CurrentScope,
+                new ExplodeBomRequest(CurrentOrgId, simItemId, simDate, qty, unitId, BuildSimulatorContext()));
+            if (!res.Succeeded)
+            {
+                simExplosion = null;
+                simError = RolePermissionLocalization.FailureKey(res.Error!.Code);
+                return;
+            }
+            simExplosion = res.Value;
+            var resolveRes = await BomService.ResolveBom(CurrentScope,
+                new ResolveBomRequest(CurrentOrgId, simItemId, simDate, BuildSimulatorContext()));
+            simResolution = resolveRes.Succeeded ? resolveRes.Value : null;
+        }
+        finally { simRunning = false; }
+    }
+
+    private static bool TryParsePositiveDecimal(string raw, out decimal value) =>
+        decimal.TryParse(raw?.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out value) && value > 0m;
+
+    private string ScopeLabel(OrganizationScope scope) => scope switch
+    {
+        OrganizationScope.Organization o when scopeLabels.TryGetValue(scope, out var info) && info.OrgCode is not null
+            => $"{info.OrgCode} — {info.OrgName}",
+        OrganizationScope.Organization o => Text["ReadOrganizationScope", o.OrganizationId],
+        OrganizationScope.Site s when scopeLabels.TryGetValue(scope, out var info) && info.SiteCode is not null
+            => $"{info.OrgCode} / {info.SiteCode} — {info.SiteName}",
+        OrganizationScope.Site s => Text["ReadSiteScope", s.OrganizationId, s.SiteId],
+        _ => string.Empty
+    };
+
+    private static string VersionStatusKey(BomVersionStatus status) => status switch
+    {
+        BomVersionStatus.Draft => "BomStatusDraft",
+        BomVersionStatus.Approved => "BomStatusApproved",
+        BomVersionStatus.Active => "BomStatusActive",
+        BomVersionStatus.Superseded => "BomStatusSuperseded",
+        BomVersionStatus.Obsolete => "BomStatusObsolete",
+        _ => "BomStatusDraft"
+    };
+
+    private static string VersionStatusCss(BomVersionStatus status) => status switch
+    {
+        BomVersionStatus.Draft => "bom-status-draft",
+        BomVersionStatus.Approved => "bom-status-approved",
+        BomVersionStatus.Active => "bom-status-active",
+        BomVersionStatus.Superseded => "bom-status-archived",
+        BomVersionStatus.Obsolete => "bom-status-obsolete",
+        _ => "bom-status-draft"
+    };
+
+    private static string OutputTypeKey(BomOutputType outputType) => outputType switch
+    {
+        BomOutputType.MainProduct => "BomOutMainProduct",
+        BomOutputType.CoProduct => "BomOutCoProduct",
+        BomOutputType.ByProduct => "BomOutByProduct",
+        BomOutputType.Waste => "BomOutWaste",
+        _ => "BomOutMainProduct"
+    };
+
+    private static string OutputTypeCss(BomOutputType outputType) => outputType switch
+    {
+        BomOutputType.MainProduct => "bom-out-main",
+        BomOutputType.CoProduct => "bom-out-coproduct",
+        BomOutputType.ByProduct => "bom-out-byproduct",
+        BomOutputType.Waste => "bom-out-waste",
+        _ => "bom-out-main"
+    };
+
+    private sealed class SimContextPair
+    {
+        public string DimensionCode { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+    }
+}

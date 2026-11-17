@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Auth.LoginRejected" xml:space="preserve"><value>ورود ناموفق بود. اطلاعات ورود را بررسی کنید یا با مسئول استقرار تماس بگیرید.</value></data>
+  <data name="Auth.SessionInvalid" xml:space="preserve"><value>نشست شما دیگر معتبر نیست. دوباره وارد شوید.</value></data>
+  <data name="Auth.AccessDenied" xml:space="preserve"><value>اجازهٔ انجام این عملیات را ندارید.</value></data>
+  <data name="Auth.ServiceUnavailable" xml:space="preserve"><value>سرویس ورود در دسترس نیست. بعداً دوباره تلاش کنید.</value></data>
+  <data name="Auth.LogoutRevocationIncomplete" xml:space="preserve"><value>از این مرورگر خارج شدید، اما لغو نشست در سرور تأیید نشد.</value></data>
+  <data name="Auth.RequestRejected" xml:space="preserve"><value>درخواست تأیید نشد. صفحه را دوباره بارگذاری و تلاش کنید.</value></data>
+  <data name="Auth.LoginThrottled" xml:space="preserve"><value>تعداد تلاش‌های ورود زیاد است. بعداً دوباره تلاش کنید.</value></data>
+  <data name="Culture.ProfileSyncFailed" xml:space="preserve"><value>زبان در این مرورگر تغییر یافت، اما ذخیرهٔ آن در نمایهٔ حساب کاربری انجام نشد.</value></data>
+  <data name="Auth.PasswordChanged" xml:space="preserve"><value>رمز عبور شما تغییر یافت و سایر نشست‌های فعال بسته شدند.</value></data>
+  <data name="Auth.CurrentPasswordInvalid" xml:space="preserve"><value>رمز عبور فعلی نادرست است.</value></data>
+  <data name="Auth.PasswordInvalid" xml:space="preserve"><value>رمز عبور جدید باید بین ۱۲ تا ۱۲۸ نویسه و بدون نویسهٔ کنترلی باشد.</value></data>
+  <data name="Auth.PasswordMismatch" xml:space="preserve"><value>رمز عبور جدید و تکرار آن یکسان نیستند.</value></data>
+  <data name="Auth.TwoFactorInvalidCode" xml:space="preserve"><value>کد تأیید نادرست یا منقضی شده است.</value></data>
+  <data name="Auth.TwoFactorPendingExpired" xml:space="preserve"><value>مهلت تأیید دو مرحله‌ای به پایان رسید. لطفاً دوباره وارد شوید.</value></data>
+  <data name="Auth.TwoFactorNotEnabled" xml:space="preserve"><value>ورود دو مرحله‌ای برای این حساب فعال نیست.</value></data>
+  <data name="Auth.TwoFactorEnabled" xml:space="preserve"><value>ورود دو مرحله‌ای با موفقیت فعال شد.</value></data>
+  <data name="Auth.TwoFactorDisabled" xml:space="preserve"><value>ورود دو مرحله‌ای غیرفعال شد.</value></data>
+  <data name="Auth.RecoveryCodesRegenerated" xml:space="preserve"><value>کدهای بازیابی جدید ایجاد شدند. کدهای قبلی دیگر معتبر نیستند.</value></data>
+  <data name="Auth.PasskeyRegistered" xml:space="preserve"><value>کلید عبور با موفقیت ثبت شد.</value></data>
+  <data name="Auth.PasskeyRemoved" xml:space="preserve"><value>کلید عبور حذف شد.</value></data>
+  <data name="Auth.PasskeyInvalid" xml:space="preserve"><value>تأیید کلید عبور ناموفق بود. دوباره تلاش کنید.</value></data>
+  <data name="Auth.PasskeyNotFound" xml:space="preserve"><value>کلید عبور مورد نظر یافت نشد.</value></data>
+  <data name="Auth.RateLimitExceeded" xml:space="preserve"><value>تعداد درخواست‌های احراز هویت بیش از حد مجاز است. لطفاً {0} ثانیه دیگر دوباره تلاش کنید.</value></data>
+  <data name="Export.RateLimitExceeded" xml:space="preserve"><value>تعداد درخواست‌های خروجی فایل بیش از حد مجاز است. لطفاً {0} ثانیه دیگر دوباره تلاش کنید.</value></data>
+  <data name="Common.RateLimitExceeded" xml:space="preserve"><value>تعداد درخواست‌ها بیش از حد مجاز است. لطفاً {0} ثانیه دیگر دوباره تلاش کنید.</value></data>
+  <data name="Auth.ConcurrentSessionLimitReached" xml:space="preserve"><value>حداکثر تعداد نشست‌های همزمان مجاز برای این حساب تکمیل شده است.</value></data>
+  <data name="Auth.SessionRevoked" xml:space="preserve"><value>نشست شما پایان یافته یا توسط مدیر لغو شده است. لطفاً دوباره وارد شوید.</value></data>
+</root>

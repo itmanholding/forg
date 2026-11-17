@@ -1,0 +1,3067 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+  </resheader>
+  <data name="Navigation" xml:space="preserve">
+    <value>Main navigation</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="AppTitle" xml:space="preserve">
+    <value>ForgeFlow</value>
+  </data>
+  <data name="OpenNavigation" xml:space="preserve">
+    <value>Open navigation</value>
+  </data>
+  <data name="CloseNavigation" xml:space="preserve">
+    <value>Close navigation</value>
+  </data>
+  <data name="CollapseNavigation" xml:space="preserve">
+    <value>Collapse navigation</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>Something went wrong</value>
+  </data>
+  <data name="UnexpectedError" xml:space="preserve">
+    <value>An unexpected error occurred. Reload the page to try again.</value>
+  </data>
+  <data name="ServerUnavailable" xml:space="preserve">
+    <value>The server is currently unavailable. Please try again shortly.</value>
+  </data>
+  <data name="ReconnectTitle" xml:space="preserve">
+    <value>Connection lost</value>
+  </data>
+  <data name="ReconnectShowing" xml:space="preserve">
+    <value>Attempting to reconnect to the server…</value>
+  </data>
+  <data name="ReconnectRetrying" xml:space="preserve">
+    <value>Could not reach the server. Retrying automatically…</value>
+  </data>
+  <data name="ReconnectAttemptLabel" xml:space="preserve">
+    <value>Attempt</value>
+  </data>
+  <data name="ReconnectSeconds" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="ReconnectFailedTitle" xml:space="preserve">
+    <value>Server unreachable</value>
+  </data>
+  <data name="ReconnectFailed" xml:space="preserve">
+    <value>Could not reconnect to the server. Retry or reload the page.</value>
+  </data>
+  <data name="ReconnectRetry" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="ReconnectReload" xml:space="preserve">
+    <value>Reload page</value>
+  </data>
+  <data name="ReconnectPausedTitle" xml:space="preserve">
+    <value>Session paused</value>
+  </data>
+  <data name="ReconnectPaused" xml:space="preserve">
+    <value>The connection was paused by the server.</value>
+  </data>
+  <data name="ReconnectResume" xml:space="preserve">
+    <value>Resume</value>
+  </data>
+  <data name="ReconnectResumeFailed" xml:space="preserve">
+    <value>Could not resume your session. Reload the page.</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Return home</value>
+  </data>
+  <data name="NotFoundTitle" xml:space="preserve">
+    <value>Page not found</value>
+  </data>
+  <data name="NotFoundMessage" xml:space="preserve">
+    <value>The requested page could not be found.</value>
+  </data>
+  <data name="AccessDeniedTitle" xml:space="preserve">
+    <value>Access denied</value>
+  </data>
+  <data name="AccessDeniedMessage" xml:space="preserve">
+    <value>You do not have permission to view this page.</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Sign in to ForgeFlow</value>
+  </data>
+  <data name="LoginIntroduction" xml:space="preserve">
+    <value>Use your account to continue to the workspace.</value>
+  </data>
+  <data name="UsernameLabel" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PasswordVisibilityToggle" xml:space="preserve">
+    <value>Show or hide password</value>
+  </data>
+  <data name="LoginSubmit" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="LoginLoading" xml:space="preserve">
+    <value>Signing in</value>
+  </data>
+  <data name="LoginRequired" xml:space="preserve">
+    <value>Enter your username and password.</value>
+  </data>
+  <data name="LoginUnavailable" xml:space="preserve">
+    <value>Sign-in is unavailable. Reload this page and try again.</value>
+  </data>
+  <data name="LoginLanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="SwitchLanguageTo" xml:space="preserve">
+    <value>Switch language to {0}</value>
+  </data>
+  <data name="LanguagePersian" xml:space="preserve">
+    <value>Persian</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="UserMenu" xml:space="preserve">
+    <value>User account</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
+  <data name="LogoutUnavailable" xml:space="preserve">
+    <value>Sign-out could not be confirmed. Reload the page to refresh your session.</value>
+  </data>
+  <data name="Sites" xml:space="preserve">
+    <value>Sites</value>
+  </data>
+  <data name="ReadDenied" xml:space="preserve">
+    <value>Access denied for this scope.</value>
+  </data>
+  <data name="ReadActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="ReadOrganizationScope" xml:space="preserve">
+    <value>Organization {0}</value>
+  </data>
+  <data name="ReadClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ReadScope" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="ReadStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ReadInactive" xml:space="preserve">
+    <value>Include inactive</value>
+  </data>
+  <data name="ReadEmpty" xml:space="preserve">
+    <value>No records in this scope.</value>
+  </data>
+  <data name="ReadNotFound" xml:space="preserve">
+    <value>Record not found in your authorized scope.</value>
+  </data>
+  <data name="ReadCode" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="ReadInactiveStatus" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="ReadError" xml:space="preserve">
+    <value>Records could not be loaded. Try again.</value>
+  </data>
+  <data name="Organizations" xml:space="preserve">
+    <value>Organizations</value>
+  </data>
+  <data name="AdminNavGroup" xml:space="preserve">
+    <value>Admin Settings</value>
+  </data>
+  <data name="ReadName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ReadLoading" xml:space="preserve">
+    <value>Loading authorized records…</value>
+  </data>
+  <data name="ReadActions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="ReadDetails" xml:space="preserve">
+    <value>View details</value>
+  </data>
+  <data name="ReadEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="ReadSiteScope" xml:space="preserve">
+    <value>Organization {0} · Site {1}</value>
+  </data>
+  <data name="ReadSearch" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ReadSearchPlaceholder" xml:space="preserve">
+    <value>Name or code</value>
+  </data>
+  <data name="GridPagerRange" xml:space="preserve">
+    <value>{0}–{1} of {2}</value>
+  </data>
+  <data name="GridPagerPage" xml:space="preserve">
+    <value>Page {0} of {1}</value>
+  </data>
+  <data name="GridPerPage" xml:space="preserve">
+    <value>{0} / page</value>
+  </data>
+  <data name="GridRowsPerPage" xml:space="preserve">
+    <value>Rows per page</value>
+  </data>
+  <data name="GridFirstPage" xml:space="preserve">
+    <value>First page</value>
+  </data>
+  <data name="GridPreviousPage" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="GridNextPage" xml:space="preserve">
+    <value>Next page</value>
+  </data>
+  <data name="GridLastPage" xml:space="preserve">
+    <value>Last page</value>
+  </data>
+  <data name="CreateOrganizationButton" xml:space="preserve">
+    <value>Create organization</value>
+  </data>
+  <data name="CreateSiteButton" xml:space="preserve">
+    <value>Create site</value>
+  </data>
+  <data name="CreateOrganizationTitle" xml:space="preserve">
+    <value>Create organization</value>
+  </data>
+  <data name="CreateSiteTitle" xml:space="preserve">
+    <value>Create site</value>
+  </data>
+  <data name="CreateCodeHint" xml:space="preserve">
+    <value>1–32 ASCII letters or digits (_ or - after the first character).</value>
+  </data>
+  <data name="CreateSubmit" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreateCodeInvalid" xml:space="preserve">
+    <value>Enter a valid code (1–32 ASCII letters or digits; _ or - after the first character).</value>
+  </data>
+  <data name="CreateCodeDuplicate" xml:space="preserve">
+    <value>A record with this code already exists.</value>
+  </data>
+  <data name="CreateOrgSucceeded" xml:space="preserve">
+    <value>Organization “{0}” created.</value>
+  </data>
+  <data name="CreateSiteSucceeded" xml:space="preserve">
+    <value>Site “{0}” created.</value>
+  </data>
+  <data name="CreateOrgNoReadScope" xml:space="preserve">
+    <value>You do not have read access to any organization yet, though you can create one.</value>
+  </data>
+  <data name="WriteSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="WriteSaving" xml:space="preserve">
+    <value>Saving…</value>
+  </data>
+  <data name="WriteSaved" xml:space="preserve">
+    <value>Changes saved.</value>
+  </data>
+  <data name="WriteActivate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="WriteDeactivate" xml:space="preserve">
+    <value>Deactivate</value>
+  </data>
+  <data name="WriteConfirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="WriteCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="WriteConfirmActivate" xml:space="preserve">
+    <value>Activate “{0}”?</value>
+  </data>
+  <data name="WriteConfirmDeactivate" xml:space="preserve">
+    <value>Deactivate “{0}”? It will no longer appear in the default lists.</value>
+  </data>
+  <data name="WriteReload" xml:space="preserve">
+    <value>Reload latest values</value>
+  </data>
+  <data name="WriteReloadConfirm" xml:space="preserve">
+    <value>Reloading will discard your unsaved name changes. Continue?</value>
+  </data>
+  <data name="WriteDiscardConfirm" xml:space="preserve">
+    <value>You have unsaved changes. Discard them?</value>
+  </data>
+  <data name="WriteDiscard" xml:space="preserve">
+    <value>Discard changes</value>
+  </data>
+  <data name="WriteKeepEditing" xml:space="preserve">
+    <value>Keep editing</value>
+  </data>
+  <data name="WriteNameInvalid" xml:space="preserve">
+    <value>Enter a name of 1 to 200 characters without control characters.</value>
+  </data>
+  <data name="WriteConflict" xml:space="preserve">
+    <value>This record was changed by someone else. Reload the latest values before editing again.</value>
+  </data>
+  <data name="WriteOutcomeUnknown" xml:space="preserve">
+    <value>The outcome of the change is unknown. Reload to check the current values before trying again.</value>
+  </data>
+  <data name="WriteParentInactive" xml:space="preserve">
+    <value>The parent organization is inactive, so this change is not allowed.</value>
+  </data>
+  <data name="WriteHasActiveSites" xml:space="preserve">
+    <value>Deactivate this organization’s active sites first.</value>
+  </data>
+  <data name="WriteUnavailable" xml:space="preserve">
+    <value>The change could not be saved. Try again.</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="UserSearchPlaceholder" xml:space="preserve">
+    <value>Search username</value>
+  </data>
+  <data name="UserUsername" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="UserAccountStatus" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="UserMembershipStatus" xml:space="preserve">
+    <value>Org membership</value>
+  </data>
+  <data name="UserRoleColumn" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="UserSitesColumn" xml:space="preserve">
+    <value>Sites</value>
+  </data>
+  <data name="UserSitesCount" xml:space="preserve">
+    <value>{0} sites</value>
+  </data>
+  <data name="UserAccountDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="UserLockedBadge" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="UserMembershipActive" xml:space="preserve">
+    <value>Member</value>
+  </data>
+  <data name="UserMembershipInactive" xml:space="preserve">
+    <value>Suspended</value>
+  </data>
+  <data name="UserOrgAdminRole" xml:space="preserve">
+    <value>Org admin</value>
+  </data>
+  <data name="UserSiteOperatorRole" xml:space="preserve">
+    <value>Site operator</value>
+  </data>
+  <data name="UserStandardRole" xml:space="preserve">
+    <value>Member</value>
+  </data>
+  <data name="CreateUserButton" xml:space="preserve">
+    <value>New user</value>
+  </data>
+  <data name="CreateUserTitle" xml:space="preserve">
+    <value>Create user</value>
+  </data>
+  <data name="AttachUserButton" xml:space="preserve">
+    <value>Attach existing user</value>
+  </data>
+  <data name="AttachUserTitle" xml:space="preserve">
+    <value>Attach existing user to organization</value>
+  </data>
+  <data name="UserNameHint" xml:space="preserve">
+    <value>1 to 128 ASCII characters: letters, digits, or . _ @ + -</value>
+  </data>
+  <data name="UserPasswordLabel" xml:space="preserve">
+    <value>Initial password</value>
+  </data>
+  <data name="UserPasswordHint" xml:space="preserve">
+    <value>Minimum 12 characters. Never stored in browser drafts.</value>
+  </data>
+  <data name="UserAssignOrgAdmin" xml:space="preserve">
+    <value>Grant organization administrator role</value>
+  </data>
+  <data name="UserAssignSitesLabel" xml:space="preserve">
+    <value>Initial site access</value>
+  </data>
+  <data name="UserUnlockButton" xml:space="preserve">
+    <value>Unlock account</value>
+  </data>
+  <data name="UserActivateAccount" xml:space="preserve">
+    <value>Enable account</value>
+  </data>
+  <data name="UserDeactivateAccount" xml:space="preserve">
+    <value>Disable account</value>
+  </data>
+  <data name="UserActivateMembership" xml:space="preserve">
+    <value>Activate org membership</value>
+  </data>
+  <data name="UserDeactivateMembership" xml:space="preserve">
+    <value>Deactivate org membership</value>
+  </data>
+  <data name="UserGrantOrgAdmin" xml:space="preserve">
+    <value>Grant org admin</value>
+  </data>
+  <data name="UserRevokeOrgAdmin" xml:space="preserve">
+    <value>Revoke org admin</value>
+  </data>
+  <data name="UserAddSiteLabel" xml:space="preserve">
+    <value>Assign site</value>
+  </data>
+  <data name="UserAddSiteButton" xml:space="preserve">
+    <value>Add site</value>
+  </data>
+  <data name="UserConfirmDisableAccount" xml:space="preserve">
+    <value>Disable account “{0}” and sign out all active sessions?</value>
+  </data>
+  <data name="UserConfirmEnableAccount" xml:space="preserve">
+    <value>Enable account “{0}”?</value>
+  </data>
+  <data name="UserConfirmDisableMembership" xml:space="preserve">
+    <value>Deactivate organization membership for “{0}”?</value>
+  </data>
+  <data name="UserConfirmEnableMembership" xml:space="preserve">
+    <value>Activate organization membership for “{0}”?</value>
+  </data>
+  <data name="UserConfirmRevokeOrgAdmin" xml:space="preserve">
+    <value>Revoke organization administrator role from “{0}”?</value>
+  </data>
+  <data name="UserCreatedSucceeded" xml:space="preserve">
+    <value>User “{0}” created.</value>
+  </data>
+  <data name="UserAttachedSucceeded" xml:space="preserve">
+    <value>User “{0}” attached to this organization.</value>
+  </data>
+  <data name="UserErrorInvalidName" xml:space="preserve">
+    <value>Enter a valid username (1 to 128 ASCII letters, digits, or . _ @ + -).</value>
+  </data>
+  <data name="UserErrorDuplicate" xml:space="preserve">
+    <value>This username already exists.</value>
+  </data>
+  <data name="UserErrorPasswordInvalid" xml:space="preserve">
+    <value>Password must be 12 to 128 characters without control characters.</value>
+  </data>
+  <data name="UserErrorSelfDeactivation" xml:space="preserve">
+    <value>You cannot deactivate your own account, membership, or administrator role.</value>
+  </data>
+  <data name="UserErrorLastOrgAdmin" xml:space="preserve">
+    <value>An active organization must keep at least one active organization administrator.</value>
+  </data>
+  <data name="UserErrorLastPlatformAdmin" xml:space="preserve">
+    <value>At least one active platform provisioner must remain.</value>
+  </data>
+  <data name="UserErrorOrgMembershipRequired" xml:space="preserve">
+    <value>Activate the user’s organization membership first.</value>
+  </data>
+  <data name="UserErrorSiteMembershipRequired" xml:space="preserve">
+    <value>Activate the site membership before granting site operator access.</value>
+  </data>
+  <data name="UserErrorParentSiteInactive" xml:space="preserve">
+    <value>The selected site is inactive, so this membership or role change is not allowed.</value>
+  </data>
+  <data name="UserErrorRoleScopeInvalid" xml:space="preserve">
+    <value>The selected role is invalid for this scope.</value>
+  </data>
+  <data name="UserEmptySites" xml:space="preserve">
+    <value>No site memberships assigned.</value>
+  </data>
+  <data name="ChangePasswordLink" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="ChangePasswordTitle" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="CurrentPasswordLabel" xml:space="preserve">
+    <value>Current password</value>
+  </data>
+  <data name="NewPasswordLabel" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="ConfirmPasswordLabel" xml:space="preserve">
+    <value>Confirm new password</value>
+  </data>
+  <data name="ChangePasswordSubmit" xml:space="preserve">
+    <value>Update password</value>
+  </data>
+  <data name="ChangePasswordMismatch" xml:space="preserve">
+    <value>The new password and confirmation do not match.</value>
+  </data>
+  <data name="UserResetPasswordTitle" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="UserNewPasswordLabel" xml:space="preserve">
+    <value>New temporary password</value>
+  </data>
+  <data name="UserResetPasswordButton" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="UserConfirmResetPassword" xml:space="preserve">
+    <value>Reset password for “{0}” and sign out all active sessions?</value>
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="RolesCaption" xml:space="preserve">
+    <value>Organization roles and permissions</value>
+  </data>
+  <data name="RoleCreateButton" xml:space="preserve">
+    <value>New role</value>
+  </data>
+  <data name="RoleCreateTitle" xml:space="preserve">
+    <value>New role</value>
+  </data>
+  <data name="RoleCreateSubmit" xml:space="preserve">
+    <value>Create role</value>
+  </data>
+  <data name="RoleEditTitle" xml:space="preserve">
+    <value>Edit role</value>
+  </data>
+  <data name="RoleDetailTitle" xml:space="preserve">
+    <value>Role details</value>
+  </data>
+  <data name="RoleNameLabel" xml:space="preserve">
+    <value>Role name</value>
+  </data>
+  <data name="RoleNameHint" xml:space="preserve">
+    <value>Between 2 and 128 characters.</value>
+  </data>
+  <data name="RoleTypeColumn" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="RoleSystemBadge" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="RoleCustomBadge" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="RolePermissionsColumn" xml:space="preserve">
+    <value>Operations</value>
+  </data>
+  <data name="RoleSystemNotice" xml:space="preserve">
+    <value>Built-in system roles cannot be modified or deactivated.</value>
+  </data>
+  <data name="RoleConfirmDisable" xml:space="preserve">
+    <value>Deactivate role “{0}”? Active sessions with this role will lose its permissions immediately.</value>
+  </data>
+  <data name="RoleConfirmEnable" xml:space="preserve">
+    <value>Activate role “{0}”?</value>
+  </data>
+  <data name="RoleBuiltInOrgAdmin" xml:space="preserve">
+    <value>Organization administrator</value>
+  </data>
+  <data name="RoleBuiltInSiteOperator" xml:space="preserve">
+    <value>Site operator</value>
+  </data>
+  <data name="RoleBuiltInProvisioner" xml:space="preserve">
+    <value>Platform administrator</value>
+  </data>
+  <data name="PermPageOrganizations" xml:space="preserve">
+    <value>Organizations page</value>
+  </data>
+  <data name="PermPageSites" xml:space="preserve">
+    <value>Sites page</value>
+  </data>
+  <data name="PermPageUsers" xml:space="preserve">
+    <value>Users page</value>
+  </data>
+  <data name="PermPageRoles" xml:space="preserve">
+    <value>Roles &amp; permissions page</value>
+  </data>
+  <data name="PermOpRead" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="PermOpCreate" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="PermOpUpdate" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="PermOpSetActive" xml:space="preserve">
+    <value>Activate / Deactivate</value>
+  </data>
+  <data name="PermOpUnlock" xml:space="preserve">
+    <value>Unlock lockout</value>
+  </data>
+  <data name="PermOpResetPassword" xml:space="preserve">
+    <value>Reset password</value>
+  </data>
+  <data name="PermOpManageMemberships" xml:space="preserve">
+    <value>Manage memberships</value>
+  </data>
+  <data name="PermOpAssignFixedRoles" xml:space="preserve">
+    <value>Assign roles</value>
+  </data>
+  <data name="PermOpManageRoles" xml:space="preserve">
+    <value>Create &amp; edit roles</value>
+  </data>
+  <data name="PermOpAssignPermissions" xml:space="preserve">
+    <value>Assign page operations</value>
+  </data>
+  <data name="PermSelectAllPage" xml:space="preserve">
+    <value>All page operations</value>
+  </data>
+  <data name="UserPermissionsButton" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="UserPermissionsTitle" xml:space="preserve">
+    <value>Permissions &amp; roles — {0}</value>
+  </data>
+  <data name="UserAssignRoleLabel" xml:space="preserve">
+    <value>Role to assign</value>
+  </data>
+  <data name="UserAssignRoleButton" xml:space="preserve">
+    <value>Assign role</value>
+  </data>
+  <data name="UserPermScopeLabel" xml:space="preserve">
+    <value>Permission target scope</value>
+  </data>
+  <data name="UserPermScopeOrg" xml:space="preserve">
+    <value>Entire organization (all pages)</value>
+  </data>
+  <data name="UserPermScopeSite" xml:space="preserve">
+    <value>Site: {0} — {1}</value>
+  </data>
+  <data name="UserPermSaveButton" xml:space="preserve">
+    <value>Save permissions</value>
+  </data>
+  <data name="RoleErrorInvalidName" xml:space="preserve">
+    <value>Enter a valid role name (2–128 characters, not a reserved system code).</value>
+  </data>
+  <data name="RoleErrorDuplicateName" xml:space="preserve">
+    <value>A role with this name already exists in the organization.</value>
+  </data>
+  <data name="RoleErrorSystemImmutable" xml:space="preserve">
+    <value>Built-in system roles cannot be modified.</value>
+  </data>
+  <data name="RoleErrorPermissionUnknown" xml:space="preserve">
+    <value>One or more selected operations are invalid.</value>
+  </data>
+  <data name="RoleErrorPermissionScopeInvalid" xml:space="preserve">
+    <value>Selected operations are not valid for this scope.</value>
+  </data>
+  <data name="PermPageAudit" xml:space="preserve">
+    <value>Audit &amp; Security Events</value>
+  </data>
+  <data name="Audit" xml:space="preserve">
+    <value>Audit &amp; Events</value>
+  </data>
+  <data name="AuditCaption" xml:space="preserve">
+    <value>Business changes, security events, exports, and rejected actions</value>
+  </data>
+  <data name="AuditCategoryLabel" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="AuditCategoryAll" xml:space="preserve">
+    <value>All events</value>
+  </data>
+  <data name="AuditCategoryBusiness" xml:space="preserve">
+    <value>Business changes</value>
+  </data>
+  <data name="AuditCategorySecurity" xml:space="preserve">
+    <value>Security events</value>
+  </data>
+  <data name="AuditEventCodeLabel" xml:space="preserve">
+    <value>Event code</value>
+  </data>
+  <data name="AuditEventCodeAll" xml:space="preserve">
+    <value>All event codes</value>
+  </data>
+  <data name="AuditTimeColumn" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="AuditEventColumn" xml:space="preserve">
+    <value>Event</value>
+  </data>
+  <data name="AuditActorColumn" xml:space="preserve">
+    <value>Actor</value>
+  </data>
+  <data name="AuditSubjectColumn" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="AuditOutcomeColumn" xml:space="preserve">
+    <value>Outcome</value>
+  </data>
+  <data name="AuditOutcomeSuccess" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="AuditOutcomeFailure" xml:space="preserve">
+    <value>Denied / Failed</value>
+  </data>
+  <data name="AuditOutcomeRecorded" xml:space="preserve">
+    <value>Recorded</value>
+  </data>
+  <data name="AuditDetailsButton" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="AuditDetailsTitle" xml:space="preserve">
+    <value>Event details</value>
+  </data>
+  <data name="AuditCorrelationLabel" xml:space="preserve">
+    <value>Correlation ID</value>
+  </data>
+  <data name="AuditFieldsSection" xml:space="preserve">
+    <value>Structured fields</value>
+  </data>
+  <data name="AuditRawJsonSection" xml:space="preserve">
+    <value>Raw JSON payload</value>
+  </data>
+  <data name="AuditFieldKeyColumn" xml:space="preserve">
+    <value>Field</value>
+  </data>
+  <data name="AuditFieldValueColumn" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="AuditSystemActor" xml:space="preserve">
+    <value>System / Anonymous</value>
+  </data>
+  <data name="PermPageUnits" xml:space="preserve">
+    <value>Units of Measure</value>
+  </data>
+  <data name="PermPageSelectLabel" xml:space="preserve">
+    <value>Page / module</value>
+  </data>
+  <data name="PermModuleSummary" xml:space="preserve">
+    <value>{0} ({1}/{2})</value>
+  </data>
+  <data name="PermOpManageUnits" xml:space="preserve">
+    <value>Manage units &amp; conversions</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>Units &amp; Conversions</value>
+  </data>
+  <data name="UnitsCaption" xml:space="preserve">
+    <value>Organization units of measure and multi-hop conversions</value>
+  </data>
+  <data name="UnitsTab" xml:space="preserve">
+    <value>Units</value>
+  </data>
+  <data name="UnitConversionsTab" xml:space="preserve">
+    <value>Unit conversions</value>
+  </data>
+  <data name="UnitCreateButton" xml:space="preserve">
+    <value>New unit</value>
+  </data>
+  <data name="UnitCreateTitle" xml:space="preserve">
+    <value>Create unit</value>
+  </data>
+  <data name="UnitEditTitle" xml:space="preserve">
+    <value>Edit unit</value>
+  </data>
+  <data name="UnitDetailTitle" xml:space="preserve">
+    <value>Unit details</value>
+  </data>
+  <data name="UnitConversionCreateButton" xml:space="preserve">
+    <value>New conversion</value>
+  </data>
+  <data name="UnitConversionCreateTitle" xml:space="preserve">
+    <value>Create conversion</value>
+  </data>
+  <data name="UnitConversionEditTitle" xml:space="preserve">
+    <value>Edit conversion</value>
+  </data>
+  <data name="UnitConversionDetailTitle" xml:space="preserve">
+    <value>Conversion details</value>
+  </data>
+  <data name="UnitsSeedButton" xml:space="preserve">
+    <value>Seed standard units</value>
+  </data>
+  <data name="UnitsSeededNotice" xml:space="preserve">
+    <value>{0} unit(s) and {1} conversion(s) added.</value>
+  </data>
+  <data name="UnitConverterButton" xml:space="preserve">
+    <value>Test conversion</value>
+  </data>
+  <data name="UnitConverterTitle" xml:space="preserve">
+    <value>Multi-hop conversion calculator</value>
+  </data>
+  <data name="UnitConverterQuantityLabel" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="UnitConverterCalculate" xml:space="preserve">
+    <value>Calculate</value>
+  </data>
+  <data name="UnitConverterHops" xml:space="preserve">
+    <value>Path length: {0} step(s), effective factor: {1}</value>
+  </data>
+  <data name="UnitSymbolLabel" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="UnitDimensionLabel" xml:space="preserve">
+    <value>Dimension</value>
+  </data>
+  <data name="UnitDimensionAll" xml:space="preserve">
+    <value>All dimensions</value>
+  </data>
+  <data name="UnitDimensionMass" xml:space="preserve">
+    <value>Mass</value>
+  </data>
+  <data name="UnitDimensionVolume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="UnitDimensionLength" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="UnitDimensionArea" xml:space="preserve">
+    <value>Area</value>
+  </data>
+  <data name="UnitDimensionCount" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="UnitDimensionTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="UnitPrecisionLabel" xml:space="preserve">
+    <value>Decimal precision</value>
+  </data>
+  <data name="UnitConversionFromLabel" xml:space="preserve">
+    <value>From unit</value>
+  </data>
+  <data name="UnitConversionToLabel" xml:space="preserve">
+    <value>To unit</value>
+  </data>
+  <data name="UnitConversionFactorLabel" xml:space="preserve">
+    <value>Factor</value>
+  </data>
+  <data name="UnitConversionRelationLabel" xml:space="preserve">
+    <value>Conversion formula</value>
+  </data>
+  <data name="UnitFilterAll" xml:space="preserve">
+    <value>All units</value>
+  </data>
+  <data name="UnitSearchPlaceholder" xml:space="preserve">
+    <value>Search by code, name, or symbol</value>
+  </data>
+  <data name="UnitCreatedSucceeded" xml:space="preserve">
+    <value>Unit {0} created.</value>
+  </data>
+  <data name="UnitConversionCreatedSucceeded" xml:space="preserve">
+    <value>Unit conversion created.</value>
+  </data>
+  <data name="UnitErrorSymbolInvalid" xml:space="preserve">
+    <value>Enter a valid symbol (1–32 characters).</value>
+  </data>
+  <data name="UnitErrorDimensionInvalid" xml:space="preserve">
+    <value>Select a valid unit dimension.</value>
+  </data>
+  <data name="UnitErrorPrecisionInvalid" xml:space="preserve">
+    <value>Precision scale must be between 0 and 6 decimals.</value>
+  </data>
+  <data name="UnitErrorInactive" xml:space="preserve">
+    <value>Inactive units or conversions cannot be edited until reactivated.</value>
+  </data>
+  <data name="UnitErrorConversionDuplicate" xml:space="preserve">
+    <value>A direct conversion between these units already exists.</value>
+  </data>
+  <data name="UnitErrorConversionSameUnit" xml:space="preserve">
+    <value>Source and target units must be different.</value>
+  </data>
+  <data name="UnitErrorConversionFactorInvalid" xml:space="preserve">
+    <value>Enter a positive factor with at most 6 decimal places.</value>
+  </data>
+  <data name="UnitErrorConversionPathNotFound" xml:space="preserve">
+    <value>No active conversion path exists between the selected units.</value>
+  </data>
+  <data name="UnitErrorConversionConflictingPath" xml:space="preserve">
+    <value>This conversion conflicts with an existing multi-hop conversion path.</value>
+  </data>
+  <data name="UnitErrorConversionQuantityInvalid" xml:space="preserve">
+    <value>Enter a quantity greater than zero.</value>
+  </data>
+  <data name="PermPageItems" xml:space="preserve">
+    <value>Item Catalog &amp; Classifications</value>
+  </data>
+  <data name="PermOpManageItems" xml:space="preserve">
+    <value>Manage items, classifications &amp; attributes</value>
+  </data>
+  <data name="Items" xml:space="preserve">
+    <value>Item Catalog</value>
+  </data>
+  <data name="ItemsCaption" xml:space="preserve">
+    <value>Universal item master, classifications, capabilities, conversions &amp; attributes</value>
+  </data>
+  <data name="ItemsTab" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="ItemsClassificationsTab" xml:space="preserve">
+    <value>Classifications</value>
+  </data>
+  <data name="ItemsAttributesTab" xml:space="preserve">
+    <value>Attributes</value>
+  </data>
+  <data name="ItemCreateButton" xml:space="preserve">
+    <value>New item</value>
+  </data>
+  <data name="ItemCreateTitle" xml:space="preserve">
+    <value>Create item</value>
+  </data>
+  <data name="ItemEditTitle" xml:space="preserve">
+    <value>Edit item</value>
+  </data>
+  <data name="ItemDetailTitle" xml:space="preserve">
+    <value>Item details</value>
+  </data>
+  <data name="ItemDescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ItemBaseUnitLabel" xml:space="preserve">
+    <value>Base unit</value>
+  </data>
+  <data name="ItemCapabilitiesLabel" xml:space="preserve">
+    <value>Operational capabilities</value>
+  </data>
+  <data name="ItemCapFilterAll" xml:space="preserve">
+    <value>All capabilities</value>
+  </data>
+  <data name="ItemCapPurchase" xml:space="preserve">
+    <value>Purchase</value>
+  </data>
+  <data name="ItemCapManufacture" xml:space="preserve">
+    <value>Manufacture</value>
+  </data>
+  <data name="ItemCapSell" xml:space="preserve">
+    <value>Sell</value>
+  </data>
+  <data name="ItemCapConsume" xml:space="preserve">
+    <value>Consume</value>
+  </data>
+  <data name="ItemSearchPlaceholder" xml:space="preserve">
+    <value>Search by code or name</value>
+  </data>
+  <data name="ItemCreatedSucceeded" xml:space="preserve">
+    <value>Item {0} created.</value>
+  </data>
+  <data name="ItemSectionGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="ItemSectionClassifications" xml:space="preserve">
+    <value>Classifications</value>
+  </data>
+  <data name="ItemSectionConversions" xml:space="preserve">
+    <value>Item conversions</value>
+  </data>
+  <data name="ItemSectionAttributes" xml:space="preserve">
+    <value>Attributes</value>
+  </data>
+  <data name="ClassificationSetCreateButton" xml:space="preserve">
+    <value>New set</value>
+  </data>
+  <data name="ClassificationCreateButton" xml:space="preserve">
+    <value>New classification</value>
+  </data>
+  <data name="ClassificationSetLabel" xml:space="preserve">
+    <value>Classification set</value>
+  </data>
+  <data name="ClassificationSetAll" xml:space="preserve">
+    <value>All sets</value>
+  </data>
+  <data name="ClassificationSetAllowMultiple" xml:space="preserve">
+    <value>Allow assigning multiple nodes from this set</value>
+  </data>
+  <data name="ClassificationParentLabel" xml:space="preserve">
+    <value>Parent classification</value>
+  </data>
+  <data name="ClassificationFilterAll" xml:space="preserve">
+    <value>All classifications</value>
+  </data>
+  <data name="AttributeCreateButton" xml:space="preserve">
+    <value>New attribute</value>
+  </data>
+  <data name="AttributeDataTypeLabel" xml:space="preserve">
+    <value>Data type</value>
+  </data>
+  <data name="AttributeDataTypeAll" xml:space="preserve">
+    <value>All types</value>
+  </data>
+  <data name="AttributeDataTypeText" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="AttributeDataTypeDecimal" xml:space="preserve">
+    <value>Decimal number</value>
+  </data>
+  <data name="AttributeDataTypeBoolean" xml:space="preserve">
+    <value>Yes / No</value>
+  </data>
+  <data name="AttributeRequiredLabel" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="AttributeRequiredYes" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="AttributeRequiredNo" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="AttributeBoolTrue" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="AttributeBoolFalse" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="ItemErrorDescriptionInvalid" xml:space="preserve">
+    <value>Description must be at most 500 characters without control characters.</value>
+  </data>
+  <data name="ItemErrorBaseUnitInvalid" xml:space="preserve">
+    <value>Select an active base unit in this organization.</value>
+  </data>
+  <data name="ItemErrorCapabilityRequired" xml:space="preserve">
+    <value>Select at least one operational capability for the item.</value>
+  </data>
+  <data name="ItemErrorClassificationParentInvalid" xml:space="preserve">
+    <value>Selected parent or classification assignment is invalid for this set.</value>
+  </data>
+  <data name="ItemErrorClassificationCircularParent" xml:space="preserve">
+    <value>A classification cannot be an ancestor of itself.</value>
+  </data>
+  <data name="ItemErrorAttributeValueInvalid" xml:space="preserve">
+    <value>Enter a valid attribute value matching the definition data type and bounds.</value>
+  </data>
+  <data name="ItemErrorAttributeRequired" xml:space="preserve">
+    <value>A required attribute value is missing.</value>
+  </data>
+  <data name="Boms" xml:space="preserve">
+    <value>Bills of Materials</value>
+  </data>
+  <data name="BomsCaption" xml:space="preserve">
+    <value>Versioned manufacturing formulas, contextual applicability rules, and multi-level BOM explosion</value>
+  </data>
+  <data name="PermPageBoms" xml:space="preserve">
+    <value>Bills of Materials</value>
+  </data>
+  <data name="PermOpManageBoms" xml:space="preserve">
+    <value>Manage BOMs &amp; versions</value>
+  </data>
+  <data name="BomsTab" xml:space="preserve">
+    <value>BOMs &amp; Versions</value>
+  </data>
+  <data name="BomDimensionsTab" xml:space="preserve">
+    <value>Context Dimensions</value>
+  </data>
+  <data name="BomSimulatorTab" xml:space="preserve">
+    <value>Resolver &amp; Explosion</value>
+  </data>
+  <data name="BomCreateButton" xml:space="preserve">
+    <value>New BOM</value>
+  </data>
+  <data name="BomDimCreateButton" xml:space="preserve">
+    <value>New dimension</value>
+  </data>
+  <data name="BomDimSeedButton" xml:space="preserve">
+    <value>Seed standard dimensions</value>
+  </data>
+  <data name="BomPrimaryItemLabel" xml:space="preserve">
+    <value>Primary output item</value>
+  </data>
+  <data name="BomPrimaryItemAll" xml:space="preserve">
+    <value>All manufacturable items</value>
+  </data>
+  <data name="BomSearchPlaceholder" xml:space="preserve">
+    <value>Search by code or name</value>
+  </data>
+  <data name="BomVersionCountColumn" xml:space="preserve">
+    <value>Versions</value>
+  </data>
+  <data name="BomVersionsAction" xml:space="preserve">
+    <value>Versions</value>
+  </data>
+  <data name="BomSimulatorHeading" xml:space="preserve">
+    <value>BOM Resolver &amp; Multi-Level Explosion</value>
+  </data>
+  <data name="BomSimulatorHint" xml:space="preserve">
+    <value>Select a manufacturable item, production date, quantity, and optional context values to resolve and explode the effective BOM.</value>
+  </data>
+  <data name="BomSelectItemOption" xml:space="preserve">
+    <value>Select a manufacturable item...</value>
+  </data>
+  <data name="BomProductionDateLabel" xml:space="preserve">
+    <value>Production date</value>
+  </data>
+  <data name="BomRequestedQtyLabel" xml:space="preserve">
+    <value>Requested quantity</value>
+  </data>
+  <data name="BomRequestedUnitLabel" xml:space="preserve">
+    <value>Requested unit</value>
+  </data>
+  <data name="BomDefaultBaseUnitOption" xml:space="preserve">
+    <value>Item base unit</value>
+  </data>
+  <data name="BomContextPairsLabel" xml:space="preserve">
+    <value>Manufacturing context</value>
+  </data>
+  <data name="BomAddContextPairBtn" xml:space="preserve">
+    <value>Add context criterion</value>
+  </data>
+  <data name="BomNoContextPairsHint" xml:space="preserve">
+    <value>No context specified; unconditional or general BOMs apply.</value>
+  </data>
+  <data name="BomDimLabel" xml:space="preserve">
+    <value>Context dimension</value>
+  </data>
+  <data name="BomConditionValuePlaceholder" xml:space="preserve">
+    <value>Value (comma-separated for In / Not In)</value>
+  </data>
+  <data name="BomRemoveRowBtn" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="BomResolveBtn" xml:space="preserve">
+    <value>Resolve active BOM</value>
+  </data>
+  <data name="BomExplodeBtn" xml:space="preserve">
+    <value>Explode BOM</value>
+  </data>
+  <data name="BomBaseOutputSummary" xml:space="preserve">
+    <value>Base output: {0} {1} · Effective: {2} to {3}</value>
+  </data>
+  <data name="BomExplosionInputsHeading" xml:space="preserve">
+    <value>Consumed Materials &amp; Sub-Assemblies</value>
+  </data>
+  <data name="BomExplosionOutputsHeading" xml:space="preserve">
+    <value>Produced Outputs</value>
+  </data>
+  <data name="BomLevelColumn" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="BomParentItemColumn" xml:space="preserve">
+    <value>Parent item</value>
+  </data>
+  <data name="BomLineItemColumn" xml:space="preserve">
+    <value>Item</value>
+  </data>
+  <data name="BomNetQtyColumn" xml:space="preserve">
+    <value>Net qty</value>
+  </data>
+  <data name="BomScrapColumn" xml:space="preserve">
+    <value>Scrap %</value>
+  </data>
+  <data name="BomGrossQtyColumn" xml:space="preserve">
+    <value>Gross qty</value>
+  </data>
+  <data name="BomLineUnitColumn" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="BomSubAssemblyBadge" xml:space="preserve">
+    <value>Sub-assembly</value>
+  </data>
+  <data name="BomOptionalBadge" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="BomOutputTypeColumn" xml:space="preserve">
+    <value>Output type</value>
+  </data>
+  <data name="BomProducedQtyColumn" xml:space="preserve">
+    <value>Produced qty</value>
+  </data>
+  <data name="BomCreateHeading" xml:space="preserve">
+    <value>Create Bill of Materials</value>
+  </data>
+  <data name="BomCreateHint" xml:space="preserve">
+    <value>Code must start with an ASCII letter or digit and may use A-Z, 0-9, _ or -.</value>
+  </data>
+  <data name="BomEditHeading" xml:space="preserve">
+    <value>Edit BOM</value>
+  </data>
+  <data name="BomVersionsHeading" xml:space="preserve">
+    <value>BOM Details &amp; Versions</value>
+  </data>
+  <data name="BomNoVersionsEmpty" xml:space="preserve">
+    <value>No versions have been created for this BOM yet.</value>
+  </data>
+  <data name="BomVersionNumberLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="BomBaseOutputColumn" xml:space="preserve">
+    <value>Base output</value>
+  </data>
+  <data name="BomEffectiveDatesColumn" xml:space="preserve">
+    <value>Effective dates</value>
+  </data>
+  <data name="BomApplicabilityColumn" xml:space="preserve">
+    <value>Applicability</value>
+  </data>
+  <data name="BomRulesCountBadge" xml:space="preserve">
+    <value>{0} rule(s)</value>
+  </data>
+  <data name="BomUnconditionalLabel" xml:space="preserve">
+    <value>Unconditional</value>
+  </data>
+  <data name="BomOpenVersionBtn" xml:space="preserve">
+    <value>Open version</value>
+  </data>
+  <data name="BomCreateVersionHeading" xml:space="preserve">
+    <value>Create New Draft Version</value>
+  </data>
+  <data name="BomBaseOutputQtyLabel" xml:space="preserve">
+    <value>Base output quantity</value>
+  </data>
+  <data name="BomBaseOutputUnitLabel" xml:space="preserve">
+    <value>Base output unit</value>
+  </data>
+  <data name="BomEffectiveFromLabel" xml:space="preserve">
+    <value>Effective from</value>
+  </data>
+  <data name="BomEffectiveToLabel" xml:space="preserve">
+    <value>Effective to (optional)</value>
+  </data>
+  <data name="BomNotesLabel" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="BomCreateVersionBtn" xml:space="preserve">
+    <value>Create draft version</value>
+  </data>
+  <data name="BomVersionWorkbenchTitle" xml:space="preserve">
+    <value>BOM Version Workbench</value>
+  </data>
+  <data name="BomVersionImmutableNotice" xml:space="preserve">
+    <value>Approved, Active, Superseded, and Obsolete versions are structurally immutable.</value>
+  </data>
+  <data name="BomActionApprove" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="BomActionActivate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="BomActionSupersede" xml:space="preserve">
+    <value>Supersede</value>
+  </data>
+  <data name="BomActionObsolete" xml:space="preserve">
+    <value>Mark Obsolete</value>
+  </data>
+  <data name="BomVersionHeaderSection" xml:space="preserve">
+    <value>Version Header</value>
+  </data>
+  <data name="BomSaveHeaderBtn" xml:space="preserve">
+    <value>Save header</value>
+  </data>
+  <data name="BomInputsSection" xml:space="preserve">
+    <value>Inputs (Materials)</value>
+  </data>
+  <data name="BomAddInputBtn" xml:space="preserve">
+    <value>Add input line</value>
+  </data>
+  <data name="BomQuantityColumn" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="BomOutputsSection" xml:space="preserve">
+    <value>Outputs (Main / Co- / By-Product / Waste)</value>
+  </data>
+  <data name="BomAddOutputBtn" xml:space="preserve">
+    <value>Add output line</value>
+  </data>
+  <data name="BomSaveLinesBtn" xml:space="preserve">
+    <value>Save inputs &amp; outputs</value>
+  </data>
+  <data name="BomAddConditionBtn" xml:space="preserve">
+    <value>Add condition</value>
+  </data>
+  <data name="BomEnableApplicabilityLabel" xml:space="preserve">
+    <value>Enable contextual applicability rules for this version</value>
+  </data>
+  <data name="BomSaveApplicabilityBtn" xml:space="preserve">
+    <value>Save applicability</value>
+  </data>
+  <data name="BomDimCreateHeading" xml:space="preserve">
+    <value>Create Context Dimension</value>
+  </data>
+  <data name="BomDimEditHeading" xml:space="preserve">
+    <value>Edit Context Dimension</value>
+  </data>
+  <data name="BomDimSeededNotice" xml:space="preserve">
+    <value>Standard context dimensions checked; {0} created.</value>
+  </data>
+  <data name="BomStatusDraft" xml:space="preserve">
+    <value>Draft</value>
+  </data>
+  <data name="BomStatusApproved" xml:space="preserve">
+    <value>Approved</value>
+  </data>
+  <data name="BomStatusActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="BomStatusSuperseded" xml:space="preserve">
+    <value>Superseded</value>
+  </data>
+  <data name="BomStatusObsolete" xml:space="preserve">
+    <value>Obsolete</value>
+  </data>
+  <data name="BomOutMainProduct" xml:space="preserve">
+    <value>Main product</value>
+  </data>
+  <data name="BomOutCoProduct" xml:space="preserve">
+    <value>Co-product</value>
+  </data>
+  <data name="BomOutByProduct" xml:space="preserve">
+    <value>By-product</value>
+  </data>
+  <data name="BomOutWaste" xml:space="preserve">
+    <value>Waste</value>
+  </data>
+  <data name="BomOpEquals" xml:space="preserve">
+    <value>Equals</value>
+  </data>
+  <data name="BomOpNotEquals" xml:space="preserve">
+    <value>Not equals</value>
+  </data>
+  <data name="BomOpIn" xml:space="preserve">
+    <value>In set</value>
+  </data>
+  <data name="BomOpNotIn" xml:space="preserve">
+    <value>Not in set</value>
+  </data>
+  <data name="BomErrorItemInvalid" xml:space="preserve">
+    <value>Selected item was not found or is inactive in this organization.</value>
+  </data>
+  <data name="BomErrorPrimaryNotManufacturable" xml:space="preserve">
+    <value>Primary output item must be marked as manufacturable.</value>
+  </data>
+  <data name="BomErrorVersionNumberInvalid" xml:space="preserve">
+    <value>Version number must be a positive integer.</value>
+  </data>
+  <data name="BomErrorVersionImmutable" xml:space="preserve">
+    <value>Only Draft BOM versions can be structurally modified.</value>
+  </data>
+  <data name="BomErrorVersionTransitionInvalid" xml:space="preserve">
+    <value>This BOM version status transition is not allowed.</value>
+  </data>
+  <data name="BomErrorQuantityInvalid" xml:space="preserve">
+    <value>Enter a positive quantity greater than zero.</value>
+  </data>
+  <data name="BomErrorEffectiveDatesInvalid" xml:space="preserve">
+    <value>Effective end date must be on or after the effective start date.</value>
+  </data>
+  <data name="BomErrorMainOutputRequired" xml:space="preserve">
+    <value>Exactly one Main Product output matching the BOM primary output item is required before approval or activation.</value>
+  </data>
+  <data name="BomErrorInputsRequired" xml:space="preserve">
+    <value>At least one input line is required before approval or activation.</value>
+  </data>
+  <data name="BomErrorScrapInvalid" xml:space="preserve">
+    <value>Scrap percentage must be at least 0 and less than 100.</value>
+  </data>
+  <data name="BomErrorUnitInvalid" xml:space="preserve">
+    <value>Selected unit was not found or is inactive.</value>
+  </data>
+  <data name="BomErrorDirectSelfCycle" xml:space="preserve">
+    <value>A BOM cannot list its own primary output item as an input material.</value>
+  </data>
+  <data name="BomErrorCircularDependency" xml:space="preserve">
+    <value>A circular multi-level BOM dependency was detected.</value>
+  </data>
+  <data name="BomErrorApplicabilityInvalid" xml:space="preserve">
+    <value>Applicability rule requires a valid name and active context dimension conditions without conflicting rules.</value>
+  </data>
+  <data name="BomErrorNoActiveBomFound" xml:space="preserve">
+    <value>No active effective BOM matched the item, date, and manufacturing context.</value>
+  </data>
+  <data name="BomErrorAmbiguousResolution" xml:space="preserve">
+    <value>Multiple equally specific active BOM versions matched without a unique deterministic winner.</value>
+  </data>
+  <data name="BomDateToday" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="BomDateClear" xml:space="preserve">
+    <value>Clear date</value>
+  </data>
+  <data name="BomDimStdPlant" xml:space="preserve">
+    <value>Plant / Site</value>
+  </data>
+  <data name="BomDimStdProductionLine" xml:space="preserve">
+    <value>Production Line</value>
+  </data>
+  <data name="BomDimStdMarket" xml:space="preserve">
+    <value>Target Market</value>
+  </data>
+  <data name="BomDimStdCustomer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="BomDimStdManufacturingMethod" xml:space="preserve">
+    <value>Manufacturing Method</value>
+  </data>
+  <data name="UserAccountSubtitle" xml:space="preserve">
+    <value>User account</value>
+  </data>
+  <data name="ProductionNavGroup" xml:space="preserve">
+    <value>Production Planning &amp; Execution</value>
+  </data>
+  <data name="ProductionOrders" xml:space="preserve">
+    <value>Production orders</value>
+  </data>
+  <data name="ProductionOrdersCaption" xml:space="preserve">
+    <value>Plan, release, and track site-scoped production orders with frozen BOM snapshots</value>
+  </data>
+  <data name="PermPageProductionOrders" xml:space="preserve">
+    <value>Production orders</value>
+  </data>
+  <data name="PermOpManageProductionOrders" xml:space="preserve">
+    <value>Create &amp; execute production orders</value>
+  </data>
+  <data name="PoCreateButton" xml:space="preserve">
+    <value>New production order</value>
+  </data>
+  <data name="PoCreateSubmit" xml:space="preserve">
+    <value>Create order</value>
+  </data>
+  <data name="PoSiteColumn" xml:space="preserve">
+    <value>Site</value>
+  </data>
+  <data name="PoAllSitesOption" xml:space="preserve">
+    <value>All authorized sites</value>
+  </data>
+  <data name="PoStatusColumn" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="PoAllStatusesOption" xml:space="preserve">
+    <value>All statuses</value>
+  </data>
+  <data name="PoStatusDraft" xml:space="preserve">
+    <value>Draft</value>
+  </data>
+  <data name="PoStatusReleased" xml:space="preserve">
+    <value>Released</value>
+  </data>
+  <data name="PoStatusInProgress" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="PoStatusCompleted" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="PoStatusCancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="PoOrderNumberColumn" xml:space="preserve">
+    <value>Order number</value>
+  </data>
+  <data name="PoItemColumn" xml:space="preserve">
+    <value>Output item</value>
+  </data>
+  <data name="PoRequestedQtyColumn" xml:space="preserve">
+    <value>Requested qty</value>
+  </data>
+  <data name="PoDatesColumn" xml:space="preserve">
+    <value>Schedule</value>
+  </data>
+  <data name="PoPlannedStartDate" xml:space="preserve">
+    <value>Planned start date</value>
+  </data>
+  <data name="PoPlannedDueDate" xml:space="preserve">
+    <value>Planned due date</value>
+  </data>
+  <data name="PoBomSnapshotColumn" xml:space="preserve">
+    <value>BOM snapshot</value>
+  </data>
+  <data name="PoActualsColumn" xml:space="preserve">
+    <value>Produced / Scrap</value>
+  </data>
+  <data name="PoNotesLabel" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="PoContextSection" xml:space="preserve">
+    <value>Production context criteria</value>
+  </data>
+  <data name="PoContextHint" xml:space="preserve">
+    <value>PLANT is derived automatically from the selected site unless overridden.</value>
+  </data>
+  <data name="PoCreateTitle" xml:space="preserve">
+    <value>Create draft production order</value>
+  </data>
+  <data name="PoWorkbenchTitle" xml:space="preserve">
+    <value>Production order workbench</value>
+  </data>
+  <data name="PoEditDraftSection" xml:space="preserve">
+    <value>Edit draft parameters</value>
+  </data>
+  <data name="PoSaveDraftButton" xml:space="preserve">
+    <value>Save draft</value>
+  </data>
+  <data name="PoRefreshBomButton" xml:space="preserve">
+    <value>Refresh BOM snapshot</value>
+  </data>
+  <data name="PoReleaseButton" xml:space="preserve">
+    <value>Release order</value>
+  </data>
+  <data name="PoReleaseHint" xml:space="preserve">
+    <value>Releasing permanently freezes the active BOM version, planned inputs, and planned outputs for this order.</value>
+  </data>
+  <data name="PoFrozenSnapshotNotice" xml:space="preserve">
+    <value>BOM snapshot is permanently frozen at release. Later BOM edits do not alter this order.</value>
+  </data>
+  <data name="PoStartButton" xml:space="preserve">
+    <value>Start production</value>
+  </data>
+  <data name="PoExecutionSection" xml:space="preserve">
+    <value>Production execution actuals</value>
+  </data>
+  <data name="PoActualProducedLabel" xml:space="preserve">
+    <value>Actual produced qty</value>
+  </data>
+  <data name="PoActualScrapLabel" xml:space="preserve">
+    <value>Actual scrap qty</value>
+  </data>
+  <data name="PoRecordActualsButton" xml:space="preserve">
+    <value>Save actuals</value>
+  </data>
+  <data name="PoCompleteButton" xml:space="preserve">
+    <value>Complete order</value>
+  </data>
+  <data name="PoCancelSection" xml:space="preserve">
+    <value>Cancel order</value>
+  </data>
+  <data name="PoCancelReasonLabel" xml:space="preserve">
+    <value>Cancellation reason</value>
+  </data>
+  <data name="PoCancelButton" xml:space="preserve">
+    <value>Cancel order</value>
+  </data>
+  <data name="PoInputsSnapshotHeading" xml:space="preserve">
+    <value>Planned material inputs (frozen snapshot)</value>
+  </data>
+  <data name="PoOutputsSnapshotHeading" xml:space="preserve">
+    <value>Planned outputs (frozen snapshot)</value>
+  </data>
+  <data name="PoTimelineHeading" xml:space="preserve">
+    <value>Lifecycle timestamps</value>
+  </data>
+  <data name="PoReleasedAtLabel" xml:space="preserve">
+    <value>Released at</value>
+  </data>
+  <data name="PoStartedAtLabel" xml:space="preserve">
+    <value>Started at</value>
+  </data>
+  <data name="PoCompletedAtLabel" xml:space="preserve">
+    <value>Completed at</value>
+  </data>
+  <data name="PoCancelledAtLabel" xml:space="preserve">
+    <value>Cancelled at</value>
+  </data>
+  <data name="PoSavedNotice" xml:space="preserve">
+    <value>Production order updated.</value>
+  </data>
+  <data name="PoCreatedNotice" xml:space="preserve">
+    <value>Draft production order created with resolved BOM snapshot.</value>
+  </data>
+  <data name="PoErrorSiteInvalid" xml:space="preserve">
+    <value>Select an active site in this organization.</value>
+  </data>
+  <data name="PoErrorSiteInactive" xml:space="preserve">
+    <value>The selected site is inactive.</value>
+  </data>
+  <data name="PoErrorImmutable" xml:space="preserve">
+    <value>Only draft production orders can edit BOM or draft parameters.</value>
+  </data>
+  <data name="PoErrorTransitionInvalid" xml:space="preserve">
+    <value>This status transition is not allowed for the current production order state.</value>
+  </data>
+  <data name="PoErrorActualQtyInvalid" xml:space="preserve">
+    <value>Actual produced and scrap quantities must be zero or positive within allowed precision.</value>
+  </data>
+  <data name="PoErrorCancelReasonInvalid" xml:space="preserve">
+    <value>A valid cancellation reason (up to 500 characters) is required.</value>
+  </data>
+  <data name="PoErrorNotesInvalid" xml:space="preserve">
+    <value>Notes must not exceed 500 characters or contain control characters.</value>
+  </data>
+  <data name="PoPostInventoryBtn" xml:space="preserve">
+    <value>Issue / Receive stock</value>
+  </data>
+  <data name="Inventory" xml:space="preserve">
+    <value>Inventory ledger</value>
+  </data>
+  <data name="InventoryCaption" xml:space="preserve">
+    <value>Site-scoped warehouses, append-only stock ledger, serialized balances &amp; production movements</value>
+  </data>
+  <data name="PermPageInventory" xml:space="preserve">
+    <value>Inventory &amp; warehouses</value>
+  </data>
+  <data name="PermOpManageInventory" xml:space="preserve">
+    <value>Manage warehouses &amp; stock movements</value>
+  </data>
+  <data name="InvWarehouseCreateBtn" xml:space="preserve">
+    <value>New warehouse</value>
+  </data>
+  <data name="InvPostMovementBtn" xml:space="preserve">
+    <value>Post stock movement</value>
+  </data>
+  <data name="InvTabBalances" xml:space="preserve">
+    <value>On-hand balances</value>
+  </data>
+  <data name="InvTabMovements" xml:space="preserve">
+    <value>Warehouse Documents</value>
+  </data>
+  <data name="InvTabWarehouses" xml:space="preserve">
+    <value>Warehouses</value>
+  </data>
+  <data name="InvWarehouseLabel" xml:space="preserve">
+    <value>Warehouse</value>
+  </data>
+  <data name="InvDestWarehouseLabel" xml:space="preserve">
+    <value>Destination warehouse</value>
+  </data>
+  <data name="InvAllWarehousesOption" xml:space="preserve">
+    <value>All warehouses</value>
+  </data>
+  <data name="InvTxnTypeLabel" xml:space="preserve">
+    <value>Movement type</value>
+  </data>
+  <data name="InvAllTypesOption" xml:space="preserve">
+    <value>All movement types</value>
+  </data>
+  <data name="InvIncludeZeroLabel" xml:space="preserve">
+    <value>Show zero balances</value>
+  </data>
+  <data name="InvLotCodeLabel" xml:space="preserve">
+    <value>Lot / Batch</value>
+  </data>
+  <data name="InvOnHandLabel" xml:space="preserve">
+    <value>On-hand (base unit)</value>
+  </data>
+  <data name="InvLastMovedLabel" xml:space="preserve">
+    <value>Last movement</value>
+  </data>
+  <data name="InvDocNumberLabel" xml:space="preserve">
+    <value>Document no.</value>
+  </data>
+  <data name="InvReversedBadge" xml:space="preserve">
+    <value>Reversed</value>
+  </data>
+  <data name="InvDefaultWarehouseBadge" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="InvDefaultForSiteLabel" xml:space="preserve">
+    <value>Set as default active warehouse for this site</value>
+  </data>
+  <data name="InvWarehouseCreateTitle" xml:space="preserve">
+    <value>Create warehouse</value>
+  </data>
+  <data name="InvWarehouseEditTitle" xml:space="preserve">
+    <value>Edit warehouse</value>
+  </data>
+  <data name="InvSelectWarehouseOption" xml:space="preserve">
+    <value>Select warehouse...</value>
+  </data>
+  <data name="InvSelectOrderOption" xml:space="preserve">
+    <value>Select active production order...</value>
+  </data>
+  <data name="InvSelectItemOption" xml:space="preserve">
+    <value>Select item...</value>
+  </data>
+  <data name="InvLinesSection" xml:space="preserve">
+    <value>Movement lines</value>
+  </data>
+  <data name="InvAddLineBtn" xml:space="preserve">
+    <value>Add line</value>
+  </data>
+  <data name="InvPostSubmitBtn" xml:space="preserve">
+    <value>Post document</value>
+  </data>
+  <data name="InvTxnDetailsTitle" xml:space="preserve">
+    <value>Stock movement document</value>
+  </data>
+  <data name="InvEnteredQtyLabel" xml:space="preserve">
+    <value>Entered qty</value>
+  </data>
+  <data name="InvBaseQtyDeltaLabel" xml:space="preserve">
+    <value>Base qty delta</value>
+  </data>
+  <data name="InvReverseSection" xml:space="preserve">
+    <value>Compensating reversal</value>
+  </data>
+  <data name="InvReverseDocNumLabel" xml:space="preserve">
+    <value>Reversal document no.</value>
+  </data>
+  <data name="InvReverseBtn" xml:space="preserve">
+    <value>Post reversal</value>
+  </data>
+  <data name="InvSavedNotice" xml:space="preserve">
+    <value>Warehouse updated.</value>
+  </data>
+  <data name="InvPostedNotice" xml:space="preserve">
+    <value>Inventory document posted and balances updated.</value>
+  </data>
+  <data name="InvReversedNotice" xml:space="preserve">
+    <value>Reversal document posted successfully.</value>
+  </data>
+  <data name="InvTypeReceipt" xml:space="preserve">
+    <value>Receipt</value>
+  </data>
+  <data name="InvTypeIssue" xml:space="preserve">
+    <value>Issue</value>
+  </data>
+  <data name="InvTypeAdjustment" xml:space="preserve">
+    <value>Adjustment</value>
+  </data>
+  <data name="InvTypeTransferOut" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="InvTypeTransferIn" xml:space="preserve">
+    <value>Transfer in</value>
+  </data>
+  <data name="InvTypeProdIssue" xml:space="preserve">
+    <value>Production issue</value>
+  </data>
+  <data name="InvTypeProdReceipt" xml:space="preserve">
+    <value>Production receipt</value>
+  </data>
+  <data name="InvTypeReversal" xml:space="preserve">
+    <value>Reversal</value>
+  </data>
+  <data name="InvTypeSalesDispatch" xml:space="preserve">
+    <value>Sales Dispatch</value>
+  </data>
+  <data name="InvErrorWarehouseInactive" xml:space="preserve">
+    <value>The selected warehouse is inactive.</value>
+  </data>
+  <data name="InvErrorAlreadyReversed" xml:space="preserve">
+    <value>This inventory document has already been reversed.</value>
+  </data>
+  <data name="InvErrorCannotReverseReversal" xml:space="preserve">
+    <value>A reversal document cannot be reversed again.</value>
+  </data>
+  <data name="InvErrorLinesRequired" xml:space="preserve">
+    <value>At least one movement line is required.</value>
+  </data>
+  <data name="InvErrorQuantityInvalid" xml:space="preserve">
+    <value>Enter a valid non-zero quantity matching movement direction rules.</value>
+  </data>
+  <data name="InvErrorLotCodeInvalid" xml:space="preserve">
+    <value>Lot code must start with an ASCII letter or digit and may use A-Z, 0-9, _ or -.</value>
+  </data>
+  <data name="InvErrorDestWarehouseInvalid" xml:space="preserve">
+    <value>Select an active destination warehouse for transfer.</value>
+  </data>
+  <data name="InvErrorTransferSameWarehouse" xml:space="preserve">
+    <value>Source and destination warehouses must be different.</value>
+  </data>
+  <data name="InvErrorOrderInvalid" xml:space="preserve">
+    <value>Select a valid production order belonging to the same site.</value>
+  </data>
+  <data name="InvErrorOrderStateInvalid" xml:space="preserve">
+    <value>Production movements are only allowed for Released or In-Progress orders.</value>
+  </data>
+  <data name="InvErrorInsufficientStock" xml:space="preserve">
+    <value>Insufficient on-hand stock balance to complete this outgoing movement.</value>
+  </data>
+  <data name="InvErrorIdempotencyInvalid" xml:space="preserve">
+    <value>Invalid idempotency reference key.</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="ReportsCaption" xml:space="preserve">
+    <value>Material shortage net requirements and production consumption vs yield variance.</value>
+  </data>
+  <data name="PermPageReports" xml:space="preserve">
+    <value>Operational Reports</value>
+  </data>
+  <data name="PermOpExportReports" xml:space="preserve">
+    <value>Export CSV</value>
+  </data>
+  <data name="RptErrorOrderNotFound" xml:space="preserve">
+    <value>Selected production order could not be found in this scope.</value>
+  </data>
+  <data name="RptErrorExportInvalid" xml:space="preserve">
+    <value>Export configuration is invalid.</value>
+  </data>
+  <data name="RptTabShortage" xml:space="preserve">
+    <value>Material Shortage</value>
+  </data>
+  <data name="RptTabVariance" xml:space="preserve">
+    <value>Production Variance</value>
+  </data>
+  <data name="RptExportCsvBtn" xml:space="preserve">
+    <value>Export CSV</value>
+  </data>
+  <data name="RptDueFromLabel" xml:space="preserve">
+    <value>Due From</value>
+  </data>
+  <data name="RptDueToLabel" xml:space="preserve">
+    <value>Due To</value>
+  </data>
+  <data name="RptOnlyShortagesLabel" xml:space="preserve">
+    <value>Only Shortages</value>
+  </data>
+  <data name="RptKpiOpenOrders" xml:space="preserve">
+    <value>Open Orders</value>
+  </data>
+  <data name="RptKpiMaterialsEvaluated" xml:space="preserve">
+    <value>Materials Evaluated</value>
+  </data>
+  <data name="RptKpiShortageItems" xml:space="preserve">
+    <value>Items in Shortage</value>
+  </data>
+  <data name="RptKpiTotalShortage" xml:space="preserve">
+    <value>Total Net Shortage</value>
+  </data>
+  <data name="RptKpiEvaluatedOrders" xml:space="preserve">
+    <value>Evaluated Orders</value>
+  </data>
+  <data name="RptKpiAvgYield" xml:space="preserve">
+    <value>Average Yield</value>
+  </data>
+  <data name="RptKpiOverConsumed" xml:space="preserve">
+    <value>Over-Consumed Orders</value>
+  </data>
+  <data name="RptKpiUnderYield" xml:space="preserve">
+    <value>Under-Yield Orders</value>
+  </data>
+  <data name="RptColMaterial" xml:space="preserve">
+    <value>Material</value>
+  </data>
+  <data name="RptColItemName" xml:space="preserve">
+    <value>Item Name</value>
+  </data>
+  <data name="RptColBaseUnit" xml:space="preserve">
+    <value>Base Unit</value>
+  </data>
+  <data name="RptColRequiredQty" xml:space="preserve">
+    <value>Required Qty</value>
+  </data>
+  <data name="RptColOnHandQty" xml:space="preserve">
+    <value>On-Hand Qty</value>
+  </data>
+  <data name="RptColShortageQty" xml:space="preserve">
+    <value>Shortage Qty</value>
+  </data>
+  <data name="RptColExcessQty" xml:space="preserve">
+    <value>Excess Qty</value>
+  </data>
+  <data name="RptColCoveragePct" xml:space="preserve">
+    <value>Coverage</value>
+  </data>
+  <data name="RptColOpenOrdersCount" xml:space="preserve">
+    <value>Demand Orders</value>
+  </data>
+  <data name="RptColPlannedVsActual" xml:space="preserve">
+    <value>Planned / Actual Output</value>
+  </data>
+  <data name="RptColPlannedQty" xml:space="preserve">
+    <value>Planned Qty</value>
+  </data>
+  <data name="RptColScrapQty" xml:space="preserve">
+    <value>Scrap</value>
+  </data>
+  <data name="RptColYieldPct" xml:space="preserve">
+    <value>Yield</value>
+  </data>
+  <data name="RptColInputsPlannedVsIssued" xml:space="preserve">
+    <value>Inputs (Planned / Issued)</value>
+  </data>
+  <data name="RptColPlannedInput" xml:space="preserve">
+    <value>Planned Input</value>
+  </data>
+  <data name="RptColIssuedQty" xml:space="preserve">
+    <value>Issued Qty</value>
+  </data>
+  <data name="RptColVariance" xml:space="preserve">
+    <value>Variance</value>
+  </data>
+  <data name="RptColRemainingToIssue" xml:space="preserve">
+    <value>Remaining to Issue</value>
+  </data>
+  <data name="RptColConsumptionPct" xml:space="preserve">
+    <value>Consumption %</value>
+  </data>
+  <data name="RptColReceivedQty" xml:space="preserve">
+    <value>Received Qty</value>
+  </data>
+  <data name="RptColAchievementPct" xml:space="preserve">
+    <value>Achievement %</value>
+  </data>
+  <data name="RptColPostedReceipt" xml:space="preserve">
+    <value>Posted Stock Receipt</value>
+  </data>
+  <data name="RptShortageBreakdownBtn" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="RptShortageBreakdownTitle" xml:space="preserve">
+    <value>Demand Breakdown by Production Order</value>
+  </data>
+  <data name="RptVarianceDetailTitle" xml:space="preserve">
+    <value>Production Order Consumption &amp; Yield Variance</value>
+  </data>
+  <data name="RptOrderInputsTitle" xml:space="preserve">
+    <value>Material Consumption Variance</value>
+  </data>
+  <data name="RptOrderOutputsTitle" xml:space="preserve">
+    <value>Planned vs Received Outputs</value>
+  </data>
+  <data name="RptNoShortageOrders" xml:space="preserve">
+    <value>No open production orders require this material.</value>
+  </data>
+  <data name="RptCsvHeaderDemandOrders" xml:space="preserve">
+    <value>Demand Orders</value>
+  </data>
+  <data name="RptShortageFileName" xml:space="preserve">
+    <value>material-shortage-report</value>
+  </data>
+  <data name="RptVarianceFileName" xml:space="preserve">
+    <value>production-variance-report</value>
+  </data>
+  <data name="RptExportSuccessNotice" xml:space="preserve">
+    <value>CSV report exported.</value>
+  </data>
+  <data name="ErrorReferenceLabel" xml:space="preserve">
+    <value>Tracking Reference</value>
+  </data>
+  <data name="ErrorCorrelationLabel" xml:space="preserve">
+    <value>Correlation ID</value>
+  </data>
+  <data name="PermPageDiagnostics" xml:space="preserve">
+    <value>System Error Logs</value>
+  </data>
+  <data name="PermOpExportAudit" xml:space="preserve">
+    <value>Export Audit CSV</value>
+  </data>
+  <data name="PermOpReadErrorLogs" xml:space="preserve">
+    <value>View Error Logs</value>
+  </data>
+  <data name="PermOpManageErrorLogs" xml:space="preserve">
+    <value>Purge Old Error Logs</value>
+  </data>
+  <data name="DiagErrorRetentionInvalid" xml:space="preserve">
+    <value>Retention period must be between 7 and 3650 days.</value>
+  </data>
+  <data name="AuditCategoryOperations" xml:space="preserve">
+    <value>Exports &amp; Rejected Actions</value>
+  </data>
+  <data name="AuditActorFilterLabel" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="AuditAllActorsOption" xml:space="preserve">
+    <value>All users</value>
+  </data>
+  <data name="AuditOutcomeFilterLabel" xml:space="preserve">
+    <value>Outcome</value>
+  </data>
+  <data name="AuditFromDateLabel" xml:space="preserve">
+    <value>From Date</value>
+  </data>
+  <data name="AuditToDateLabel" xml:space="preserve">
+    <value>To Date</value>
+  </data>
+  <data name="AuditExportCsvBtn" xml:space="preserve">
+    <value>Export CSV</value>
+  </data>
+  <data name="AuditExportFileName" xml:space="preserve">
+    <value>audit-operations-log</value>
+  </data>
+  <data name="AuditExportSuccessNotice" xml:space="preserve">
+    <value>Audit log CSV exported.</value>
+  </data>
+  <data name="AuditColSite" xml:space="preserve">
+    <value>Site</value>
+  </data>
+  <data name="AuditColCorrelation" xml:space="preserve">
+    <value>Correlation</value>
+  </data>
+  <data name="ErrorLogs" xml:space="preserve">
+    <value>Error Logs</value>
+  </data>
+  <data name="ErrorLogsCaption" xml:space="preserve">
+    <value>Redacted runtime, HTTP, Blazor circuit, and SQL infrastructure exceptions.</value>
+  </data>
+  <data name="ErrorLogsKpi24h" xml:space="preserve">
+    <value>Errors (Last 24h)</value>
+  </data>
+  <data name="ErrorLogsKpiCritical" xml:space="preserve">
+    <value>Critical (24h)</value>
+  </data>
+  <data name="ErrorLogsKpiSql" xml:space="preserve">
+    <value>SQL Failures (24h)</value>
+  </data>
+  <data name="ErrorLogsKpiPipeline" xml:space="preserve">
+    <value>HTTP / Circuit (24h)</value>
+  </data>
+  <data name="ErrorLogsSeverityLabel" xml:space="preserve">
+    <value>Severity</value>
+  </data>
+  <data name="ErrorLogsSourceLabel" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="ErrorLogsRefColumn" xml:space="preserve">
+    <value>Reference</value>
+  </data>
+  <data name="ErrorLogsTypeColumn" xml:space="preserve">
+    <value>Exception Type</value>
+  </data>
+  <data name="ErrorLogsMessageColumn" xml:space="preserve">
+    <value>Redacted Message</value>
+  </data>
+  <data name="ErrorLogsSqlColumn" xml:space="preserve">
+    <value>SQL Error</value>
+  </data>
+  <data name="ErrorLogsPathColumn" xml:space="preserve">
+    <value>Request Path</value>
+  </data>
+  <data name="ErrorLogsDetailsTitle" xml:space="preserve">
+    <value>Error Log Details</value>
+  </data>
+  <data name="ErrorLogsStackTraceLabel" xml:space="preserve">
+    <value>Redacted Stack Trace</value>
+  </data>
+  <data name="ErrorLogsUserAgentLabel" xml:space="preserve">
+    <value>User Agent</value>
+  </data>
+  <data name="ErrorLogsSevWarning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="ErrorLogsSevError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ErrorLogsSevCritical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="ErrorLogsSrcHttp" xml:space="preserve">
+    <value>HTTP Pipeline</value>
+  </data>
+  <data name="ErrorLogsSrcCircuit" xml:space="preserve">
+    <value>Blazor Circuit</value>
+  </data>
+  <data name="ErrorLogsSrcComponent" xml:space="preserve">
+    <value>UI Component</value>
+  </data>
+  <data name="ErrorLogsSrcStore" xml:space="preserve">
+    <value>SQL Store</value>
+  </data>
+  <data name="ErrorLogsSrcHost" xml:space="preserve">
+    <value>Host Service</value>
+  </data>
+  <data name="ErrorLogsPurgeBtn" xml:space="preserve">
+    <value>Purge Older Errors</value>
+  </data>
+  <data name="ErrorLogsPurgeDaysLabel" xml:space="preserve">
+    <value>Retain Days</value>
+  </data>
+  <data name="ErrorLogsPurgeSuccess" xml:space="preserve">
+    <value>Purged {0} older error log entries.</value>
+  </data>
+  <data name="AuditEv_OrganizationCreated" xml:space="preserve"><value>Organization Created</value></data>
+  <data name="AuditEv_OrganizationRenamed" xml:space="preserve"><value>Organization Renamed</value></data>
+  <data name="AuditEv_OrganizationActivated" xml:space="preserve"><value>Organization Activated</value></data>
+  <data name="AuditEv_OrganizationDeactivated" xml:space="preserve"><value>Organization Deactivated</value></data>
+  <data name="AuditEv_SiteCreated" xml:space="preserve"><value>Site Created</value></data>
+  <data name="AuditEv_SiteRenamed" xml:space="preserve"><value>Site Renamed</value></data>
+  <data name="AuditEv_SiteActivated" xml:space="preserve"><value>Site Activated</value></data>
+  <data name="AuditEv_SiteDeactivated" xml:space="preserve"><value>Site Deactivated</value></data>
+  <data name="AuditEv_UnitCreated" xml:space="preserve"><value>Unit Created</value></data>
+  <data name="AuditEv_UnitUpdated" xml:space="preserve"><value>Unit Updated</value></data>
+  <data name="AuditEv_UnitActivated" xml:space="preserve"><value>Unit Activated</value></data>
+  <data name="AuditEv_UnitDeactivated" xml:space="preserve"><value>Unit Deactivated</value></data>
+  <data name="AuditEv_UnitConversionCreated" xml:space="preserve"><value>Unit Conversion Created</value></data>
+  <data name="AuditEv_UnitConversionUpdated" xml:space="preserve"><value>Unit Conversion Updated</value></data>
+  <data name="AuditEv_UnitConversionActivated" xml:space="preserve"><value>Unit Conversion Activated</value></data>
+  <data name="AuditEv_UnitConversionDeactivated" xml:space="preserve"><value>Unit Conversion Deactivated</value></data>
+  <data name="AuditEv_ItemCreated" xml:space="preserve"><value>Item Created</value></data>
+  <data name="AuditEv_ItemUpdated" xml:space="preserve"><value>Item Updated</value></data>
+  <data name="AuditEv_ItemActivated" xml:space="preserve"><value>Item Activated</value></data>
+  <data name="AuditEv_ItemDeactivated" xml:space="preserve"><value>Item Deactivated</value></data>
+  <data name="AuditEv_ClassificationSetCreated" xml:space="preserve"><value>Classification Set Created</value></data>
+  <data name="AuditEv_ClassificationCreated" xml:space="preserve"><value>Classification Created</value></data>
+  <data name="AuditEv_ClassificationUpdated" xml:space="preserve"><value>Classification Updated</value></data>
+  <data name="AuditEv_ClassificationActivated" xml:space="preserve"><value>Classification Activated</value></data>
+  <data name="AuditEv_ClassificationDeactivated" xml:space="preserve"><value>Classification Deactivated</value></data>
+  <data name="AuditEv_ItemClassificationUpdated" xml:space="preserve"><value>Item Classification Updated</value></data>
+  <data name="AuditEv_ItemUnitConversionCreated" xml:space="preserve"><value>Item Conversion Created</value></data>
+  <data name="AuditEv_ItemUnitConversionUpdated" xml:space="preserve"><value>Item Conversion Updated</value></data>
+  <data name="AuditEv_ItemUnitConversionActivated" xml:space="preserve"><value>Item Conversion Activated</value></data>
+  <data name="AuditEv_ItemUnitConversionDeactivated" xml:space="preserve"><value>Item Conversion Deactivated</value></data>
+  <data name="AuditEv_AttributeDefinitionCreated" xml:space="preserve"><value>Attribute Definition Created</value></data>
+  <data name="AuditEv_AttributeDefinitionUpdated" xml:space="preserve"><value>Attribute Definition Updated</value></data>
+  <data name="AuditEv_AttributeDefinitionActivated" xml:space="preserve"><value>Attribute Definition Activated</value></data>
+  <data name="AuditEv_AttributeDefinitionDeactivated" xml:space="preserve"><value>Attribute Definition Deactivated</value></data>
+  <data name="AuditEv_ItemAttributeValueUpdated" xml:space="preserve"><value>Item Attribute Updated</value></data>
+  <data name="AuditEv_ContextDimensionCreated" xml:space="preserve"><value>Context Dimension Created</value></data>
+  <data name="AuditEv_ContextDimensionUpdated" xml:space="preserve"><value>Context Dimension Updated</value></data>
+  <data name="AuditEv_ContextDimensionActivated" xml:space="preserve"><value>Context Dimension Activated</value></data>
+  <data name="AuditEv_ContextDimensionDeactivated" xml:space="preserve"><value>Context Dimension Deactivated</value></data>
+  <data name="AuditEv_BomCreated" xml:space="preserve"><value>BOM Created</value></data>
+  <data name="AuditEv_BomRenamed" xml:space="preserve"><value>BOM Renamed</value></data>
+  <data name="AuditEv_BomActivated" xml:space="preserve"><value>BOM Activated</value></data>
+  <data name="AuditEv_BomDeactivated" xml:space="preserve"><value>BOM Deactivated</value></data>
+  <data name="AuditEv_BomVersionCreated" xml:space="preserve"><value>BOM Version Created</value></data>
+  <data name="AuditEv_BomVersionUpdated" xml:space="preserve"><value>BOM Version Updated</value></data>
+  <data name="AuditEv_BomVersionStatusChanged" xml:space="preserve"><value>BOM Version Status Changed</value></data>
+  <data name="AuditEv_BomVersionLinesSaved" xml:space="preserve"><value>BOM Version Lines Saved</value></data>
+  <data name="AuditEv_BomVersionApplicabilitySaved" xml:space="preserve"><value>BOM Applicability Saved</value></data>
+  <data name="AuditEv_ProductionOrderCreated" xml:space="preserve"><value>Production Order Created</value></data>
+  <data name="AuditEv_ProductionOrderUpdated" xml:space="preserve"><value>Production Order Updated</value></data>
+  <data name="AuditEv_ProductionOrderRefreshed" xml:space="preserve"><value>Production Order BOM Refreshed</value></data>
+  <data name="AuditEv_ProductionOrderReleased" xml:space="preserve"><value>Production Order Released</value></data>
+  <data name="AuditEv_ProductionOrderStarted" xml:space="preserve"><value>Production Order Started</value></data>
+  <data name="AuditEv_ProductionOrderCompleted" xml:space="preserve"><value>Production Order Completed</value></data>
+  <data name="AuditEv_ProductionOrderCancelled" xml:space="preserve"><value>Production Order Cancelled</value></data>
+  <data name="AuditEv_WarehouseCreated" xml:space="preserve"><value>Warehouse Created</value></data>
+  <data name="AuditEv_WarehouseUpdated" xml:space="preserve"><value>Warehouse Updated</value></data>
+  <data name="AuditEv_WarehouseActivated" xml:space="preserve"><value>Warehouse Activated</value></data>
+  <data name="AuditEv_WarehouseDeactivated" xml:space="preserve"><value>Warehouse Deactivated</value></data>
+  <data name="AuditEv_InventoryTransactionPosted" xml:space="preserve"><value>Inventory Transaction Posted</value></data>
+  <data name="AuditEv_InventoryTransactionReversed" xml:space="preserve"><value>Inventory Transaction Reversed</value></data>
+  <data name="AuditEv_BootstrapCompleted" xml:space="preserve"><value>Platform Bootstrap Completed</value></data>
+  <data name="AuditEv_AccountCreated" xml:space="preserve"><value>User Account Created</value></data>
+  <data name="AuditEv_SignInFailed" xml:space="preserve"><value>Sign-In Failed</value></data>
+  <data name="AuditEv_AccountLocked" xml:space="preserve"><value>Account Locked Out</value></data>
+  <data name="AuditEv_SessionIssued" xml:space="preserve"><value>Session Issued (Sign-In)</value></data>
+  <data name="AuditEv_SessionRevoked" xml:space="preserve"><value>Session Revoked (Sign-Out)</value></data>
+  <data name="AuditEv_AccessDenied" xml:space="preserve"><value>Access Denied</value></data>
+  <data name="AuditEv_PasswordResetCompleted" xml:space="preserve"><value>Password Reset / Changed</value></data>
+  <data name="AuditEv_AccountEligibilityChanged" xml:space="preserve"><value>Account Status / Eligibility Changed</value></data>
+  <data name="AuditEv_MembershipChanged" xml:space="preserve"><value>Organization / Site Membership Changed</value></data>
+  <data name="AuditEv_ScopedRoleChanged" xml:space="preserve"><value>User Role Assignment Changed</value></data>
+  <data name="AuditEv_RoleDefinitionChanged" xml:space="preserve"><value>Role Definition Changed</value></data>
+  <data name="AuditEv_DirectPermissionChanged" xml:space="preserve"><value>Direct Permission Grant Changed</value></data>
+  <data name="AuditEv_CulturePreferenceChanged" xml:space="preserve"><value>Language Preference Changed</value></data>
+  <data name="AuditEv_ReportsShortageExported" xml:space="preserve"><value>Material Shortage Report Exported</value></data>
+  <data name="AuditEv_ReportsVarianceExported" xml:space="preserve"><value>Production Variance Report Exported</value></data>
+  <data name="AuditEv_AuditExported" xml:space="preserve"><value>Audit Log Exported</value></data>
+  <data name="AuditEv_OrganizationActionRejected" xml:space="preserve"><value>Organization Action Rejected</value></data>
+  <data name="AuditEv_SiteActionRejected" xml:space="preserve"><value>Site Action Rejected</value></data>
+  <data name="AuditEv_UnitActionRejected" xml:space="preserve"><value>Unit of Measure Action Rejected</value></data>
+  <data name="AuditEv_ItemActionRejected" xml:space="preserve"><value>Item Catalog Action Rejected</value></data>
+  <data name="AuditEv_BomActionRejected" xml:space="preserve"><value>BOM Action Rejected</value></data>
+  <data name="AuditEv_ProductionOrderActionRejected" xml:space="preserve"><value>Production Order Action Rejected</value></data>
+  <data name="AuditEv_InventoryActionRejected" xml:space="preserve"><value>Inventory Action Rejected</value></data>
+  <data name="AuditEv_UserActionRejected" xml:space="preserve"><value>User Management Action Rejected</value></data>
+  <data name="AuditEv_RoleActionRejected" xml:space="preserve"><value>Role &amp; Permission Action Rejected</value></data>
+  <data name="AuditEv_ReportingActionRejected" xml:space="preserve"><value>Report Export Rejected</value></data>
+  <data name="UserMenuLastLoginTitle" xml:space="preserve"><value>Last sign-in</value></data>
+  <data name="UserMenuFirstLoginNotice" xml:space="preserve"><value>This is your first sign-in</value></data>
+  <data name="PermPageQuality" xml:space="preserve"><value>Quality Control &amp; Traceability</value></data>
+  <data name="PermOpManageQuality" xml:space="preserve"><value>Manage Quality Holds &amp; Dispositions</value></data>
+  <data name="QualityControl" xml:space="preserve"><value>Quality Control</value></data>
+  <data name="LotTraceability" xml:space="preserve"><value>Lot Traceability</value></data>
+  <data name="QualityCaption" xml:space="preserve"><value>Quarantine holds, inspection measurements, partial dispositions, and lot expiration tracking.</value></data>
+  <data name="ItemLotTrackedBadge" xml:space="preserve"><value>Lot Tracked</value></data>
+  <data name="ItemQcRequiredBadge" xml:space="preserve"><value>QC Required</value></data>
+  <data name="ItemRequiresLotTrackingLabel" xml:space="preserve"><value>Require Lot Code on Movements</value></data>
+  <data name="ItemQcModeLabel" xml:space="preserve"><value>Quality Control Policy</value></data>
+  <data name="ItemQcModeNone" xml:space="preserve"><value>No Automatic Inspection</value></data>
+  <data name="ItemQcModeIncoming" xml:space="preserve"><value>Inspect Incoming Receipts</value></data>
+  <data name="ItemQcModeProduction" xml:space="preserve"><value>Inspect Production Receipts</value></data>
+  <data name="ItemQcModeAll" xml:space="preserve"><value>Inspect All Receipts</value></data>
+  <data name="ItemErrorQcModeInvalid" xml:space="preserve"><value>Invalid quality control policy selected.</value></data>
+  <data name="InvBlockedLabel" xml:space="preserve"><value>Blocked (QC)</value></data>
+  <data name="InvAvailableLabel" xml:space="preserve"><value>Available</value></data>
+  <data name="InvBlockedShort" xml:space="preserve"><value>Blocked: {0}</value></data>
+  <data name="InvTypeQualityScrap" xml:space="preserve"><value>Quality Scrap</value></data>
+  <data name="InvErrorLotRequired" xml:space="preserve"><value>A lot code is required for this lot-tracked item.</value></data>
+  <data name="InvErrorLotExpired" xml:space="preserve"><value>The selected lot has expired and cannot be issued or consumed.</value></data>
+  <data name="RptBlockedSubLabel" xml:space="preserve"><value>Blocked: {0} / On-Hand: {1}</value></data>
+  <data name="QcCreateHoldBtn" xml:space="preserve"><value>Create QC Hold</value></data>
+  <data name="QcLotUpsertBtn" xml:space="preserve"><value>Set Lot Dates</value></data>
+  <data name="QcTabInspections" xml:space="preserve"><value>Inspections &amp; Holds</value></data>
+  <data name="QcTabLots" xml:space="preserve"><value>Lot Dates &amp; Expiry</value></data>
+  <data name="QcOnlyExpiringLabel" xml:space="preserve"><value>Only Expired or Expiring Soon</value></data>
+  <data name="QcNumberColumn" xml:space="preserve"><value>Inspection #</value></data>
+  <data name="QcSourceColumn" xml:space="preserve"><value>Source</value></data>
+  <data name="QcQuantitiesColumn" xml:space="preserve"><value>Quantities</value></data>
+  <data name="QcQtyBreakdown" xml:space="preserve"><value>Accepted: {0} · Rejected: {1} · Blocked: {2}</value></data>
+  <data name="QcLotMfgDateLabel" xml:space="preserve"><value>Manufacture Date</value></data>
+  <data name="QcLotExpDateLabel" xml:space="preserve"><value>Expiration Date</value></data>
+  <data name="QcLotExpiredBadge" xml:space="preserve"><value>Expired</value></data>
+  <data name="QcLotExpiringBadge" xml:space="preserve"><value>Expiring Soon</value></data>
+  <data name="QcCreateHoldTitle" xml:space="preserve"><value>Place Stock on QC Hold</value></data>
+  <data name="QcDefectCodeLabel" xml:space="preserve"><value>Defect / Reason Code</value></data>
+  <data name="QcDetailsTitle" xml:space="preserve"><value>Quality Inspection Details</value></data>
+  <data name="QcMeasurementsSection" xml:space="preserve"><value>Inspection Measurements</value></data>
+  <data name="QcAddLineBtn" xml:space="preserve"><value>Add Check</value></data>
+  <data name="QcParamNamePlaceholder" xml:space="preserve"><value>Parameter</value></data>
+  <data name="QcExpectedSpecPlaceholder" xml:space="preserve"><value>Specification</value></data>
+  <data name="QcMeasuredValPlaceholder" xml:space="preserve"><value>Measured</value></data>
+  <data name="QcPassedCheck" xml:space="preserve"><value>Pass</value></data>
+  <data name="QcFailedLabel" xml:space="preserve"><value>Fail</value></data>
+  <data name="QcSaveMeasurementsBtn" xml:space="preserve"><value>Save Measurements</value></data>
+  <data name="QcDispositionSection" xml:space="preserve"><value>Record Disposition</value></data>
+  <data name="QcAcceptQtyLabel" xml:space="preserve"><value>Accept / Release Quantity</value></data>
+  <data name="QcRejectScrapQtyLabel" xml:space="preserve"><value>Reject / Scrap Quantity</value></data>
+  <data name="QcScrapDocLabel" xml:space="preserve"><value>Scrap Document #</value></data>
+  <data name="QcRecordDispositionBtn" xml:space="preserve"><value>Apply Disposition</value></data>
+  <data name="QcCancelHoldBtn" xml:space="preserve"><value>Cancel Hold</value></data>
+  <data name="QcHoldCreatedNotice" xml:space="preserve"><value>Quality hold created and stock blocked.</value></data>
+  <data name="QcDispositionSavedNotice" xml:space="preserve"><value>Quality disposition recorded successfully.</value></data>
+  <data name="QcHoldCancelledNotice" xml:space="preserve"><value>Quality hold cancelled and stock released.</value></data>
+  <data name="QcLotUpsertTitle" xml:space="preserve"><value>Lot Dates &amp; Metadata</value></data>
+  <data name="QcStatusPending" xml:space="preserve"><value>Pending</value></data>
+  <data name="QcStatusInReview" xml:space="preserve"><value>In Review</value></data>
+  <data name="QcStatusCompleted" xml:space="preserve"><value>Completed</value></data>
+  <data name="QcStatusCancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="QcSourceReceipt" xml:space="preserve"><value>Warehouse Receipt</value></data>
+  <data name="QcSourceProdReceipt" xml:space="preserve"><value>Production Receipt</value></data>
+  <data name="QcSourceManualHold" xml:space="preserve"><value>Manual Hold</value></data>
+  <data name="QcErrorTerminal" xml:space="preserve"><value>This inspection is already completed or cancelled.</value></data>
+  <data name="QcErrorHasDispositions" xml:space="preserve"><value>Cannot cancel an inspection that already has accepted or rejected quantities.</value></data>
+  <data name="QcErrorDispositionExceeds" xml:space="preserve"><value>Accepted and rejected quantities exceed the remaining blocked quantity.</value></data>
+  <data name="QcErrorDefectReasonInvalid" xml:space="preserve"><value>Defect reason code must be alphanumeric (with _ or -) up to 64 characters.</value></data>
+  <data name="QcErrorParameterInvalid" xml:space="preserve"><value>Inspection parameter name or value is invalid.</value></data>
+  <data name="QcErrorLotDatesInvalid" xml:space="preserve"><value>Expiration date cannot be earlier than manufacture date.</value></data>
+  <data name="LotTraceCaption" xml:space="preserve"><value>Multi-level forward and backward lot genealogy across production orders and stock movements.</value></data>
+  <data name="LotTraceDirectionLabel" xml:space="preserve"><value>Direction</value></data>
+  <data name="LotTraceDirBoth" xml:space="preserve"><value>Backward &amp; Forward</value></data>
+  <data name="LotTraceDirBackward" xml:space="preserve"><value>Backward (Sources)</value></data>
+  <data name="LotTraceDirForward" xml:space="preserve"><value>Forward (Usage)</value></data>
+  <data name="LotTraceRunBtn" xml:space="preserve"><value>Trace Lot</value></data>
+  <data name="LotTraceBackwardTitle" xml:space="preserve"><value>Upstream Source Lots (Backward Genealogy)</value></data>
+  <data name="LotTraceForwardTitle" xml:space="preserve"><value>Downstream Produced Lots (Forward Genealogy)</value></data>
+  <data name="LotTraceSourceLotCol" xml:space="preserve"><value>Input Lot</value></data>
+  <data name="LotTraceTargetLotCol" xml:space="preserve"><value>Output Lot</value></data>
+  <data name="LotTraceMovementsTitle" xml:space="preserve"><value>Lot Ledger Timeline</value></data>
+  <data name="AuditEv_QualityInspectionCreated" xml:space="preserve"><value>Quality Inspection Created</value></data>
+  <data name="AuditEv_QualityInspectionUpdated" xml:space="preserve"><value>Quality Inspection Updated</value></data>
+  <data name="AuditEv_QualityInspectionDisposed" xml:space="preserve"><value>Quality Disposition Recorded</value></data>
+  <data name="AuditEv_QualityInspectionCancelled" xml:space="preserve"><value>Quality Inspection Cancelled</value></data>
+  <data name="AuditEv_ItemLotUpdated" xml:space="preserve"><value>Lot Metadata Updated</value></data>
+  <data name="AuditEv_QualityActionRejected" xml:space="preserve"><value>Quality Action Rejected</value></data>
+  <data name="AuditEv_PreferencesUpdated" xml:space="preserve"><value>User Preferences Updated</value></data>
+  <data name="AuditEv_ProfileUpdated" xml:space="preserve"><value>User Profile Updated</value></data>
+  <data name="AuditEv_SessionRevokedByUser" xml:space="preserve"><value>Session Signed Out by User</value></data>
+  <data name="AuditEv_OtherSessionsRevoked" xml:space="preserve"><value>Other Sessions Signed Out</value></data>
+  <data name="AuditEv_ActiveSiteSwitched" xml:space="preserve"><value>Active Site Switched</value></data>
+  <data name="ProfileNavLabel" xml:space="preserve"><value>Account navigation</value></data>
+  <data name="MyProfileTitle" xml:space="preserve"><value>My profile</value></data>
+  <data name="MyProfileSubtitle" xml:space="preserve"><value>Your personal details, contact info, and profile photo.</value></data>
+  <data name="ProfileUsernameLabel" xml:space="preserve"><value>Username</value></data>
+  <data name="ProfileUsernameLockedHint" xml:space="preserve"><value>Username is permanent and cannot be changed.</value></data>
+  <data name="ProfileDisplayNameLabel" xml:space="preserve"><value>Display name</value></data>
+  <data name="ProfileEmailLabel" xml:space="preserve"><value>Email</value></data>
+  <data name="ProfilePhoneLabel" xml:space="preserve"><value>Phone number</value></data>
+  <data name="ProfileAvatarLabel" xml:space="preserve"><value>Profile photo</value></data>
+  <data name="ProfileAvatarHint" xml:space="preserve"><value>PNG, JPEG, or WebP up to 256 KB.</value></data>
+  <data name="ProfileAvatarChoose" xml:space="preserve"><value>Choose photo</value></data>
+  <data name="ProfileAvatarRemove" xml:space="preserve"><value>Remove photo</value></data>
+  <data name="ProfileSaveSubmit" xml:space="preserve"><value>Save changes</value></data>
+  <data name="ProfileSavedNotice" xml:space="preserve"><value>Profile details saved.</value></data>
+  <data name="ProfileDisplayNameInvalidError" xml:space="preserve"><value>Display name is invalid or exceeds 128 characters.</value></data>
+  <data name="ProfileEmailInvalidError" xml:space="preserve"><value>Email address is invalid.</value></data>
+  <data name="ProfilePhoneInvalidError" xml:space="preserve"><value>Phone number is invalid.</value></data>
+  <data name="ProfileAvatarInvalidError" xml:space="preserve"><value>Photo must be PNG, JPEG, or WebP and 256 KB or less.</value></data>
+  <data name="ProfileSaveFailedError" xml:space="preserve"><value>Could not save profile changes.</value></data>
+  <data name="MyPreferencesTitle" xml:space="preserve"><value>My preferences</value></data>
+  <data name="MyPreferencesMenuSubtitle" xml:space="preserve"><value>My preferences (language, theme, calendar)</value></data>
+  <data name="MyPreferencesSubtitle" xml:space="preserve"><value>These settings are linked to your account and apply across all devices.</value></data>
+  <data name="PreferencesLanguageTitle" xml:space="preserve"><value>Language</value></data>
+  <data name="PreferencesLanguageHint" xml:space="preserve"><value>Interface language</value></data>
+  <data name="PreferencesCalendarTitle" xml:space="preserve"><value>Calendar</value></data>
+  <data name="PreferencesCalendarSamplePrefix" xml:space="preserve"><value>Sample: {0}</value></data>
+  <data name="PreferencesCalendarPersian" xml:space="preserve"><value>Persian (Solar)</value></data>
+  <data name="PreferencesCalendarGregorian" xml:space="preserve"><value>Gregorian</value></data>
+  <data name="PreferencesThemeTitle" xml:space="preserve"><value>Theme</value></data>
+  <data name="PreferencesThemeHint" xml:space="preserve"><value>Application appearance</value></data>
+  <data name="PreferencesThemeLight" xml:space="preserve"><value>Light</value></data>
+  <data name="PreferencesThemeDark" xml:space="preserve"><value>Dark</value></data>
+  <data name="PreferencesThemeSystem" xml:space="preserve"><value>System</value></data>
+  <data name="PreferencesTimeZoneTitle" xml:space="preserve"><value>Time zone</value></data>
+  <data name="PreferencesTimeZoneHint" xml:space="preserve"><value>Timestamps across the app are shown in this time zone</value></data>
+  <data name="PreferencesResetButton" xml:space="preserve"><value>Reset</value></data>
+  <data name="PreferencesSaveButton" xml:space="preserve"><value>Save changes</value></data>
+  <data name="PreferencesSavedNotice" xml:space="preserve"><value>Preferences saved.</value></data>
+  <data name="PreferencesSaveFailedError" xml:space="preserve"><value>Could not save preferences.</value></data>
+  <data name="UserMenuActiveSiteLabel" xml:space="preserve"><value>Active site</value></data>
+  <data name="UserMenuViewSessionsLink" xml:space="preserve"><value>View sessions</value></data>
+  <data name="UserMenuFailedAttemptsWarning" xml:space="preserve"><value>{0} failed sign-in attempt(s) since this login</value></data>
+  <data name="MyActivityTitle" xml:space="preserve"><value>My activity</value></data>
+  <data name="ActiveSessionsTitle" xml:space="preserve"><value>Active sessions</value></data>
+  <data name="ActiveSessionsSubtitle" xml:space="preserve"><value>Devices currently signed in to your account.</value></data>
+  <data name="RevokeAllOtherSessionsButton" xml:space="preserve"><value>Sign out of all devices</value></data>
+  <data name="SessionIpPrefix" xml:space="preserve"><value>IP: {0}</value></data>
+  <data name="SessionCurrentDeviceBadge" xml:space="preserve"><value>This device</value></data>
+  <data name="SessionSignOutOneButton" xml:space="preserve"><value>Sign out</value></data>
+  <data name="SessionsSecurityFootnote" xml:space="preserve"><value>Signing out of all devices ends every active session except this device. If you see an unfamiliar device, change your password afterward.</value></data>
+  <data name="SessionLastActivityNow" xml:space="preserve"><value>Last active: just now</value></data>
+  <data name="SessionLastActivityMinutes" xml:space="preserve"><value>Last active: {0}m ago</value></data>
+  <data name="SessionLastActivityHours" xml:space="preserve"><value>Last active: {0}h ago</value></data>
+  <data name="SessionLastActivityTimestamp" xml:space="preserve"><value>Last active: {0}</value></data>
+  <data name="SessionRevokedNotice" xml:space="preserve"><value>Session signed out.</value></data>
+  <data name="SessionOthersRevokedNotice" xml:space="preserve"><value>Signed out {0} other session(s).</value></data>
+  <data name="SessionRevokeFailedError" xml:space="preserve"><value>Could not sign out the session.</value></data>
+  <data name="ChangePasswordSessionsLink" xml:space="preserve"><value>Manage active sessions and sign out of other devices</value></data>
+  <data name="MyActivitySubtitle" xml:space="preserve"><value>Events recorded for your own account.</value></data>
+  <data name="MyActivityLockedBadge" xml:space="preserve"><value>Only your own activities are shown</value></data>
+  <data name="MyActivityRangeLabel" xml:space="preserve"><value>Time range</value></data>
+  <data name="MyActivityRange7Days" xml:space="preserve"><value>Last 7 days</value></data>
+  <data name="MyActivityRange30Days" xml:space="preserve"><value>Last 30 days</value></data>
+  <data name="MyActivityRange90Days" xml:space="preserve"><value>Last 90 days</value></data>
+  <data name="MyActivityRangeAll" xml:space="preserve"><value>All time</value></data>
+  <data name="MyActivitySearchPlaceholder" xml:space="preserve"><value>Search my activity</value></data>
+  <data name="MyActivityIpColumn" xml:space="preserve"><value>IP address</value></data>
+  <data name="MyActivityDeviceColumn" xml:space="preserve"><value>Device</value></data>
+  <data name="MyActivityOutcomeRecorded" xml:space="preserve"><value>Recorded</value></data>
+  <data name="NotificationsTitle" xml:space="preserve"><value>Notifications</value></data>
+  <data name="NotificationsSubtitle" xml:space="preserve"><value>Important events related to your account and work.</value></data>
+  <data name="NotifUnreadAriaCount" xml:space="preserve"><value>{0} unread notifications</value></data>
+  <data name="NotificationsMarkAllRead" xml:space="preserve"><value>Mark all as read</value></data>
+  <data name="NotificationsEmpty" xml:space="preserve"><value>No notifications to display.</value></data>
+  <data name="NotificationsViewAll" xml:space="preserve"><value>View all notifications</value></data>
+  <data name="NotifTabAll" xml:space="preserve"><value>All</value></data>
+  <data name="NotifTabUnread" xml:space="preserve"><value>Unread</value></data>
+  <data name="NotifTabSecurity" xml:space="preserve"><value>Security</value></data>
+  <data name="NotifTabOrders" xml:space="preserve"><value>Orders</value></data>
+  <data name="NotifGroupToday" xml:space="preserve"><value>Today</value></data>
+  <data name="NotifGroupOlder" xml:space="preserve"><value>Older</value></data>
+  <data name="NotifPagerSummary" xml:space="preserve"><value>{0} to {1} of {2}</value></data>
+  <data name="NotifPagerPage" xml:space="preserve"><value>Page {0} of {1}</value></data>
+  <data name="NotifTitle_NewDeviceSignIn" xml:space="preserve"><value>Sign-in from a new device</value></data>
+  <data name="NotifBody_NewDeviceSignIn" xml:space="preserve"><value>{0} — {1}</value></data>
+  <data name="NotifTitle_FailedSignInAttempts" xml:space="preserve"><value>{0} failed sign-in attempt(s)</value></data>
+  <data name="NotifBody_FailedSignInAttempts" xml:space="preserve"><value>From IP {0}</value></data>
+  <data name="NotifTitle_RoleOrAccessChanged" xml:space="preserve"><value>Your access changed</value></data>
+  <data name="NotifBody_RoleOrAccessChanged" xml:space="preserve"><value>{0} for {1}</value></data>
+  <data name="NotifTitle_MyOrderChanged" xml:space="preserve"><value>Order {0} updated</value></data>
+  <data name="NotifBody_MyOrderChanged" xml:space="preserve"><value>Status changed from {0} to {1}</value></data>
+  <data name="NotifTitle_PasswordChanged" xml:space="preserve"><value>Your password changed</value></data>
+  <data name="NotifBody_PasswordChanged" xml:space="preserve"><value>From device {0}</value></data>
+  <data name="NotifAction_ViewSessions" xml:space="preserve"><value>View sessions</value></data>
+  <data name="NotifAction_ViewActivity" xml:space="preserve"><value>View activity</value></data>
+  <data name="NotifAction_ViewOrder" xml:space="preserve"><value>View orders</value></data>
+  <data name="NotifTimeNow" xml:space="preserve"><value>Just now</value></data>
+  <data name="NotifTimeMinutes" xml:space="preserve"><value>{0}m ago</value></data>
+  <data name="NotifTimeHours" xml:space="preserve"><value>{0}h ago</value></data>
+  <data name="NotifTimeYesterday" xml:space="preserve"><value>Yesterday {0}</value></data>
+  <data name="NotifTimeDays" xml:space="preserve"><value>{0}d ago</value></data>
+  <data name="NotificationSettingsTitle" xml:space="preserve"><value>Notifications &amp; help</value></data>
+  <data name="NotificationSettingsSubtitle" xml:space="preserve"><value>Choose which events notify you and how.</value></data>
+  <data name="NotifMatrixEventColumn" xml:space="preserve"><value>Event</value></data>
+  <data name="NotifMatrixInAppColumn" xml:space="preserve"><value>In-app</value></data>
+  <data name="NotifMatrixEmailColumn" xml:space="preserve"><value>Email</value></data>
+  <data name="NotifEmailUnavailableTag" xml:space="preserve"><value>SMTP off</value></data>
+  <data name="NotifSmtpUnavailableHint" xml:space="preserve"><value>Email notifications are disabled until SMTP is configured.</value></data>
+  <data name="NotifPref_NewDeviceSignInTitle" xml:space="preserve"><value>New device sign-in</value></data>
+  <data name="NotifPref_NewDeviceSignInDesc" xml:space="preserve"><value>When your account is signed into from a new device or browser</value></data>
+  <data name="NotifPref_FailedSignInTitle" xml:space="preserve"><value>Failed sign-in attempt</value></data>
+  <data name="NotifPref_FailedSignInDesc" xml:space="preserve"><value>When wrong passwords are entered for your account</value></data>
+  <data name="NotifPref_RoleChangedTitle" xml:space="preserve"><value>Role or access change</value></data>
+  <data name="NotifPref_RoleChangedDesc" xml:space="preserve"><value>When your roles or accessible sites change</value></data>
+  <data name="NotifPref_MyOrdersTitle" xml:space="preserve"><value>My production orders</value></data>
+  <data name="NotifPref_MyOrdersDesc" xml:space="preserve"><value>Status changes on production orders you created</value></data>
+  <data name="NotifPrefsSavedNotice" xml:space="preserve"><value>Notification preference saved.</value></data>
+  <data name="NotifPrefsSaveFailed" xml:space="preserve"><value>Could not save notification preference.</value></data>
+  <data name="HelpShortcutsTitle" xml:space="preserve"><value>Shortcuts</value></data>
+  <data name="HelpShortcutSearch" xml:space="preserve"><value>Global search</value></data>
+  <data name="HelpShortcutCommands" xml:space="preserve"><value>Open command palette</value></data>
+  <data name="HelpShortcutAll" xml:space="preserve"><value>Show all shortcuts</value></data>
+  <data name="HelpSupportTitle" xml:space="preserve"><value>Help</value></data>
+  <data name="HelpUserGuideLink" xml:space="preserve"><value>User guide</value></data>
+  <data name="HelpReportIssueLink" xml:space="preserve"><value>Report an issue</value></data>
+  <data name="HelpContactSupportLink" xml:space="preserve"><value>Contact support</value></data>
+  <data name="HelpUserGuideOverview" xml:space="preserve"><value>Use the navigation drawer or command palette (Ctrl + K) to open modules permitted for your organization and site.</value></data>
+  <data name="HelpUserGuideShortcuts" xml:space="preserve"><value>Press / to jump to page search, Ctrl + K for quick navigation, and ? for keyboard shortcuts.</value></data>
+  <data name="HelpUserGuideSessions" xml:space="preserve"><value>Review active sessions anytime to sign out unfamiliar devices.</value></data>
+  <data name="HelpUserGuidePreferences" xml:space="preserve"><value>Customize language, theme, calendar system, and time zone under My preferences.</value></data>
+  <data name="HelpIssueSummaryLabel" xml:space="preserve"><value>Issue description</value></data>
+  <data name="HelpIssueSummaryPlaceholder" xml:space="preserve"><value>Describe what happened...</value></data>
+  <data name="HelpIssueSubmitBtn" xml:space="preserve"><value>Submit report</value></data>
+  <data name="HelpIssueSubmittedNotice" xml:space="preserve"><value>Issue recorded with reference {0}.</value></data>
+  <data name="HelpSupportDescription" xml:space="preserve"><value>Contact your organization administrator or system operator and provide any error reference from Diagnostics or Report an issue.</value></data>
+  <data name="CommandPaletteTitle" xml:space="preserve"><value>Command palette</value></data>
+  <data name="CommandPalettePlaceholder" xml:space="preserve"><value>Jump to a page...</value></data>
+  <data name="NotifRoleOrgMembership" xml:space="preserve"><value>Organization membership</value></data>
+  <data name="NotifRoleSiteMembership" xml:space="preserve"><value>Site membership</value></data>
+  <data name="NotifRoleDirectPermissions" xml:space="preserve"><value>Direct permissions</value></data>
+  <data name="Suppliers" xml:space="preserve"><value>Suppliers</value></data>
+  <data name="PurchaseOrders" xml:space="preserve"><value>Purchase orders</value></data>
+  <data name="PermPageProcurement" xml:space="preserve"><value>Procurement</value></data>
+  <data name="PermOpManageSuppliers" xml:space="preserve"><value>Manage suppliers</value></data>
+  <data name="PermOpManageOrders" xml:space="preserve"><value>Manage purchase orders</value></data>
+  <data name="PermOpReceiveOrders" xml:space="preserve"><value>Receive purchase orders</value></data>
+  <data name="SuppliersCaption" xml:space="preserve"><value>Manage approved vendors and supplier contacts across the organization.</value></data>
+  <data name="SupCreateButton" xml:space="preserve"><value>New supplier</value></data>
+  <data name="SupCreateTitle" xml:space="preserve"><value>Create supplier</value></data>
+  <data name="SupDetailTitle" xml:space="preserve"><value>Supplier details</value></data>
+  <data name="SupContactLabel" xml:space="preserve"><value>Contact person</value></data>
+  <data name="SupAddressLabel" xml:space="preserve"><value>Address</value></data>
+  <data name="ProcErrorSupplierInactive" xml:space="preserve"><value>An inactive supplier cannot be updated or used on a purchase order.</value></data>
+  <data name="ProcErrorContactInvalid" xml:space="preserve"><value>Enter a valid contact name (maximum 150 characters).</value></data>
+  <data name="ProcErrorAddressInvalid" xml:space="preserve"><value>Address exceeds the 500-character limit.</value></data>
+  <data name="PurchaseOrdersCaption" xml:space="preserve"><value>Create vendor purchase orders, track approvals, and post goods receipts into inventory.</value></data>
+  <data name="ProcPoCreateButton" xml:space="preserve"><value>New purchase order</value></data>
+  <data name="ProcPoCreateTitle" xml:space="preserve"><value>Create purchase order</value></data>
+  <data name="ProcPoEditTitle" xml:space="preserve"><value>Edit draft purchase order</value></data>
+  <data name="ProcPoDetailTitle" xml:space="preserve"><value>Purchase order details</value></data>
+  <data name="ProcPoNumberLabel" xml:space="preserve"><value>PO number</value></data>
+  <data name="ProcSupplierLabel" xml:space="preserve"><value>Supplier</value></data>
+  <data name="ProcAllSuppliersOption" xml:space="preserve"><value>All suppliers</value></data>
+  <data name="ProcOrderDateLabel" xml:space="preserve"><value>Order date</value></data>
+  <data name="ProcExpectedDateLabel" xml:space="preserve"><value>Expected delivery</value></data>
+  <data name="ProcTargetWarehouseLabel" xml:space="preserve"><value>Target warehouse</value></data>
+  <data name="ProcCurrencyLabel" xml:space="preserve"><value>Currency</value></data>
+  <data name="ProcProgressColumn" xml:space="preserve"><value>Received / Ordered</value></data>
+  <data name="ProcEstimatedTotalLabel" xml:space="preserve"><value>Estimated total</value></data>
+  <data name="ProcLinesSection" xml:space="preserve"><value>Order lines</value></data>
+  <data name="ProcAddLineBtn" xml:space="preserve"><value>Add line</value></data>
+  <data name="ProcUnitPriceLabel" xml:space="preserve"><value>Unit price</value></data>
+  <data name="ProcOrderedCol" xml:space="preserve"><value>Ordered</value></data>
+  <data name="ProcReceivedCol" xml:space="preserve"><value>Received</value></data>
+  <data name="ProcRemainingCol" xml:space="preserve"><value>Remaining</value></data>
+  <data name="ProcReceiptsHistoryTitle" xml:space="preserve"><value>Posted receipts</value></data>
+  <data name="ProcPostedBadge" xml:space="preserve"><value>Posted</value></data>
+  <data name="ProcApproveBtn" xml:space="preserve"><value>Approve order</value></data>
+  <data name="ProcReceiveBtn" xml:space="preserve"><value>Receive goods</value></data>
+  <data name="ProcShortCloseBtn" xml:space="preserve"><value>Close remaining</value></data>
+  <data name="ProcCancelBtn" xml:space="preserve"><value>Cancel order</value></data>
+  <data name="ProcReceiveTitle" xml:space="preserve"><value>Receive purchase order goods</value></data>
+  <data name="ProcPostReceiptBtn" xml:space="preserve"><value>Post receipt</value></data>
+  <data name="ProcReceiptPostedNotice" xml:space="preserve"><value>Receipt {0} posted to inventory.</value></data>
+  <data name="ProcStatusApproved" xml:space="preserve"><value>Approved</value></data>
+  <data name="ProcStatusPartial" xml:space="preserve"><value>Partially received</value></data>
+  <data name="ProcStatusReceived" xml:space="preserve"><value>Received</value></data>
+  <data name="ProcStatusClosed" xml:space="preserve"><value>Closed</value></data>
+  <data name="ProcErrorCurrencyInvalid" xml:space="preserve"><value>Choose a supported currency (IRR, USD, EUR).</value></data>
+  <data name="ProcErrorEmptyOrder" xml:space="preserve"><value>A purchase order must contain at least one item line.</value></data>
+  <data name="ProcErrorDuplicateItem" xml:space="preserve"><value>Each item can appear only once on a purchase order.</value></data>
+  <data name="ProcErrorItemNotPurchasable" xml:space="preserve"><value>Only items marked as purchasable can be ordered.</value></data>
+  <data name="ProcErrorUnitPriceInvalid" xml:space="preserve"><value>Unit price cannot be negative.</value></data>
+  <data name="ProcErrorNotDraft" xml:space="preserve"><value>Only draft purchase orders can be edited.</value></data>
+  <data name="ProcErrorInvalidTransition" xml:space="preserve"><value>This status transition is not valid for the purchase order.</value></data>
+  <data name="ProcErrorHasReceiptsCannotCancel" xml:space="preserve"><value>A purchase order with posted receipts cannot be cancelled; close the remaining quantity instead.</value></data>
+  <data name="ProcErrorOverReceipt" xml:space="preserve"><value>Received quantity cannot exceed the remaining open quantity on the line.</value></data>
+  <data name="RptColOnOrderQty" xml:space="preserve"><value>On order</value></data>
+  <data name="AuditEv_SupplierCreated" xml:space="preserve"><value>Supplier created</value></data>
+  <data name="AuditEv_SupplierUpdated" xml:space="preserve"><value>Supplier updated</value></data>
+  <data name="AuditEv_SupplierActivated" xml:space="preserve"><value>Supplier activated</value></data>
+  <data name="AuditEv_SupplierDeactivated" xml:space="preserve"><value>Supplier deactivated</value></data>
+  <data name="AuditEv_PurchaseOrderCreated" xml:space="preserve"><value>Purchase order created</value></data>
+  <data name="AuditEv_PurchaseOrderUpdated" xml:space="preserve"><value>Purchase order updated</value></data>
+  <data name="AuditEv_PurchaseOrderApproved" xml:space="preserve"><value>Purchase order approved</value></data>
+  <data name="AuditEv_PurchaseOrderReceived" xml:space="preserve"><value>Purchase order received</value></data>
+  <data name="AuditEv_PurchaseOrderClosed" xml:space="preserve"><value>Purchase order closed</value></data>
+  <data name="AuditEv_PurchaseOrderCancelled" xml:space="preserve"><value>Purchase order cancelled</value></data>
+  <data name="AuditEv_ProcurementActionRejected" xml:space="preserve"><value>Procurement action rejected</value></data>
+  <data name="ProcPoModalSubtitle" xml:space="preserve"><value>Enter purchase order details and add line items.</value></data>
+  <data name="ProcGeneralInfoSection" xml:space="preserve"><value>General information</value></data>
+  <data name="ProcSelectSupplierPlaceholder" xml:space="preserve"><value>Select supplier...</value></data>
+  <data name="ProcSelectDatePlaceholder" xml:space="preserve"><value>Select date</value></data>
+  <data name="ProcSelectWarehousePlaceholder" xml:space="preserve"><value>Select warehouse...</value></data>
+  <data name="ProcNotesOptionalPlaceholder" xml:space="preserve"><value>Order notes (optional)</value></data>
+  <data name="ProcSelectItemPlaceholder" xml:space="preserve"><value>Select item...</value></data>
+  <data name="ProcLineAmountLabel" xml:space="preserve"><value>Line total</value></data>
+  <data name="ProcGrandTotalLabel" xml:space="preserve"><value>Grand total</value></data>
+  <data name="ProcErrorSupplierRequired" xml:space="preserve"><value>Please select a supplier.</value></data>
+  <data name="ProcErrorItemRequired" xml:space="preserve"><value>Please select an item for every line.</value></data>
+  <data name="UnitCurrenciesTab" xml:space="preserve"><value>Currencies</value></data>
+  <data name="CurrencyCreateButton" xml:space="preserve"><value>New currency</value></data>
+  <data name="CurrencyEditTitle" xml:space="preserve"><value>Edit currency</value></data>
+  <data name="CurrencyDetailTitle" xml:space="preserve"><value>Currency details</value></data>
+  <data name="CurrencyCreateTitle" xml:space="preserve"><value>Create currency</value></data>
+  <data name="CurrencyCodeHint" xml:space="preserve"><value>3 uppercase letters (for example AED, TRY, USD)</value></data>
+  <data name="UnitErrorCurrencyInactive" xml:space="preserve"><value>Activate the currency before updating it or using it on an order.</value></data>
+  <data name="AuditEv_CurrencyCreated" xml:space="preserve"><value>Currency created</value></data>
+  <data name="AuditEv_CurrencyUpdated" xml:space="preserve"><value>Currency updated</value></data>
+  <data name="AuditEv_CurrencyActivated" xml:space="preserve"><value>Currency activated</value></data>
+  <data name="AuditEv_CurrencyDeactivated" xml:space="preserve"><value>Currency deactivated</value></data>
+  <data name="WorkCenters" xml:space="preserve"><value>Work Centers</value></data>
+  <data name="Routings" xml:space="preserve"><value>Routings</value></data>
+  <data name="PermPageRoutings" xml:space="preserve"><value>Routings &amp; Work Centers</value></data>
+  <data name="PermOpManageRoutings" xml:space="preserve"><value>Manage</value></data>
+  <data name="PermOpExecuteOperations" xml:space="preserve"><value>Execute operations</value></data>
+  <data name="WorkCentersCaption" xml:space="preserve"><value>Manage plant-level machines, assembly lines, work cells, and daily capacity.</value></data>
+  <data name="WcCreateButton" xml:space="preserve"><value>New work center</value></data>
+  <data name="WcCreateTitle" xml:space="preserve"><value>Create work center</value></data>
+  <data name="WcDetailTitle" xml:space="preserve"><value>Work center details</value></data>
+  <data name="WcTypeLabel" xml:space="preserve"><value>Type</value></data>
+  <data name="WcTypeMachine" xml:space="preserve"><value>Machine</value></data>
+  <data name="WcTypeAssemblyLine" xml:space="preserve"><value>Assembly line</value></data>
+  <data name="WcTypeWorkCell" xml:space="preserve"><value>Work cell</value></data>
+  <data name="WcTypeQualityStation" xml:space="preserve"><value>Quality station</value></data>
+  <data name="WcTypeExternalVendor" xml:space="preserve"><value>External vendor</value></data>
+  <data name="WcCapacityLabel" xml:space="preserve"><value>Capacity (units/hr)</value></data>
+  <data name="WcDailyHoursLabel" xml:space="preserve"><value>Daily hours</value></data>
+  <data name="WcHourlyCostLabel" xml:space="preserve"><value>Hourly cost</value></data>
+  <data name="WcCreatedNotice" xml:space="preserve"><value>Work center created.</value></data>
+  <data name="WcSavedNotice" xml:space="preserve"><value>Work center updated.</value></data>
+  <data name="WcActivatedNotice" xml:space="preserve"><value>Work center activated.</value></data>
+  <data name="WcDeactivatedNotice" xml:space="preserve"><value>Work center deactivated.</value></data>
+  <data name="WcLoadSection" xml:space="preserve"><value>Work center planned load</value></data>
+  <data name="WcActiveOpsCol" xml:space="preserve"><value>Open ops</value></data>
+  <data name="WcPlannedMinsCol" xml:space="preserve"><value>Planned (min)</value></data>
+  <data name="WcUtilizationCol" xml:space="preserve"><value>Daily load %</value></data>
+  <data name="RoutingsCaption" xml:space="preserve"><value>Define site-specific operation sequences, standard times, and default routings.</value></data>
+  <data name="RtCreateButton" xml:space="preserve"><value>New routing</value></data>
+  <data name="RtCreateTitle" xml:space="preserve"><value>Create draft routing</value></data>
+  <data name="RtCreateSubtitle" xml:space="preserve"><value>Define the manufacturing routing details for a product.</value></data>
+  <data name="RtNamePlaceholder" xml:space="preserve"><value>Routing name</value></data>
+  <data name="RtDetailTitle" xml:space="preserve"><value>Routing details</value></data>
+  <data name="RtBomVersionLabel" xml:space="preserve"><value>Linked BOM version</value></data>
+  <data name="RtNoBomLinkOption" xml:space="preserve"><value>No BOM version link</value></data>
+  <data name="RtIsDefaultLabel" xml:space="preserve"><value>Default routing for this item</value></data>
+  <data name="RtIsDefaultDesc" xml:space="preserve"><value>Used automatically as the primary routing for the selected item.</value></data>
+  <data name="RtNotesOptionalPlaceholder" xml:space="preserve"><value>Notes (optional)</value></data>
+  <data name="RtDefaultBadge" xml:space="preserve"><value>Default</value></data>
+  <data name="RtStatusDraft" xml:space="preserve"><value>Draft</value></data>
+  <data name="RtStatusActive" xml:space="preserve"><value>Active</value></data>
+  <data name="RtStatusObsolete" xml:space="preserve"><value>Obsolete</value></data>
+  <data name="RtOpsSummaryCol" xml:space="preserve"><value>Operations / Std time</value></data>
+  <data name="RtSaveHeaderBtn" xml:space="preserve"><value>Save header</value></data>
+  <data name="RtOperationsHeading" xml:space="preserve"><value>Routing operations</value></data>
+  <data name="RtAddOpBtn" xml:space="preserve"><value>Add operation</value></data>
+  <data name="RtSaveOpsBtn" xml:space="preserve"><value>Save operations</value></data>
+  <data name="RtActivateBtn" xml:space="preserve"><value>Activate routing</value></data>
+  <data name="RtMarkObsoleteBtn" xml:space="preserve"><value>Mark obsolete</value></data>
+  <data name="RtCreatedNotice" xml:space="preserve"><value>Draft routing created.</value></data>
+  <data name="RtSavedNotice" xml:space="preserve"><value>Routing updated.</value></data>
+  <data name="RtOpsSavedNotice" xml:space="preserve"><value>Routing operations saved.</value></data>
+  <data name="RtActivatedNotice" xml:space="preserve"><value>Routing activated.</value></data>
+  <data name="RtObsoletedNotice" xml:space="preserve"><value>Routing marked obsolete.</value></data>
+  <data name="RtOpCodeCol" xml:space="preserve"><value>Op code</value></data>
+  <data name="RtOpNameCol" xml:space="preserve"><value>Operation name</value></data>
+  <data name="RtWorkCenterCol" xml:space="preserve"><value>Work center</value></data>
+  <data name="RtSetupMinCol" xml:space="preserve"><value>Setup (min)</value></data>
+  <data name="RtRunPerUnitCol" xml:space="preserve"><value>Run (min/u)</value></data>
+  <data name="RtQueueMinCol" xml:space="preserve"><value>Queue (min)</value></data>
+  <data name="RtWaitMinCol" xml:space="preserve"><value>Wait (min)</value></data>
+  <data name="RtQcCol" xml:space="preserve"><value>QC</value></data>
+  <data name="RtInstructionsCol" xml:space="preserve"><value>Instructions</value></data>
+  <data name="PoRoutingColumn" xml:space="preserve"><value>Routing</value></data>
+  <data name="PoAutoDefaultRouting" xml:space="preserve"><value>Auto (default active routing if defined)</value></data>
+  <data name="PoNoRouting" xml:space="preserve"><value>No routing linked</value></data>
+  <data name="PoOperationsHeading" xml:space="preserve"><value>Shop-floor operations</value></data>
+  <data name="PoOpPlannedCol" xml:space="preserve"><value>Planned (min)</value></data>
+  <data name="PoOpActualCol" xml:space="preserve"><value>Actual (min)</value></data>
+  <data name="PoOpQtyCol" xml:space="preserve"><value>Good / Scrap</value></data>
+  <data name="PoOpStatusPending" xml:space="preserve"><value>Pending</value></data>
+  <data name="PoOpStatusReady" xml:space="preserve"><value>Ready</value></data>
+  <data name="PoOpStatusInProgress" xml:space="preserve"><value>In progress</value></data>
+  <data name="PoOpStatusPaused" xml:space="preserve"><value>Paused</value></data>
+  <data name="PoOpStatusCompleted" xml:space="preserve"><value>Completed</value></data>
+  <data name="PoOpStatusSkipped" xml:space="preserve"><value>Skipped</value></data>
+  <data name="PoOpStartBtn" xml:space="preserve"><value>Start</value></data>
+  <data name="PoOpPauseBtn" xml:space="preserve"><value>Pause</value></data>
+  <data name="PoOpCompleteBtn" xml:space="preserve"><value>Complete</value></data>
+  <data name="PoOpSkipBtn" xml:space="preserve"><value>Skip</value></data>
+  <data name="PoOpActualSetupLabel" xml:space="preserve"><value>Actual setup (min)</value></data>
+  <data name="PoOpActualRunLabel" xml:space="preserve"><value>Actual run (min)</value></data>
+  <data name="PoOpCompletedQtyLabel" xml:space="preserve"><value>Completed qty</value></data>
+  <data name="PoOpScrapQtyLabel" xml:space="preserve"><value>Scrap qty</value></data>
+  <data name="PoOpSavedNotice" xml:space="preserve"><value>Operation status recorded.</value></data>
+  <data name="RoutingErrorWorkCenterInactive" xml:space="preserve"><value>The selected work center is inactive.</value></data>
+  <data name="RoutingErrorTypeInvalid" xml:space="preserve"><value>Select a valid work center type.</value></data>
+  <data name="RoutingErrorCapacityInvalid" xml:space="preserve"><value>Capacity, daily hours (0–24), and hourly cost must be valid.</value></data>
+  <data name="RoutingErrorBomVersionInvalid" xml:space="preserve"><value>Selected BOM version does not belong to this item.</value></data>
+  <data name="RoutingErrorNotDraft" xml:space="preserve"><value>Only draft routings can be edited.</value></data>
+  <data name="RoutingErrorInvalidTransition" xml:space="preserve"><value>This status transition is not permitted.</value></data>
+  <data name="RoutingErrorEmptyOperations" xml:space="preserve"><value>At least one operation is required.</value></data>
+  <data name="RoutingErrorSequenceInvalid" xml:space="preserve"><value>Operation sequences must be positive and unique.</value></data>
+  <data name="RoutingErrorTimeInvalid" xml:space="preserve"><value>Setup, queue, and wait times must be non-negative and run time per unit must be positive.</value></data>
+  <data name="RoutingErrorQuantityInvalid" xml:space="preserve"><value>Completed and scrap quantities must be non-negative.</value></data>
+  <data name="PoErrorRoutingInvalid" xml:space="preserve"><value>The selected routing is inactive, empty, or does not match the site and item.</value></data>
+  <data name="AuditEv_WorkCenterCreated" xml:space="preserve"><value>Work center created</value></data>
+  <data name="AuditEv_WorkCenterUpdated" xml:space="preserve"><value>Work center updated</value></data>
+  <data name="AuditEv_WorkCenterActivated" xml:space="preserve"><value>Work center activated</value></data>
+  <data name="AuditEv_WorkCenterDeactivated" xml:space="preserve"><value>Work center deactivated</value></data>
+  <data name="AuditEv_RoutingCreated" xml:space="preserve"><value>Routing created</value></data>
+  <data name="AuditEv_RoutingUpdated" xml:space="preserve"><value>Routing updated</value></data>
+  <data name="AuditEv_RoutingOperationsSaved" xml:space="preserve"><value>Routing operations saved</value></data>
+  <data name="AuditEv_RoutingActivated" xml:space="preserve"><value>Routing activated</value></data>
+  <data name="AuditEv_RoutingObsoleted" xml:space="preserve"><value>Routing marked obsolete</value></data>
+  <data name="AuditEv_ProductionOrderOperationStarted" xml:space="preserve"><value>Production operation started</value></data>
+  <data name="AuditEv_ProductionOrderOperationPaused" xml:space="preserve"><value>Production operation paused</value></data>
+  <data name="AuditEv_ProductionOrderOperationCompleted" xml:space="preserve"><value>Production operation completed</value></data>
+  <data name="AuditEv_ProductionOrderOperationSkipped" xml:space="preserve"><value>Production operation skipped</value></data>
+  <data name="AuditEv_RoutingActionRejected" xml:space="preserve"><value>Routing or operation action rejected</value></data>
+  <data name="AuditEv_InventoryReservationCreated" xml:space="preserve"><value>Stock reservation created</value></data>
+  <data name="AuditEv_InventoryReservationConsumed" xml:space="preserve"><value>Stock reservation consumed</value></data>
+  <data name="AuditEv_InventoryReservationReleased" xml:space="preserve"><value>Stock reservation released</value></data>
+  <data name="DashTitle" xml:space="preserve"><value>Operations Dashboard</value></data>
+  <data name="DashSubtitle" xml:space="preserve"><value>Live overview of production, stock shortages, work center load, quality holds, and purchasing.</value></data>
+  <data name="DashRefreshBtn" xml:space="preserve"><value>Refresh</value></data>
+  <data name="DashNoScopeHint" xml:space="preserve"><value>No organization or site operational scope is currently assigned to your account.</value></data>
+  <data name="DashNoCapabilities" xml:space="preserve"><value>No operational modules are enabled for your current permissions in this scope.</value></data>
+  <data name="DashKpiActiveOrders" xml:space="preserve"><value>Active Production Orders</value></data>
+  <data name="DashKpiDraftCount" xml:space="preserve"><value>Draft: {0}</value></data>
+  <data name="DashKpiOverdueCount" xml:space="preserve"><value>Overdue: {0}</value></data>
+  <data name="DashKpiShortages" xml:space="preserve"><value>Material Shortages</value></data>
+  <data name="DashKpiReservedTotal" xml:space="preserve"><value>Reserved: {0}</value></data>
+  <data name="DashKpiQualityQueue" xml:space="preserve"><value>Pending QC Holds</value></data>
+  <data name="DashKpiBlockedTotal" xml:space="preserve"><value>Blocked: {0}</value></data>
+  <data name="DashKpiOpenPo" xml:space="preserve"><value>Open Purchase Orders</value></data>
+  <data name="DashKpiAllOnSchedule" xml:space="preserve"><value>All on schedule</value></data>
+  <data name="DashPanelOrdersTitle" xml:space="preserve"><value>Production Orders Queue</value></data>
+  <data name="DashPanelShortagesTitle" xml:space="preserve"><value>Top Material Shortages</value></data>
+  <data name="DashPanelWorkCentersTitle" xml:space="preserve"><value>Work Center Utilization</value></data>
+  <data name="DashPanelQualityTitle" xml:space="preserve"><value>Quality Inspection Queue</value></data>
+  <data name="DashPanelProcurementTitle" xml:space="preserve"><value>Open Purchase Orders</value></data>
+  <data name="DashViewAll" xml:space="preserve"><value>View all</value></data>
+  <data name="DashOverdueBadge" xml:space="preserve"><value>Overdue</value></data>
+  <data name="DashNoShortages" xml:space="preserve"><value>No open material shortages detected.</value></data>
+  <data name="InvTabReservations" xml:space="preserve"><value>Stock Reservations</value></data>
+  <data name="QcMenuInspections" xml:space="preserve"><value>Inspection &amp; Quarantine</value></data>
+  <data name="QcMenuSpecs" xml:space="preserve"><value>Inspection Specifications</value></data>
+  <data name="QcMenuParameters" xml:space="preserve"><value>Lab Parameters</value></data>
+  <data name="QcMenuLots" xml:space="preserve"><value>Lot Traceability &amp; Expiry</value></data>
+  <data name="InvReservedShort" xml:space="preserve"><value>Reserved: {0}</value></data>
+  <data name="InvResOpenOnlyLabel" xml:space="preserve"><value>Open reservations only</value></data>
+  <data name="InvResOrderColumn" xml:space="preserve"><value>Production Order</value></data>
+  <data name="InvResRemainingColumn" xml:space="preserve"><value>Remaining Reserved</value></data>
+  <data name="InvResTotalsSub" xml:space="preserve"><value>Reserved: {0} / Consumed: {1}</value></data>
+  <data name="InvResReleaseBtn" xml:space="preserve"><value>Release</value></data>
+  <data name="InvResReleasedNotice" xml:space="preserve"><value>Stock reservation released.</value></data>
+  <data name="InvResStatusActive" xml:space="preserve"><value>Active</value></data>
+  <data name="InvResStatusPartial" xml:space="preserve"><value>Partially Consumed</value></data>
+  <data name="InvResStatusConsumed" xml:space="preserve"><value>Consumed</value></data>
+  <data name="InvResStatusReleased" xml:space="preserve"><value>Released</value></data>
+  <data name="InvResErrorInvalidState" xml:space="preserve"><value>This reservation is already closed and cannot be modified.</value></data>
+  <data name="InvResErrorExceedsAvailable" xml:space="preserve"><value>Requested quantity exceeds available unblocked and unreserved stock.</value></data>
+  <data name="InvResErrorOrderState" xml:space="preserve"><value>Stock can only be reserved for released or in-progress production orders.</value></data>
+  <data name="PoResReservedCol" xml:space="preserve"><value>Reserved</value></data>
+  <data name="PoResReserveBtn" xml:space="preserve"><value>Reserve</value></data>
+  <data name="PoReservationsHeading" xml:space="preserve"><value>Stock Reservations</value></data>
+  <data name="PoResNoneYet" xml:space="preserve"><value>No stock has been reserved for this order yet.</value></data>
+  <data name="PoResModalTitle" xml:space="preserve"><value>Reserve Stock for Production Order</value></data>
+  <data name="PoResAutoFifoOption" xml:space="preserve"><value>Auto-select by FIFO (all warehouses)</value></data>
+  <data name="PoResLotOptionalHint" xml:space="preserve"><value>Optional — leave blank for FIFO lots</value></data>
+  <data name="PoResConfirmBtn" xml:space="preserve"><value>Confirm Reservation</value></data>
+  <data name="PoResSavedNotice" xml:space="preserve"><value>Stock reserved for production order.</value></data>
+  <data name="RptReservedSubLabel" xml:space="preserve"><value>Reserved: {0}</value></data>
+  <data name="AuditEv_QualityParameterCreated" xml:space="preserve"><value>Lab parameter created</value></data>
+  <data name="AuditEv_QualityParameterUpdated" xml:space="preserve"><value>Lab parameter updated</value></data>
+  <data name="AuditEv_QualityParameterActivated" xml:space="preserve"><value>Lab parameter activated</value></data>
+  <data name="AuditEv_QualityParameterDeactivated" xml:space="preserve"><value>Lab parameter deactivated</value></data>
+  <data name="AuditEv_QualitySpecCreated" xml:space="preserve"><value>Inspection specification created</value></data>
+  <data name="AuditEv_QualitySpecUpdated" xml:space="preserve"><value>Inspection specification updated</value></data>
+  <data name="AuditEv_QualitySpecActivated" xml:space="preserve"><value>Inspection specification activated</value></data>
+  <data name="AuditEv_QualitySpecDeactivated" xml:space="preserve"><value>Inspection specification deactivated</value></data>
+  <data name="QcTabParameters" xml:space="preserve"><value>Lab Parameters</value></data>
+  <data name="QcTabSpecs" xml:space="preserve"><value>Inspection Specs</value></data>
+  <data name="QcCreateParameterBtn" xml:space="preserve"><value>New Lab Parameter</value></data>
+  <data name="QcCreateSpecBtn" xml:space="preserve"><value>New Inspection Spec</value></data>
+  <data name="QcCreateParameterTitle" xml:space="preserve"><value>Create Lab Parameter</value></data>
+  <data name="QcEditParameterTitle" xml:space="preserve"><value>Edit Lab Parameter</value></data>
+  <data name="QcParamModalSubtitle" xml:space="preserve"><value>Define reusable laboratory test characteristics, scientific symbols, and units.</value></data>
+  <data name="QcCreateSpecTitle" xml:space="preserve"><value>Create Inspection Specification</value></data>
+  <data name="QcEditSpecTitle" xml:space="preserve"><value>Edit Inspection Specification</value></data>
+  <data name="QcSpecModalSubtitle" xml:space="preserve"><value>Attach parameter tolerances to an Item or Classification family for automatic QC checklists.</value></data>
+  <data name="QcParamSymbolLabel" xml:space="preserve"><value>Symbol</value></data>
+  <data name="QcParamUnitLabel" xml:space="preserve"><value>Lab Unit</value></data>
+  <data name="QcParamMethodLabel" xml:space="preserve"><value>Test Method</value></data>
+  <data name="QcParamDecimalLabel" xml:space="preserve"><value>Decimal Places</value></data>
+  <data name="QcSpecTargetKindLabel" xml:space="preserve"><value>Target Scope</value></data>
+  <data name="QcSpecTargetLabel" xml:space="preserve"><value>Target Item / Family</value></data>
+  <data name="QcSpecCheckpointLabel" xml:space="preserve"><value>Checkpoint</value></data>
+  <data name="QcSpecVersionLabel" xml:space="preserve"><value>Version</value></data>
+  <data name="QcSpecLinesCountCol" xml:space="preserve"><value>Parameters</value></data>
+  <data name="QcSpecLinesHeading" xml:space="preserve"><value>Specification Parameters &amp; Limits</value></data>
+  <data name="QcAddSpecLineBtn" xml:space="preserve"><value>Add Parameter</value></data>
+  <data name="QcSpecMinLabel" xml:space="preserve"><value>Min</value></data>
+  <data name="QcSpecMaxLabel" xml:space="preserve"><value>Max</value></data>
+  <data name="QcSpecTargetValLabel" xml:space="preserve"><value>Target</value></data>
+  <data name="QcMandatoryLabel" xml:space="preserve"><value>Mandatory</value></data>
+  <data name="QcTargetItem" xml:space="preserve"><value>Item</value></data>
+  <data name="QcTargetClassification" xml:space="preserve"><value>Classification</value></data>
+  <data name="QcCheckpointIncoming" xml:space="preserve"><value>Incoming</value></data>
+  <data name="QcCheckpointProduction" xml:space="preserve"><value>Production</value></data>
+  <data name="QcCheckpointAll" xml:space="preserve"><value>Incoming &amp; Production</value></data>
+  <data name="QcLoadTemplateBtn" xml:space="preserve"><value>Load Spec Template</value></data>
+  <data name="QcTemplateLoadedNotice" xml:space="preserve"><value>Inspection checklist loaded from applicable specification.</value></data>
+  <data name="QcCustomParamOption" xml:space="preserve"><value>Custom parameter (ad-hoc)</value></data>
+  <data name="QcCertNumberLabel" xml:space="preserve"><value>Lab Certificate (COA) No.</value></data>
+  <data name="QcCertNumberShort" xml:space="preserve"><value>COA</value></data>
+  <data name="QcConcessionWarning" xml:space="preserve"><value>Mandatory lab test failed: accepting blocked stock requires entering a Defect Reason or Concession Notes.</value></data>
+  <data name="QcCoaBtn" xml:space="preserve"><value>COA</value></data>
+  <data name="QcCoaTitle" xml:space="preserve"><value>Certificate of Analysis (COA)</value></data>
+  <data name="QcLotDatesSummaryLabel" xml:space="preserve"><value>Mfg / Exp Dates</value></data>
+  <data name="QcActiveSpecLabel" xml:space="preserve"><value>Applicable QC Spec</value></data>
+  <data name="QcCoaNoInspections" xml:space="preserve"><value>No quality inspections have been recorded for this lot yet.</value></data>
+  <data name="QcCoaNoMeasurements" xml:space="preserve"><value>No laboratory test measurements recorded on this inspection.</value></data>
+  <data name="QcViewTraceabilityLink" xml:space="preserve"><value>Open Lot Traceability</value></data>
+  <data name="QcErrorParameterSymbolInvalid" xml:space="preserve"><value>Enter a valid parameter symbol (1 to 24 characters).</value></data>
+  <data name="QcErrorParameterUnitInvalid" xml:space="preserve"><value>Unit symbol cannot exceed 24 characters.</value></data>
+  <data name="QcErrorParameterInactive" xml:space="preserve"><value>Selected lab parameter is inactive or does not exist.</value></data>
+  <data name="QcErrorSpecTargetInvalid" xml:space="preserve"><value>Select a valid target Item or Classification and checkpoint.</value></data>
+  <data name="QcErrorSpecActiveConflict" xml:space="preserve"><value>An active specification already exists for this target and checkpoint.</value></data>
+  <data name="QcErrorSpecRangeInvalid" xml:space="preserve"><value>Minimum tolerance cannot exceed maximum tolerance, and duplicate parameters are not allowed.</value></data>
+  <data name="QcErrorSpecLinesRequired" xml:space="preserve"><value>At least one specification parameter line is required.</value></data>
+  <data name="QcErrorConcessionReasonRequired" xml:space="preserve"><value>A mandatory test failed; enter a defect reason or concession notes before accepting this lot.</value></data>
+  <data name="AccountSecurityTitle" xml:space="preserve"><value>Account Security</value></data>
+  <data name="AccountSecuritySubtitle" xml:space="preserve"><value>Manage sign-in, two-factor authentication, and access protection for your account.</value></data>
+  <data name="RecommendedBadge" xml:space="preserve"><value>Recommended</value></data>
+  <data name="SecurityPostureWeak" xml:space="preserve"><value>Your account security needs attention</value></data>
+  <data name="SecurityPostureMedium" xml:space="preserve"><value>Your account security is medium</value></data>
+  <data name="SecurityPostureStrong" xml:space="preserve"><value>Your account security is strong</value></data>
+  <data name="SecurityPostureCount" xml:space="preserve"><value>{0} of {1}</value></data>
+  <data name="SecurityPostureHintEnable2FA" xml:space="preserve"><value>Enable two-factor authentication to protect your account even if your password is compromised.</value></data>
+  <data name="SecurityPostureHintComplete" xml:space="preserve"><value>Your core security protections are active. Review your sessions periodically.</value></data>
+  <data name="SecurityRowPasswordTitle" xml:space="preserve"><value>Password</value></data>
+  <data name="SecurityRowPasswordLastChanged" xml:space="preserve"><value>Last changed: {0}. Do not reuse this password with any other service.</value></data>
+  <data name="SecurityRowPasswordStatusSet" xml:space="preserve"><value>Configured</value></data>
+  <data name="SecurityRowPasswordAction" xml:space="preserve"><value>Change password</value></data>
+  <data name="SecurityRow2FATitle" xml:space="preserve"><value>Two-Factor Authentication (Authenticator App)</value></data>
+  <data name="SecurityRow2FADesc" xml:space="preserve"><value>After your password, a 6-digit code from an authenticator app is required. Even if your password leaks, your account stays safe.</value></data>
+  <data name="SecurityRow2FAOn" xml:space="preserve"><value>On</value></data>
+  <data name="SecurityRow2FAOff" xml:space="preserve"><value>Off</value></data>
+  <data name="SecurityRow2FAEnableBtn" xml:space="preserve"><value>Enable</value></data>
+  <data name="SecurityRow2FADisableBtn" xml:space="preserve"><value>Disable</value></data>
+  <data name="SecurityRowRecoveryTitle" xml:space="preserve"><value>Recovery Codes</value></data>
+  <data name="SecurityRowRecoveryDescDisabled" xml:space="preserve"><value>10 single-use codes when you cannot access your authenticator app. Enable two-factor authentication first.</value></data>
+  <data name="SecurityRowRecoveryDescEnabled" xml:space="preserve"><value>{0} of 10 single-use recovery codes remaining. Store them in a safe place.</value></data>
+  <data name="SecurityRowRecoveryViewBtn" xml:space="preserve"><value>View codes</value></data>
+  <data name="SecurityRowRecoveryRegenerateBtn" xml:space="preserve"><value>Regenerate codes</value></data>
+  <data name="SecurityRowPasskeyTitle" xml:space="preserve"><value>Passkey</value></data>
+  <data name="SecurityRowPasskeyDesc" xml:space="preserve"><value>Passwordless sign-in with fingerprint, face recognition, or hardware security key.</value></data>
+  <data name="SecurityRowPasskeySoonBadge" xml:space="preserve"><value>Coming soon</value></data>
+  <data name="SecurityRowPasskeyAddBtn" xml:space="preserve"><value>Add passkey</value></data>
+  <data name="SecurityRowIdleTitle" xml:space="preserve"><value>Auto Sign-Out</value></data>
+  <data name="SecurityRowIdleDesc" xml:space="preserve"><value>Automatically sign out if you are inactive for this duration.</value></data>
+  <data name="SecurityIdleOff" xml:space="preserve"><value>Off</value></data>
+  <data name="SecurityIdleMinutes" xml:space="preserve"><value>{0} minutes</value></data>
+  <data name="SecurityIdleSavedNotice" xml:space="preserve"><value>Auto sign-out preference updated.</value></data>
+  <data name="SecurityRowSessionsTitle" xml:space="preserve"><value>Sessions &amp; Alerts</value></data>
+  <data name="SecurityRowSessionsDesc" xml:space="preserve"><value>{0} device(s) signed into your account.</value></data>
+  <data name="SecurityRowSessionsAlertOn" xml:space="preserve"><value>New-device sign-in alerts are on.</value></data>
+  <data name="SecurityRowSessionsAlertOff" xml:space="preserve"><value>New-device sign-in alerts are off.</value></data>
+  <data name="SecurityRowSessionsBtn" xml:space="preserve"><value>Manage sessions</value></data>
+  <data name="TotpSetupTitle" xml:space="preserve"><value>Enable Two-Factor Authentication</value></data>
+  <data name="TotpStep1Title" xml:space="preserve"><value>Install an authenticator app</value></data>
+  <data name="TotpStep1Desc" xml:space="preserve"><value>Such as Google Authenticator, Microsoft Authenticator, or Authy.</value></data>
+  <data name="TotpStep2Title" xml:space="preserve"><value>Scan the QR code</value></data>
+  <data name="TotpStep2ManualHint" xml:space="preserve"><value>Or enter this key manually:</value></data>
+  <data name="TotpCopyKeyBtn" xml:space="preserve"><value>Copy key</value></data>
+  <data name="TotpKeyCopied" xml:space="preserve"><value>Copied</value></data>
+  <data name="TotpStep3Title" xml:space="preserve"><value>Enter the 6-digit code</value></data>
+  <data name="TotpVerifyAndEnableBtn" xml:space="preserve"><value>Verify &amp; Enable</value></data>
+  <data name="TotpCancelBtn" xml:space="preserve"><value>Cancel</value></data>
+  <data name="RecoveryDialogTitle" xml:space="preserve"><value>Recovery Codes</value></data>
+  <data name="RecoveryDialogWarning" xml:space="preserve"><value>These codes are shown only once and each can be used only once. Keep them in a safe place.</value></data>
+  <data name="RecoveryCopyAllBtn" xml:space="preserve"><value>Copy all</value></data>
+  <data name="RecoveryCopiedAll" xml:space="preserve"><value>Copied all</value></data>
+  <data name="RecoveryDownloadBtn" xml:space="preserve"><value>Download</value></data>
+  <data name="RecoverySavedCheckbox" xml:space="preserve"><value>I have saved these codes in a safe place</value></data>
+  <data name="RecoveryDoneBtn" xml:space="preserve"><value>Done</value></data>
+  <data name="RecoveryRegenerateTitle" xml:space="preserve"><value>Regenerate Recovery Codes</value></data>
+  <data name="RecoveryRegenerateDesc" xml:space="preserve"><value>Generating new recovery codes invalidates all previous unused codes. Enter your current password to continue.</value></data>
+  <data name="RecoveryRegenerateConfirmBtn" xml:space="preserve"><value>Generate new codes</value></data>
+  <data name="Disable2FADialogTitle" xml:space="preserve"><value>Disable Two-Factor Authentication</value></data>
+  <data name="Disable2FADialogDesc" xml:space="preserve"><value>Disabling two-factor authentication reduces your account security. Enter your current password to confirm.</value></data>
+  <data name="Disable2FAConfirmBtn" xml:space="preserve"><value>Disable 2FA</value></data>
+  <data name="Login2FATitle" xml:space="preserve"><value>Two-Factor Verification</value></data>
+  <data name="Login2FASubtitle" xml:space="preserve"><value>Enter the 6-digit code from your authenticator app.</value></data>
+  <data name="Login2FARecoverySubtitle" xml:space="preserve"><value>Enter one of your single-use recovery codes.</value></data>
+  <data name="Login2FACodeLabel" xml:space="preserve"><value>6-digit verification code</value></data>
+  <data name="Login2FARecoveryCodeLabel" xml:space="preserve"><value>Recovery code</value></data>
+  <data name="Login2FARememberDevice" xml:space="preserve"><value>Remember this device for 30 days</value></data>
+  <data name="Login2FAVerifyBtn" xml:space="preserve"><value>Verify</value></data>
+  <data name="Login2FAUseRecoveryLink" xml:space="preserve"><value>Use a recovery code</value></data>
+  <data name="Login2FAUseAuthenticatorLink" xml:space="preserve"><value>Use authenticator app</value></data>
+  <data name="Login2FABackToLogin" xml:space="preserve"><value>Back to sign in</value></data>
+  <data name="Home2FABannerTitle" xml:space="preserve"><value>Two-factor authentication is off</value></data>
+  <data name="Home2FABannerBody" xml:space="preserve"><value>With a code from an authenticator app, your account stays protected even if your password is leaked. Setup takes about 2 minutes. Selecting "Later" hides this for 7 days.</value></data>
+  <data name="Home2FABannerEnableBtn" xml:space="preserve"><value>Enable</value></data>
+  <data name="Home2FABannerLaterBtn" xml:space="preserve"><value>Later</value></data>
+  <data name="ChangePwd2FAPromptTitle" xml:space="preserve"><value>Make your account even safer</value></data>
+  <data name="ChangePwd2FAPromptBody" xml:space="preserve"><value>Two-factor authentication is still off on your account. Enable it now for stronger protection.</value></data>
+  <data name="ChangePwd2FAPromptBtn" xml:space="preserve"><value>Enable 2FA</value></data>
+  <data name="NotifTitle_TwoFactorReminder" xml:space="preserve"><value>Strengthen your account security</value></data>
+  <data name="NotifBody_TwoFactorReminder" xml:space="preserve"><value>Two-factor authentication is off. Enable it in Account Security.</value></data>
+  <data name="NotifAction_ReviewSecurity" xml:space="preserve"><value>Review account security</value></data>
+  <data name="SecurityErrorInvalidCode" xml:space="preserve"><value>The verification code is invalid or expired.</value></data>
+  <data name="SecurityErrorCurrentPassword" xml:space="preserve"><value>The current password is incorrect.</value></data>
+  <data name="SecurityError2FANotEnabled" xml:space="preserve"><value>Two-factor authentication is not enabled on this account.</value></data>
+  <data name="SecuritySuccess2FAEnabled" xml:space="preserve"><value>Two-factor authentication has been enabled.</value></data>
+  <data name="SecuritySuccess2FADisabled" xml:space="preserve"><value>Two-factor authentication has been disabled.</value></data>
+  <data name="SecuritySuccessRecoveryRegenerated" xml:space="preserve"><value>New recovery codes have been generated. Previous codes are no longer valid.</value></data>
+  <data name="AuditEv_TwoFactorEnabled" xml:space="preserve"><value>Two-Factor Authentication Enabled</value></data>
+  <data name="AuditEv_TwoFactorDisabled" xml:space="preserve"><value>Two-Factor Authentication Disabled</value></data>
+  <data name="AuditEv_RecoveryCodesGenerated" xml:space="preserve"><value>Recovery Codes Generated</value></data>
+  <data name="AuditEv_RecoveryCodeRedeemed" xml:space="preserve"><value>Recovery Code Used</value></data>
+  <data name="AuditEv_IdleTimeoutUpdated" xml:space="preserve"><value>Auto Sign-Out Updated</value></data>
+  <data name="AuditEv_DeviceTrusted" xml:space="preserve"><value>Device Trusted for 30 Days</value></data>
+  <data name="MySettingsMenuTitle" xml:space="preserve"><value>My Settings</value></data>
+  <data name="SecurityOverviewTab" xml:space="preserve"><value>Security Overview</value></data>
+  <data name="SecurityRowPasskeyCount" xml:space="preserve"><value>{0} passkey(s) registered</value></data>
+  <data name="SecurityRowPasskeyNone" xml:space="preserve"><value>None</value></data>
+  <data name="SecurityPasskeyModalTitle" xml:space="preserve"><value>Add Passkey</value></data>
+  <data name="SecurityPasskeyNameLabel" xml:space="preserve"><value>Passkey name</value></data>
+  <data name="SecurityPasskeyNamePlaceholder" xml:space="preserve"><value>e.g. Work Laptop or Windows Hello</value></data>
+  <data name="SecurityPasskeyCreateBtn" xml:space="preserve"><value>Create Passkey</value></data>
+  <data name="SecurityPasskeyRemoveBtn" xml:space="preserve"><value>Remove</value></data>
+  <data name="SecurityPasskeyUnsupported" xml:space="preserve"><value>Passkeys are not supported in this browser or context.</value></data>
+  <data name="SecurityPasskeyRegisteredNotice" xml:space="preserve"><value>Passkey registered successfully.</value></data>
+  <data name="SecurityPasskeyRemovedNotice" xml:space="preserve"><value>Passkey removed.</value></data>
+  <data name="LoginPasskeyBtn" xml:space="preserve"><value>Sign in with a Passkey</value></data>
+  <data name="AuditEv_PasskeyRegistered" xml:space="preserve"><value>Passkey Registered</value></data>
+  <data name="AuditEv_PasskeyRemoved" xml:space="preserve"><value>Passkey Removed</value></data>
+  <data name="AuditEv_PasskeySignIn" xml:space="preserve"><value>Signed In with Passkey</value></data>
+  <data name="AuditEv_TwoFactorReset" xml:space="preserve"><value>Two-Factor Authentication Reset by Admin</value></data>
+  <data name="AuditEv_SessionsRevokedByAdmin" xml:space="preserve"><value>All Sessions Revoked by Admin</value></data>
+  <data name="AuditEv_AccountLockoutCleared" xml:space="preserve"><value>Account Lockout Cleared</value></data>
+  <data name="PermOpResetTwoFactor" xml:space="preserve"><value>Reset user two-factor authentication</value></data>
+  <data name="UserErrorCannotResetOwnTwoFactor" xml:space="preserve"><value>You cannot reset two-factor authentication on your own account.</value></data>
+  <data name="UserErrorTwoFactorReasonRequired" xml:space="preserve"><value>Enter a reason and confirm identity verification before resetting 2FA.</value></data>
+  <data name="NotifTitle_TwoFactorResetAlert" xml:space="preserve"><value>Two-factor authentication was reset</value></data>
+  <data name="NotifBody_TwoFactorResetAlert" xml:space="preserve"><value>An administrator reset two-factor authentication for account {0}. Sign in and re-enable 2FA immediately if this was unexpected.</value></data>
+  <data name="UserEditModalTitle" xml:space="preserve"><value>Edit User</value></data>
+  <data name="UserTabAccess" xml:space="preserve"><value>Access</value></data>
+  <data name="UserTabSecurity" xml:space="preserve"><value>Security</value></data>
+  <data name="UserOrgMembershipCardTitle" xml:space="preserve"><value>Organization Membership</value></data>
+  <data name="UserLockStatusLabel" xml:space="preserve"><value>Sign-in lock:</value></data>
+  <data name="UserLockStatusOpen" xml:space="preserve"><value>Open</value></data>
+  <data name="UserLockStatusLocked" xml:space="preserve"><value>Locked</value></data>
+  <data name="User2FAStatusTitle" xml:space="preserve"><value>Two-Factor Authentication</value></data>
+  <data name="User2FAEnabledMeta" xml:space="preserve"><value>Enabled: {0} · Remaining recovery codes: {1}</value></data>
+  <data name="User2FADisabledHint" xml:space="preserve"><value>Two-factor authentication is not currently enabled on this account.</value></data>
+  <data name="User2FAResetHint" xml:space="preserve"><value>For users who lost both their authenticator app and recovery codes. The user will be prompted to set up 2FA on next sign-in.</value></data>
+  <data name="User2FAResetBtn" xml:space="preserve"><value>Reset 2FA</value></data>
+  <data name="UserSessionsCardTitle" xml:space="preserve"><value>Sessions</value></data>
+  <data name="UserActiveSessionsCount" xml:space="preserve"><value>{0} active session(s)</value></data>
+  <data name="UserRevokeAllSessionsBtn" xml:space="preserve"><value>Revoke all sessions</value></data>
+  <data name="UserRevokeSessionsSuccess" xml:space="preserve"><value>All active sessions for this user have been revoked.</value></data>
+  <data name="User2FAResetDialogTitle" xml:space="preserve"><value>Reset Two-Factor Authentication?</value></data>
+  <data name="User2FAResetWarning" xml:space="preserve"><value>This removes the user's authenticator key, recovery codes, and trusted 30-day devices, and closes all active sessions.</value></data>
+  <data name="User2FAResetBody" xml:space="preserve"><value>User {0} will be required to re-enable 2FA on their next sign-in. A security alert will be sent and this event will be audited.</value></data>
+  <data name="User2FAResetReasonLabel" xml:space="preserve"><value>Reason (required)</value></data>
+  <data name="User2FAResetReasonPlaceholder" xml:space="preserve"><value>e.g. Lost phone, verified identity by phone</value></data>
+  <data name="User2FAResetIdentityCheck" xml:space="preserve"><value>I have verified the user's identity through a trusted channel (in person or by phone).</value></data>
+  <data name="User2FAResetConfirmBtn" xml:space="preserve"><value>Reset 2FA</value></data>
+  <data name="User2FAResetSuccess" xml:space="preserve"><value>Two-factor authentication was reset and active sessions were revoked.</value></data>
+  <data name="UserMustChangePasswordLabel" xml:space="preserve"><value>User must change password on next sign-in</value></data>
+  <data name="UserCreateInOrgSubtitle" xml:space="preserve"><value>Will be created in organization {0}.</value></data>
+  <data name="UserUsernamePlaceholder" xml:space="preserve"><value>e.g. operator1</value></data>
+  <data name="UserUsernameAllowedHint" xml:space="preserve"><value>1 to 128 English characters: letters, digits, or . _ @ + -</value></data>
+  <data name="UserUsernameInvalidError" xml:space="preserve"><value>Username may contain only letters, digits, and . _ @ + -</value></data>
+  <data name="UserGenerateRandomPassword" xml:space="preserve"><value>Generate random password</value></data>
+  <data name="UserPasswordStrengthMin" xml:space="preserve"><value>Password must be at least 12 characters.</value></data>
+  <data name="UserPasswordStrengthMedium" xml:space="preserve"><value>Acceptable password strength.</value></data>
+  <data name="UserPasswordStrengthStrong" xml:space="preserve"><value>Strong password.</value></data>
+  <data name="UserOrgAdminSwitchDesc" xml:space="preserve"><value>Administrative access to users and settings in this organization.</value></data>
+  <data name="UserSitesSelectedCount" xml:space="preserve"><value>{0} of {1} selected</value></data>
+  <data name="PermSummaryCount" xml:space="preserve"><value>{0} of {1} permissions</value></data>
+  <data name="PermSummaryBreakdown" xml:space="preserve"><value>{0} via role · {1} direct</value></data>
+  <data name="PermSummaryFullAccess" xml:space="preserve"><value>Full access</value></data>
+  <data name="PermRolesLabel" xml:space="preserve"><value>Roles:</value></data>
+  <data name="PermAddRoleChipBtn" xml:space="preserve"><value>+ Add role</value></data>
+  <data name="PermRemoveRoleAria" xml:space="preserve"><value>Remove role {0}</value></data>
+  <data name="PermFilterAll" xml:space="preserve"><value>All</value></data>
+  <data name="PermFilterGranted" xml:space="preserve"><value>Granted only</value></data>
+  <data name="PermFilterDirect" xml:space="preserve"><value>Direct only</value></data>
+  <data name="PermFilterChanges" xml:space="preserve"><value>Changes</value></data>
+  <data name="PermSearchPageOrOpPlaceholder" xml:space="preserve"><value>Search page or operation</value></data>
+  <data name="PermAccordionRowCount" xml:space="preserve"><value>{0} of {1}</value></data>
+  <data name="PermChangesBadge" xml:space="preserve"><value>{0} change(s)</value></data>
+  <data name="PermSelectAllEditable" xml:space="preserve"><value>Select all editable</value></data>
+  <data name="PermClearDirect" xml:space="preserve"><value>Clear direct</value></data>
+  <data name="PermBadgeRole" xml:space="preserve"><value>Role</value></data>
+  <data name="PermBadgeNew" xml:space="preserve"><value>New</value></data>
+  <data name="PermLegendRole" xml:space="preserve"><value>Via role (locked)</value></data>
+  <data name="PermLegendDirect" xml:space="preserve"><value>Direct</value></data>
+  <data name="PermLegendUnsaved" xml:space="preserve"><value>Unsaved change</value></data>
+  <data name="PermLegendNone" xml:space="preserve"><value>None</value></data>
+  <data name="PermTooltipViaRole" xml:space="preserve"><value>Via: {0}</value></data>
+  <data name="PermUnsavedChangesCount" xml:space="preserve"><value>{0} unsaved change(s)</value></data>
+  <data name="PermEmptyFilterResult" xml:space="preserve"><value>No pages match the current filter.</value></data>
+  <data name="SalesDispatch" xml:space="preserve"><value>Sales &amp; Dispatch</value></data>
+  <data name="SalesDispatchCaption" xml:space="preserve"><value>Manage sales orders, stock reservations, and lot-tracked dispatches with COA verification.</value></data>
+  <data name="SalesTabOrders" xml:space="preserve"><value>Sales Orders</value></data>
+  <data name="SalesTabDispatches" xml:space="preserve"><value>Dispatches</value></data>
+  <data name="SalesCustomerColumn" xml:space="preserve"><value>Customer</value></data>
+  <data name="SalesShippingAddress" xml:space="preserve"><value>Shipping address</value></data>
+  <data name="SalesOrderCreateButton" xml:space="preserve"><value>New sales order</value></data>
+  <data name="SalesOrderEditTitle" xml:space="preserve"><value>Edit draft sales order</value></data>
+  <data name="SalesOrderNumber" xml:space="preserve"><value>SO number</value></data>
+  <data name="SalesRequestedDate" xml:space="preserve"><value>Requested delivery</value></data>
+  <data name="SalesSourceWarehouse" xml:space="preserve"><value>Source warehouse</value></data>
+  <data name="SalesOrderStatusDraft" xml:space="preserve"><value>Draft</value></data>
+  <data name="SalesOrderStatusApproved" xml:space="preserve"><value>Approved</value></data>
+  <data name="SalesOrderStatusPartiallyDispatched" xml:space="preserve"><value>Partially dispatched</value></data>
+  <data name="SalesOrderStatusDispatched" xml:space="preserve"><value>Dispatched</value></data>
+  <data name="SalesOrderStatusCancelled" xml:space="preserve"><value>Cancelled</value></data>
+  <data name="SalesOrderStatusClosed" xml:space="preserve"><value>Closed</value></data>
+  <data name="SalesDispatchedQty" xml:space="preserve"><value>Dispatched</value></data>
+  <data name="SalesRemainingQty" xml:space="preserve"><value>Remaining</value></data>
+  <data name="SalesReserveStockButton" xml:space="preserve"><value>Reserve stock</value></data>
+  <data name="SalesReservationsTitle" xml:space="preserve"><value>Stock reservations</value></data>
+  <data name="SalesReleaseReservation" xml:space="preserve"><value>Release</value></data>
+  <data name="SalesDispatchButton" xml:space="preserve"><value>Dispatch</value></data>
+  <data name="SalesDispatchModalTitle" xml:space="preserve"><value>Post delivery order (dispatch)</value></data>
+  <data name="SalesPostDispatchButton" xml:space="preserve"><value>Post dispatch</value></data>
+  <data name="SalesDispatchNumber" xml:space="preserve"><value>Dispatch #</value></data>
+  <data name="SalesDispatchDate" xml:space="preserve"><value>Dispatch date</value></data>
+  <data name="SalesDispatchPosted" xml:space="preserve"><value>Posted</value></data>
+  <data name="SalesDispatchReversed" xml:space="preserve"><value>Reversed</value></data>
+  <data name="SalesReverseButton" xml:space="preserve"><value>Reverse</value></data>
+  <data name="SalesCarrierName" xml:space="preserve"><value>Carrier</value></data>
+  <data name="SalesTrackingNumber" xml:space="preserve"><value>Tracking #</value></data>
+  <data name="SalesDispatchPickLots" xml:space="preserve"><value>Pick approved lots &amp; COA</value></data>
+  <data name="PermPageSales" xml:space="preserve"><value>Sales &amp; Dispatch</value></data>
+  <data name="PermOpManageCustomers" xml:space="preserve"><value>Manage customers</value></data>
+  <data name="PermOpDispatchSales" xml:space="preserve"><value>Dispatch &amp; reverse deliveries</value></data>
+  <data name="AuditEv_CustomerCreated" xml:space="preserve"><value>Customer created</value></data>
+  <data name="AuditEv_CustomerUpdated" xml:space="preserve"><value>Customer updated</value></data>
+  <data name="AuditEv_CustomerActivated" xml:space="preserve"><value>Customer activated</value></data>
+  <data name="AuditEv_CustomerDeactivated" xml:space="preserve"><value>Customer deactivated</value></data>
+  <data name="AuditEv_SalesOrderCreated" xml:space="preserve"><value>Sales order created</value></data>
+  <data name="AuditEv_SalesOrderUpdated" xml:space="preserve"><value>Sales order updated</value></data>
+  <data name="AuditEv_SalesOrderApproved" xml:space="preserve"><value>Sales order approved</value></data>
+  <data name="AuditEv_SalesOrderDispatched" xml:space="preserve"><value>Sales order dispatched</value></data>
+  <data name="AuditEv_SalesOrderClosed" xml:space="preserve"><value>Sales order closed</value></data>
+  <data name="AuditEv_SalesOrderCancelled" xml:space="preserve"><value>Sales order cancelled</value></data>
+  <data name="AuditEv_DeliveryOrderPosted" xml:space="preserve"><value>Delivery order posted</value></data>
+  <data name="AuditEv_DeliveryOrderReversed" xml:space="preserve"><value>Delivery order reversed</value></data>
+  <data name="AuditEv_SalesActionRejected" xml:space="preserve"><value>Sales action rejected</value></data>
+  <data name="SalesOrderModalSubtitle" xml:space="preserve"><value>Enter customer order details, check available stock, and add sellable item lines.</value></data>
+  <data name="SalesSelectCustomerPlaceholder" xml:space="preserve"><value>Select customer...</value></data>
+  <data name="SalesStockAvailableBadge" xml:space="preserve"><value>Available: {0} {1}</value></data>
+  <data name="SalesStockZeroBadge" xml:space="preserve"><value>Available: 0 {0} (needs production/supply)</value></data>
+  <data name="SalesInventoryInfoHint" xml:space="preserve"><value>Drafting or approving a sales order does not deduct stock. Use Reserve Stock to lock inventory or Post Dispatch to deduct stock with row-level concurrency locking.</value></data>
+  <data name="DocumentNumbering" xml:space="preserve"><value>Document Numbering</value></data>
+  <data name="DocSeqCaption" xml:space="preserve"><value>Configure automatic document prefixes, year format, zero-padding, starting numbers, and manual override policy.</value></data>
+  <data name="DocSeqTypeCol" xml:space="preserve"><value>Document type</value></data>
+  <data name="DocSeqPrefixCol" xml:space="preserve"><value>Prefix</value></data>
+  <data name="DocSeqSeparatorCol" xml:space="preserve"><value>Separator</value></data>
+  <data name="DocSeqYearModeCol" xml:space="preserve"><value>Year format</value></data>
+  <data name="DocSeqPaddingCol" xml:space="preserve"><value>Digits</value></data>
+  <data name="DocSeqNextNumCol" xml:space="preserve"><value>Next #</value></data>
+  <data name="DocSeqPreviewCol" xml:space="preserve"><value>Next preview</value></data>
+  <data name="DocSeqOverrideCol" xml:space="preserve"><value>Manual edit</value></data>
+  <data name="DocSeqOverrideAllowed" xml:space="preserve"><value>Allowed</value></data>
+  <data name="DocSeqOverrideLocked" xml:space="preserve"><value>Auto (locked)</value></data>
+  <data name="DocSeqEditTitle" xml:space="preserve"><value>Configure numbering rule</value></data>
+  <data name="DocSeqSepNone" xml:space="preserve"><value>None</value></data>
+  <data name="DocSeqYearNone" xml:space="preserve"><value>No year</value></data>
+  <data name="DocSeqYearPersian" xml:space="preserve"><value>Persian (1405)</value></data>
+  <data name="DocSeqYearGregorian" xml:space="preserve"><value>Gregorian (2026)</value></data>
+  <data name="DocSeqOverrideHint" xml:space="preserve"><value>Allow operators to type or edit document numbers manually instead of strictly using the auto-generated sequence.</value></data>
+  <data name="DocSeqTypeSalesOrder" xml:space="preserve"><value>Sales Order</value></data>
+  <data name="DocSeqTypeDeliveryOrder" xml:space="preserve"><value>Delivery / Dispatch</value></data>
+  <data name="DocSeqTypePurchaseOrder" xml:space="preserve"><value>Purchase Order</value></data>
+  <data name="DocSeqTypePurchaseReceipt" xml:space="preserve"><value>Goods Receipt</value></data>
+  <data name="DocSeqTypeProductionOrder" xml:space="preserve"><value>Production Order</value></data>
+  <data name="DocSeqTypeInventoryTxn" xml:space="preserve"><value>Inventory Document</value></data>
+  <data name="DocSeqTypeInventoryRev" xml:space="preserve"><value>Inventory Reversal</value></data>
+  <data name="DocSeqTypeQualityInsp" xml:space="preserve"><value>Quality Inspection</value></data>
+  <data name="DocSeqTypeQualityScrap" xml:space="preserve"><value>Quality Scrap</value></data>
+  <data name="PermPageDocumentSequences" xml:space="preserve"><value>Document Numbering</value></data>
+  <data name="PermOpManageDocSequences" xml:space="preserve"><value>Configure numbering rules</value></data>
+  <data name="AuditEv_DocumentSequenceCreated" xml:space="preserve"><value>Numbering sequence created</value></data>
+  <data name="AuditEv_DocumentSequenceUpdated" xml:space="preserve"><value>Numbering sequence updated</value></data>
+  <data name="AuditEv_DocumentSequenceActionRejected" xml:space="preserve"><value>Numbering action rejected</value></data>
+  <data name="MasterDataNavGroup" xml:space="preserve"><value>Master Data &amp; Definitions</value></data>
+  <data name="ProcurementNavGroup" xml:space="preserve"><value>Procurement &amp; Raw Materials</value></data>
+  <data name="QualityNavGroup" xml:space="preserve"><value>Quality Control</value></data>
+  <data name="SalesNavGroup" xml:space="preserve"><value>Sales &amp; Product Delivery</value></data>
+  <data name="TraceabilityReportingNavGroup" xml:space="preserve"><value>Traceability &amp; Analytics</value></data>
+  <data name="BusinessPartners" xml:space="preserve"><value>Business Partners</value></data>
+  <data name="BusinessPartnersCaption" xml:space="preserve"><value>Manage commercial partners, suppliers, customers, and contractors.</value></data>
+  <data name="DocSeqTypeBusinessPartner" xml:space="preserve"><value>Business Partner</value></data>
+  <data name="PermPageBusinessPartners" xml:space="preserve"><value>Business Partners</value></data>
+  <data name="PermOpManageBusinessPartners" xml:space="preserve"><value>Manage business partners</value></data>
+  <data name="AuditEv_BusinessPartnerCreated" xml:space="preserve"><value>Business partner created</value></data>
+  <data name="AuditEv_BusinessPartnerUpdated" xml:space="preserve"><value>Business partner updated</value></data>
+  <data name="AuditEv_BusinessPartnerActivated" xml:space="preserve"><value>Business partner activated</value></data>
+  <data name="AuditEv_BusinessPartnerDeactivated" xml:space="preserve"><value>Business partner deactivated</value></data>
+  <data name="AuditEv_BusinessPartnerActionRejected" xml:space="preserve"><value>Business partner action rejected</value></data>
+  <data name="BpPersonType" xml:space="preserve"><value>Person Type</value></data>
+  <data name="BpPersonLegal" xml:space="preserve"><value>Legal Entity</value></data>
+  <data name="BpPersonNatural" xml:space="preserve"><value>Natural Person</value></data>
+  <data name="BpRolesLabel" xml:space="preserve"><value>Commercial Roles</value></data>
+  <data name="BpRoleSupplier" xml:space="preserve"><value>Supplier</value></data>
+  <data name="BpRoleCustomer" xml:space="preserve"><value>Customer</value></data>
+  <data name="BpRoleContractor" xml:space="preserve"><value>Contractor</value></data>
+  <data name="BpGeneralInfo" xml:space="preserve"><value>General Information</value></data>
+  <data name="BpFullName" xml:space="preserve"><value>Full Name</value></data>
+  <data name="BpNationalCode" xml:space="preserve"><value>National Code</value></data>
+  <data name="BpCode" xml:space="preserve"><value>Business Partner Code</value></data>
+  <data name="BpEconomicCode" xml:space="preserve"><value>Economic Code</value></data>
+  <data name="BpCompanyName" xml:space="preserve"><value>Company Name</value></data>
+  <data name="BpNationalLegalId" xml:space="preserve"><value>National Legal ID</value></data>
+  <data name="BpContactInfo" xml:space="preserve"><value>Contact Information</value></data>
+  <data name="BpMobile" xml:space="preserve"><value>Mobile Phone</value></data>
+  <data name="BpPhone" xml:space="preserve"><value>Phone Number</value></data>
+  <data name="BpEmail" xml:space="preserve"><value>Email</value></data>
+  <data name="BpWebsite" xml:space="preserve"><value>Website</value></data>
+  <data name="BpAddressInfo" xml:space="preserve"><value>Address Information</value></data>
+  <data name="BpCountryProvince" xml:space="preserve"><value>Country &amp; Province</value></data>
+  <data name="BpCityAddress" xml:space="preserve"><value>City &amp; Address</value></data>
+  <data name="BpCity" xml:space="preserve"><value>City</value></data>
+  <data name="BpCountry" xml:space="preserve"><value>Country</value></data>
+  <data name="BpProvince" xml:space="preserve"><value>Province</value></data>
+  <data name="BpAddress" xml:space="preserve"><value>Address</value></data>
+  <data name="BpCreateButton" xml:space="preserve"><value>New Business Partner</value></data>
+  <data name="BpCreateTitle" xml:space="preserve"><value>New Business Partner</value></data>
+  <data name="BpEditTitle" xml:space="preserve"><value>Edit Business Partner</value></data>
+  <data name="BpDetailTitle" xml:space="preserve"><value>Business Partner Details</value></data>
+  <data name="BpRoleRequired" xml:space="preserve"><value>At least one commercial role must be selected.</value></data>
+  <data name="BpConfirmDeactivate" xml:space="preserve"><value>Are you sure you want to deactivate {0}?</value></data>
+  <data name="BpConfirmActivate" xml:space="preserve"><value>Are you sure you want to activate {0}?</value></data>
+  <data name="BpAllRoles" xml:space="preserve"><value>All Roles</value></data>
+  <data name="BpFilterRole" xml:space="preserve"><value>Filter by Role</value></data>
+  <data name="BpFirstName" xml:space="preserve"><value>First Name</value></data>
+  <data name="BpLastName" xml:space="preserve"><value>Last Name</value></data>
+  <data name="BpContactFirstName" xml:space="preserve"><value>Contact First Name</value></data>
+  <data name="BpContactLastName" xml:space="preserve"><value>Contact Last Name</value></data>
+  <data name="BpContactPerson" xml:space="preserve"><value>Contact Person</value></data>
+  <data name="BpRolesHint" xml:space="preserve"><value>Select at least one option</value></data>
+  <data name="BpSelectProvince" xml:space="preserve"><value>Select Province</value></data>
+  <data name="BpSelectCity" xml:space="preserve"><value>Select City</value></data>
+  <data name="BpRequiredFieldHint" xml:space="preserve"><value>* Required field</value></data>
+  <data name="BpNationalCodeLengthError" xml:space="preserve"><value>National code must be exactly 10 digits.</value></data>
+  <data name="BpNationalLegalIdFormatError" xml:space="preserve"><value>National legal ID must contain digits only.</value></data>
+  <data name="BpEconomicCodeFormatError" xml:space="preserve"><value>Economic code must contain digits only.</value></data>
+  <data name="BpMobileFormatError" xml:space="preserve"><value>Mobile number must be 11 digits starting with 09.</value></data>
+  <data name="BpPhoneFormatError" xml:space="preserve"><value>Landline phone must be numeric and start with 0.</value></data>
+  <data name="BpFirstLastNameRequired" xml:space="preserve"><value>First name and last name are required.</value></data>
+  <data name="BpCompanyNameRequired" xml:space="preserve"><value>Company name is required.</value></data>
+  <data name="BpAddressPlaceholder" xml:space="preserve"><value>Street, No., Unit</value></data>
+  <data name="BpNationalCodePlaceholder" xml:space="preserve"><value>10 digits</value></data>
+  <data name="BpNationalLegalIdPlaceholder" xml:space="preserve"><value>11 digits</value></data>
+  <data name="BpMobilePlaceholder" xml:space="preserve"><value>09121234567</value></data>
+  <data name="BpPhonePlaceholder" xml:space="preserve"><value>02112345678</value></data>
+  <data name="BpEmailPlaceholder" xml:space="preserve"><value>name@example.com</value></data>
+  <data name="BpWebsitePlaceholder" xml:space="preserve"><value>https://</value></data>
+  <data name="PartnerPickerSelectSupplier" xml:space="preserve"><value>Select supplier...</value></data>
+  <data name="PartnerPickerSelectCustomer" xml:space="preserve"><value>Select customer...</value></data>
+  <data name="PartnerPickerSelectPartner" xml:space="preserve"><value>Select business partner...</value></data>
+  <data name="PartnerPickerSearchPlaceholder" xml:space="preserve"><value>Search name, code, city, mobile, or ID...</value></data>
+  <data name="PartnerPickerChange" xml:space="preserve"><value>Change</value></data>
+  <data name="PartnerPickerClear" xml:space="preserve"><value>Clear selection</value></data>
+  <data name="PartnerPickerEmpty" xml:space="preserve"><value>No matching records found.</value></data>
+  <data name="PartnerPickerTotalSuppliers" xml:space="preserve"><value>{0} suppliers</value></data>
+  <data name="PartnerPickerTotalCustomers" xml:space="preserve"><value>{0} customers</value></data>
+  <data name="PartnerPickerTotalPartners" xml:space="preserve"><value>{0} partners</value></data>
+  <data name="PartnerPickerCreateNewSupplier" xml:space="preserve"><value>+ New supplier</value></data>
+  <data name="PartnerPickerCreateNewCustomer" xml:space="preserve"><value>+ New customer</value></data>
+  <data name="PartnerPickerCreateNewPartner" xml:space="preserve"><value>+ New partner</value></data>
+  <data name="PartnerPickerPage" xml:space="preserve"><value>Page {0} of {1}</value></data>
+  <data name="PartnerPickerPrev" xml:space="preserve"><value>Previous</value></data>
+  <data name="PartnerPickerNext" xml:space="preserve"><value>Next</value></data>
+  <data name="PartnerPickerTitleSupplier" xml:space="preserve"><value>Select Supplier</value></data>
+  <data name="PartnerPickerTitleCustomer" xml:space="preserve"><value>Select Customer</value></data>
+  <data name="PartnerPickerTitlePartner" xml:space="preserve"><value>Select Business Partner</value></data>
+  <data name="BpSearchPlaceholder" xml:space="preserve"><value>Name, code, legal ID, or national ID</value></data>
+  <data name="BpAllPersonTypes" xml:space="preserve"><value>All</value></data>
+  <data name="BpPersonLegalTooltip" xml:space="preserve"><value>Legal Entity</value></data>
+  <data name="BpPersonNaturalTooltip" xml:space="preserve"><value>Natural Person</value></data>
+  <data name="BpAdaptiveLegal" xml:space="preserve"><value>Legal ID</value></data>
+  <data name="BpAdaptiveNatural" xml:space="preserve"><value>National ID</value></data>
+  <data name="SalesErrorCustomerNotFound" xml:space="preserve"><value>Customer was not found.</value></data>
+  <data name="SalesErrorCustomerInactive" xml:space="preserve"><value>Customer is inactive.</value></data>
+  <data name="SalesErrorCarrierInvalid" xml:space="preserve"><value>Carrier name is invalid.</value></data>
+  <data name="SalesErrorTrackingNumberInvalid" xml:space="preserve"><value>Tracking number is invalid.</value></data>
+  <data name="SalesErrorEmptyOrder" xml:space="preserve"><value>Sales order must contain at least one line item.</value></data>
+  <data name="SalesErrorEmptyDispatch" xml:space="preserve"><value>Dispatch must contain at least one line item.</value></data>
+  <data name="SalesErrorItemNotSellable" xml:space="preserve"><value>Selected item is not marked as sellable.</value></data>
+  <data name="SalesErrorLotQuarantinedOrInsufficient" xml:space="preserve"><value>Selected lot is quarantined or does not have sufficient available stock.</value></data>
+  <data name="SalesErrorNotDraft" xml:space="preserve"><value>Only draft sales orders can be modified.</value></data>
+  <data name="SalesErrorHasDispatchesCannotCancel" xml:space="preserve"><value>Sales order has posted dispatches and cannot be cancelled.</value></data>
+  <data name="SalesErrorOverDispatch" xml:space="preserve"><value>Dispatched quantity exceeds remaining ordered quantity.</value></data>
+  <data name="DocSeqErrorDocumentTypeInvalid" xml:space="preserve"><value>Document type is invalid.</value></data>
+  <data name="DocSeqErrorPrefixInvalid" xml:space="preserve"><value>Prefix must be 1 to 12 alphanumeric characters.</value></data>
+  <data name="DocSeqErrorSeparatorInvalid" xml:space="preserve"><value>Separator must be a dash, underscore, or empty.</value></data>
+  <data name="DocSeqErrorYearModeInvalid" xml:space="preserve"><value>Year mode is invalid.</value></data>
+  <data name="DocSeqErrorPaddingInvalid" xml:space="preserve"><value>Padding digits must be between 3 and 8.</value></data>
+  <data name="DocSeqErrorNextNumberInvalid" xml:space="preserve"><value>Next sequence number must be greater than zero.</value></data>
+  <data name="BpPersonTypeInvalid" xml:space="preserve"><value>Person type is invalid.</value></data>
+  <data name="BpWebsiteInvalid" xml:space="preserve"><value>Website address is invalid.</value></data>
+  <data name="DiagErrorReferenceInvalid" xml:space="preserve"><value>Error reference is invalid.</value></data>
+  <data name="DiagOperationCodeInvalid" xml:space="preserve"><value>Operation code is invalid.</value></data>
+  <data name="DiagSiteRequiresOrganization" xml:space="preserve"><value>Site context requires a parent organization.</value></data>
+  <data name="Auth.RateLimitExceeded" xml:space="preserve"><value>Too many authentication attempts. Please try again in {0} seconds.</value></data>
+  <data name="Export.RateLimitExceeded" xml:space="preserve"><value>Too many export requests. Please try again in {0} seconds.</value></data>
+  <data name="Common.RateLimitExceeded" xml:space="preserve"><value>Too many requests. Please try again in {0} seconds.</value></data>
+</root>

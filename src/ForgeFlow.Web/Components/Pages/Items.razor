@@ -1,0 +1,677 @@
+@page "/items"
+@page "/organizations/{OrganizationId:long}/items"
+@using System.Globalization
+@using ForgeFlow.Application.Items
+@using ForgeFlow.Application.Organizations
+@using ForgeFlow.Application.Quality
+@using ForgeFlow.Application.Units
+@using ForgeFlow.Domain.Items
+@using ForgeFlow.Domain.Quality
+@using ForgeFlow.Web.Components.Pages.ItemSections
+@using ForgeFlow.Web.Roles
+@implements IDisposable
+@inject ItemUseCases ItemService
+@inject UnitUseCases UnitService
+@inject QualitySpecUseCases SpecService
+@inject ForgeFlow.Web.Organizations.ReadScopes Scopes
+@inject ITrustedActorAccessor Actors
+@inject IOrganizationPermissionEvaluator Permissions
+@inject IStringLocalizer<SharedResources> Text
+
+<PageTitle>@Text["Items"] - @Text["AppTitle"]</PageTitle>
+
+<section class="organization-reader" aria-labelledby="items-title">
+    <div class="read-page-head">
+        <div>
+            <h1 id="items-title">@Text["Items"]</h1>
+            <p class="write-hint">@Text["ItemsCaption"]</p>
+        </div>
+        @if (!initialLoading && pageError is null && available.Count > 0 && scopeCanManage)
+        {
+            <div class="read-head-actions">
+                @if (activeTab == TabItems)
+                {
+                    <BitButton Size="BitSize.Small" IconName="Add" Class="read-create-btn" OnClick="OpenCreateItem">
+                        @Text["ItemCreateButton"]
+                    </BitButton>
+                }
+                else if (activeTab == TabClassifications)
+                {
+                    <BitButton Variant="BitVariant.Outline" Size="BitSize.Small" Class="read-create-btn" OnClick="OpenCreateSet">
+                        @Text["ClassificationSetCreateButton"]
+                    </BitButton>
+                    <BitButton Size="BitSize.Small" IconName="Add" Class="read-create-btn"
+                               IsEnabled="@(classificationSets.Count > 0)" OnClick="OpenCreateClassification">
+                        @Text["ClassificationCreateButton"]
+                    </BitButton>
+                }
+                else
+                {
+                    <BitButton Size="BitSize.Small" IconName="Add" Class="read-create-btn" OnClick="OpenCreateAttribute">
+                        @Text["AttributeCreateButton"]
+                    </BitButton>
+                }
+            </div>
+        }
+    </div>
+
+    @if (pageNotice is not null)
+    {
+        <p role="status" class="read-page-notice write-saved">@pageNotice</p>
+    }
+
+    @if (initialLoading)
+    {
+        <p role="status" aria-live="polite">@Text["ReadLoading"]</p>
+    }
+    else if (pageError is not null)
+    {
+        <div class="read-state" role="alert">
+            <p>@Text[pageError]</p>
+            <BitButton Variant="BitVariant.Outline" Size="BitSize.Small" OnClick="ReloadScopeAsync">@Text["WriteReload"]</BitButton>
+        </div>
+    }
+    else
+    {
+        <div class="read-tab-bar" role="tablist" aria-label="@Text["Items"]">
+            <button type="button" role="tab" aria-selected="@(activeTab == TabItems)"
+                    class="read-tab-btn @(activeTab == TabItems ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabItems)">@Text["ItemsTab"]</button>
+            <button type="button" role="tab" aria-selected="@(activeTab == TabClassifications)"
+                    class="read-tab-btn @(activeTab == TabClassifications ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabClassifications)">@Text["ItemsClassificationsTab"]</button>
+            <button type="button" role="tab" aria-selected="@(activeTab == TabAttributes)"
+                    class="read-tab-btn @(activeTab == TabAttributes ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabAttributes)">@Text["ItemsAttributesTab"]</button>
+        </div>
+
+        <div class="read-toolbar-card">
+            @if (available.Count > 1)
+            {
+                <div class="read-field">
+                    <label for="items-scope">@Text["ReadScope"]</label>
+                    <select id="items-scope" aria-label="@Text["ReadScope"]" value="@scopeIndex" @onchange="ChangeScopeAsync">
+                        @for (var i = 0; i < available.Count; i++)
+                        {
+                            <option value="@i">@ScopeLabel(available[i])</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            @if (activeTab == TabItems)
+            {
+                <div class="read-field">
+                    <label for="items-cls-filter">@Text["ItemsClassificationsTab"]</label>
+                    <select id="items-cls-filter" value="@itemClassificationFilter" @onchange="ChangeItemClassificationFilterAsync">
+                        <option value="">@Text["ClassificationFilterAll"]</option>
+                        @foreach (var cls in activeClassifications)
+                        {
+                            <option value="@cls.Id">@cls.ClassificationSetName — @cls.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="read-field">
+                    <label for="items-cap-filter">@Text["ItemCapabilitiesLabel"]</label>
+                    <select id="items-cap-filter" value="@itemCapabilityFilter" @onchange="ChangeItemCapabilityFilterAsync">
+                        <option value="">@Text["ItemCapFilterAll"]</option>
+                        <option value="purchase">@Text["ItemCapPurchase"]</option>
+                        <option value="manufacture">@Text["ItemCapManufacture"]</option>
+                        <option value="sell">@Text["ItemCapSell"]</option>
+                        <option value="consume">@Text["ItemCapConsume"]</option>
+                    </select>
+                </div>
+            }
+            else if (activeTab == TabClassifications)
+            {
+                <div class="read-field">
+                    <label for="cls-set-filter">@Text["ClassificationSetLabel"]</label>
+                    <select id="cls-set-filter" value="@classificationSetFilter" @onchange="ChangeSetFilterAsync">
+                        <option value="">@Text["ClassificationSetAll"]</option>
+                        @foreach (var s in classificationSets)
+                        {
+                            <option value="@s.Id">@s.Code — @s.Name</option>
+                        }
+                    </select>
+                </div>
+            }
+            else
+            {
+                <div class="read-field">
+                    <label for="attr-type-filter">@Text["AttributeDataTypeLabel"]</label>
+                    <select id="attr-type-filter" value="@attributeTypeFilter" @onchange="ChangeAttrTypeFilterAsync">
+                        <option value="">@Text["AttributeDataTypeAll"]</option>
+                        @foreach (var dt in AllDataTypes)
+                        {
+                            <option value="@((byte)dt)">@Text[DataTypeResourceKey(dt)]</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            <div class="read-field">
+                <label for="items-search">@Text["ReadSearch"]</label>
+                <input id="items-search" type="search" value="@search" @oninput="OnSearchInput"
+                       maxlength="100" placeholder="@Text["ItemSearchPlaceholder"]" />
+            </div>
+
+            <label class="read-inactive">
+                <input type="checkbox" @bind="includeInactive" @bind:after="OnInactiveChanged" /> @Text["ReadInactive"]
+            </label>
+        </div>
+
+        @if (activeTab == TabItems)
+        {
+            <ItemGrid @ref="itemsGrid"
+                      OnRead="ReadItemsGridAsync"
+                      PageSizeOptions="@PageSizeOptions"
+                      GridStrings="@GridStrings"
+                      CanManage="@scopeCanManage"
+                      EditIcon="@EditIcon"
+                      OnOpenModal="args => OpenItemModal(args.Id, args.Edit)" />
+        }
+        else if (activeTab == TabClassifications)
+        {
+            <ClassificationGrid @ref="classificationsGrid"
+                                OnRead="ReadClassificationsGridAsync"
+                                PageSizeOptions="@PageSizeOptions"
+                                GridStrings="@GridStrings"
+                                CanManage="@scopeCanManage"
+                                EditIcon="@EditIcon"
+                                OnOpenModal="args => OpenClassificationModal(args.Id, args.Edit)" />
+        }
+        else
+        {
+            <AttributeGrid @ref="attributesGrid"
+                           OnRead="ReadAttributesGridAsync"
+                           PageSizeOptions="@PageSizeOptions"
+                           GridStrings="@GridStrings"
+                           CanManage="@scopeCanManage"
+                           EditIcon="@EditIcon"
+                           DataTypeResourceKey="DataTypeResourceKey"
+                           OnOpenModal="args => OpenAttributeModal(args.Id, args.Edit)" />
+        }
+    }
+</section>
+
+<CreateItemModal @ref="createItemModal"
+                 DialogClasses="@DialogClasses"
+                 CurrentScope="@CurrentScope"
+                 CurrentOrgId="@CurrentOrgId"
+                 ActiveUnits="@activeUnits"
+                 OnCreated="OnItemCreatedAsync" />
+
+<ItemEditorModal @ref="itemEditorModal"
+                 DialogClasses="@DialogClasses"
+                 @bind-IsOpen="itemModalOpen"
+                 @bind-IsOpen:after="OnItemModalOpenChanged"
+                 Scope="@CurrentScope"
+                 OrganizationId="@CurrentOrgId"
+                 CanManage="@scopeCanManage"
+                 ActiveUnits="@activeUnits"
+                 ClassificationSets="@classificationSets"
+                 ActiveClassifications="@activeClassifications"
+                 OnItemChanged="RefreshActiveGridAsync" />
+
+<CreateClassificationSetModal @ref="createSetModal"
+                              DialogClasses="@DialogClasses"
+                              CurrentScope="@CurrentScope"
+                              CurrentOrgId="@CurrentOrgId"
+                              OnCreated="OnClassificationCreatedAsync" />
+
+<CreateClassificationModal @ref="createClsModal"
+                           DialogClasses="@DialogClasses"
+                           CurrentScope="@CurrentScope"
+                           CurrentOrgId="@CurrentOrgId"
+                           ClassificationSets="@classificationSets"
+                           ActiveClassifications="@activeClassifications"
+                           OnCreated="OnClassificationCreatedAsync" />
+
+<ClassificationManagerModal @ref="clsManagerModal"
+                            DialogClasses="@DialogClasses"
+                            @bind-IsOpen="clsModalOpen"
+                            @bind-IsOpen:after="OnClsModalOpenChanged"
+                            Scope="@CurrentScope"
+                            OrganizationId="@CurrentOrgId"
+                            CanManage="@scopeCanManage"
+                            ActiveClassifications="@activeClassifications"
+                            OnClassificationChanged="OnClassificationSavedAsync" />
+
+<CreateAttributeModal @ref="createAttrModal"
+                      DialogClasses="@DialogClasses"
+                      CurrentScope="@CurrentScope"
+                      CurrentOrgId="@CurrentOrgId"
+                      ActiveUnits="@activeUnits"
+                      DataTypeResourceKey="DataTypeResourceKey"
+                      OnCreated="RefreshActiveGridAsync" />
+
+<AttributeEditorModal @ref="attrEditorModal"
+                      DialogClasses="@DialogClasses"
+                      @bind-IsOpen="attrModalOpen"
+                      @bind-IsOpen:after="OnAttrModalOpenChanged"
+                      Scope="@CurrentScope"
+                      OrganizationId="@CurrentOrgId"
+                      CanManage="@scopeCanManage"
+                      ActiveUnits="@activeUnits"
+                      DataTypeResourceKey="DataTypeResourceKey"
+                      OnAttributeChanged="RefreshActiveGridAsync" />
+
+@code {
+    [Parameter] public long? OrganizationId { get; set; }
+
+    private const byte TabItems = 0;
+    private const byte TabClassifications = 1;
+    private const byte TabAttributes = 2;
+    private static readonly int[] PageSizeOptions = [10, 25, 50, 100];
+    private static readonly AttributeDataType[] AllDataTypes = Enum.GetValues<AttributeDataType>();
+    private static readonly BitIconInfo EditIcon = BitIconInfo.Css("ff-icon ff-icon--edit");
+    private static readonly BitDialogClassStyles DialogClasses = new()
+    {
+        Container = "read-dialog",
+        Header = "read-dialog-header",
+        Body = "read-dialog-body",
+        CloseButton = "read-dialog-close",
+        Overlay = "read-dialog-overlay"
+    };
+
+    private ItemGrid? itemsGrid;
+    private ClassificationGrid? classificationsGrid;
+    private AttributeGrid? attributesGrid;
+
+    private IReadOnlyList<OrganizationScope> available = [];
+    private IReadOnlyDictionary<OrganizationScope, ForgeFlow.Web.Organizations.ScopeDisplayInfo> scopeLabels =
+        new Dictionary<OrganizationScope, ForgeFlow.Web.Organizations.ScopeDisplayInfo>();
+    private List<UnitSummary> activeUnits = [];
+    private List<ClassificationSetSummary> classificationSets = [];
+    private List<ClassificationSummary> activeClassifications = [];
+    private int scopeIndex;
+    private byte activeTab = TabItems;
+    private bool scopeCanManage;
+    private bool initialLoading = true;
+    private string? pageError;
+    private string? pageNotice;
+
+    private string itemClassificationFilter = string.Empty;
+    private string itemCapabilityFilter = string.Empty;
+    private string classificationSetFilter = string.Empty;
+    private string attributeTypeFilter = string.Empty;
+    private string search = string.Empty;
+    private bool includeInactive;
+    private readonly DebouncedSearchController _searchController = new(300);
+
+    public void Dispose()
+    {
+        _searchController.Dispose();
+        activeUnits.Clear();
+        classificationSets.Clear();
+        activeClassifications.Clear();
+    }
+
+    private void OnItemModalOpenChanged() { }
+    private void OnClsModalOpenChanged() { }
+    private void OnAttrModalOpenChanged() { }
+
+    private ItemEditorModal? itemEditorModal;
+    private bool itemModalOpen;
+
+    private CreateItemModal? createItemModal;
+    private CreateClassificationSetModal? createSetModal;
+    private CreateClassificationModal? createClsModal;
+    private ClassificationManagerModal? clsManagerModal;
+    private bool clsModalOpen;
+
+    private CreateAttributeModal? createAttrModal;
+    private AttributeEditorModal? attrEditorModal;
+    private bool attrModalOpen;
+
+    private OrganizationScope? CurrentScope => scopeIndex >= 0 && scopeIndex < available.Count ? available[scopeIndex] : null;
+    private long CurrentOrgId => CurrentScope switch
+    {
+        OrganizationScope.Organization o => o.OrganizationId,
+        OrganizationScope.Site s => s.OrganizationId,
+        _ => 0
+    };
+
+    private BitDataGridStrings GridStrings => new()
+    {
+        GridLabel = Text["Items"],
+        EmptyText = Text["ReadEmpty"],
+        NoMatchesText = Text["ReadEmpty"],
+        LoadingText = Text["ReadLoading"],
+        PagerRangeFormat = Text["GridPagerRange"],
+        PagerPageFormat = Text["GridPagerPage"],
+        PerPageFormat = Text["GridPerPage"],
+        RowsPerPageLabel = Text["GridRowsPerPage"],
+        FirstPageLabel = Text["GridFirstPage"],
+        PreviousPageLabel = Text["GridPreviousPage"],
+        NextPageLabel = Text["GridNextPage"],
+        LastPageLabel = Text["GridLastPage"],
+        AnnouncementPage = Text["GridPagerPage"]
+    };
+
+    protected override async Task OnParametersSetAsync() => await LoadAllAsync();
+
+    private async Task LoadAllAsync()
+    {
+        initialLoading = true;
+        pageError = null;
+        pageNotice = null;
+        try
+        {
+            available = await Scopes.LoadItemScopesAsync();
+            scopeLabels = await Scopes.LoadDisplayInfoAsync(available);
+        }
+        catch when (OrganizationId is long requestedOrgId)
+        {
+            available = [new OrganizationScope.Organization(requestedOrgId)];
+        }
+        catch
+        {
+            pageError = "ReadError";
+            initialLoading = false;
+            return;
+        }
+
+        if (available.Count == 0)
+        {
+            if (OrganizationId is long requestedOrgId)
+            {
+                available = [new OrganizationScope.Organization(requestedOrgId)];
+                scopeIndex = 0;
+            }
+            else
+            {
+                pageError = "ReadDenied";
+                initialLoading = false;
+                return;
+            }
+        }
+        else if (OrganizationId is long orgId)
+        {
+            var idx = -1;
+            for (var i = 0; i < available.Count; i++)
+            {
+                var scopeOrg = available[i] switch
+                {
+                    OrganizationScope.Organization o => o.OrganizationId,
+                    OrganizationScope.Site s => s.OrganizationId,
+                    _ => 0
+                };
+                if (scopeOrg == orgId) { idx = i; break; }
+            }
+            if (idx >= 0) scopeIndex = idx;
+            else
+            {
+                available = [new OrganizationScope.Organization(orgId)];
+                scopeIndex = 0;
+            }
+        }
+        else
+        {
+            scopeIndex = Math.Clamp(scopeIndex, 0, available.Count - 1);
+        }
+
+        await RefreshScopeContextAsync();
+        initialLoading = false;
+    }
+
+    private async Task RefreshScopeContextAsync()
+    {
+        scopeCanManage = false;
+        activeUnits = [];
+        classificationSets = [];
+        activeClassifications = [];
+        if (CurrentScope is null || CurrentOrgId <= 0) return;
+
+        var actor = await Actors.ResolveAsync(default);
+
+        Task<PermissionDecision>? manageTask = actor is not null && CurrentScope is OrganizationScope.Organization orgScope
+            ? Permissions.EvaluateAsync(actor, orgScope, ItemPermissions.ItemsManage, default).AsTask()
+            : null;
+
+        var probeTask = ItemService.ListItems(CurrentScope, CurrentOrgId, new ItemListQuery(Page: 1, PageSize: 1));
+        var unitTask = UnitService.ListActiveUnits(CurrentScope, CurrentOrgId);
+        var setTask = ItemService.ListClassificationSets(CurrentScope, CurrentOrgId, includeInactive: false);
+        var clsTask = ItemService.ListActiveClassifications(CurrentScope, CurrentOrgId);
+
+        var tasks = new List<Task> { probeTask, unitTask, setTask, clsTask };
+        if (manageTask is not null) tasks.Add(manageTask);
+
+        await Task.WhenAll(tasks);
+
+        if (manageTask is not null)
+            scopeCanManage = (await manageTask).IsAllowed;
+
+        var probe = await probeTask;
+        if (!probe.Succeeded)
+        {
+            pageError = RolePermissionLocalization.FailureKey(probe.Error!.Code);
+            return;
+        }
+
+        var unitRes = await unitTask;
+        if (unitRes.Succeeded && unitRes.Value is not null)
+            activeUnits = unitRes.Value.ToList();
+
+        var setRes = await setTask;
+        if (setRes.Succeeded && setRes.Value is not null)
+            classificationSets = setRes.Value.ToList();
+
+        var clsRes = await clsTask;
+        if (clsRes.Succeeded && clsRes.Value is not null)
+            activeClassifications = clsRes.Value.ToList();
+    }
+
+    private Task ReloadScopeAsync() => LoadAllAsync();
+
+    private async Task ChangeScopeAsync(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var idx) && idx >= 0 && idx < available.Count)
+        {
+            scopeIndex = idx;
+            pageError = null;
+            pageNotice = null;
+            await RefreshScopeContextAsync();
+            await RefreshActiveGridAsync();
+        }
+    }
+
+    private async Task SwitchTabAsync(byte tab)
+    {
+        if (activeTab == tab) return;
+        activeTab = tab;
+        pageNotice = null;
+        await RefreshActiveGridAsync();
+    }
+
+    private async Task OnSearchInput(ChangeEventArgs e)
+    {
+        await _searchController.OnInputDebouncedAsync(
+            e,
+            val => search = val,
+            async _ =>
+            {
+                await RefreshActiveGridAsync();
+                await InvokeAsync(StateHasChanged);
+            });
+    }
+
+    private async Task OnInactiveChanged()
+    {
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeItemClassificationFilterAsync(ChangeEventArgs e)
+    {
+        itemClassificationFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeItemCapabilityFilterAsync(ChangeEventArgs e)
+    {
+        itemCapabilityFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeSetFilterAsync(ChangeEventArgs e)
+    {
+        classificationSetFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeAttrTypeFilterAsync(ChangeEventArgs e)
+    {
+        attributeTypeFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ApplySearchAsync()
+    {
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshActiveGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private Task RefreshActiveGridAsync() => activeTab switch
+    {
+        TabItems => itemsGrid is null ? Task.CompletedTask : itemsGrid.RefreshAsync(),
+        TabClassifications => classificationsGrid is null ? Task.CompletedTask : classificationsGrid.RefreshAsync(),
+        _ => attributesGrid is null ? Task.CompletedTask : attributesGrid.RefreshAsync()
+    };
+
+    private static async Task ReloadGrid<T>(BitDataGrid<T>? grid) where T : class
+    {
+        if (grid is null) return;
+        if (grid.CurrentPage <= 1) await grid.RefreshAsync();
+        else await grid.GoToPageAsync(1);
+    }
+
+    private async Task<BitDataGridReadResult<ItemSummary>> ReadItemsGridAsync(BitDataGridReadRequest req)
+    {
+        if (CurrentScope is null || CurrentOrgId <= 0) return new([], 0);
+        long? clsId = long.TryParse(itemClassificationFilter, NumberStyles.Integer, CultureInfo.InvariantCulture, out var cid) && cid > 0 ? cid : null;
+        var pageSize = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / pageSize) + 1;
+        var query = new ItemListQuery(
+            search,
+            clsId,
+            itemCapabilityFilter == "purchase" ? true : null,
+            itemCapabilityFilter == "manufacture" ? true : null,
+            itemCapabilityFilter == "sell" ? true : null,
+            itemCapabilityFilter == "consume" ? true : null,
+            includeInactive,
+            page,
+            pageSize);
+
+        var res = await ItemService.ListItems(CurrentScope, CurrentOrgId, query, req.CancellationToken);
+        return res.Succeeded && res.Value is not null ? new(res.Value.Items.ToList(), res.Value.Total) : new([], 0);
+    }
+
+    private async Task<BitDataGridReadResult<ClassificationSummary>> ReadClassificationsGridAsync(BitDataGridReadRequest req)
+    {
+        if (CurrentScope is null || CurrentOrgId <= 0) return new([], 0);
+        long? setId = long.TryParse(classificationSetFilter, NumberStyles.Integer, CultureInfo.InvariantCulture, out var sid) && sid > 0 ? sid : null;
+        var pageSize = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / pageSize) + 1;
+        var res = await ItemService.ListClassifications(CurrentScope, CurrentOrgId, new ClassificationListQuery(setId, search, includeInactive, page, pageSize), req.CancellationToken);
+        return res.Succeeded && res.Value is not null ? new(res.Value.Items.ToList(), res.Value.Total) : new([], 0);
+    }
+
+    private async Task<BitDataGridReadResult<AttributeDefinitionSummary>> ReadAttributesGridAsync(BitDataGridReadRequest req)
+    {
+        if (CurrentScope is null || CurrentOrgId <= 0) return new([], 0);
+        AttributeDataType? dt = byte.TryParse(attributeTypeFilter, NumberStyles.Integer, CultureInfo.InvariantCulture, out var raw)
+            && Enum.IsDefined(typeof(AttributeDataType), raw)
+            ? (AttributeDataType)raw
+            : null;
+        var pageSize = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / pageSize) + 1;
+        var res = await ItemService.ListAttributeDefinitions(CurrentScope, CurrentOrgId, new AttributeDefinitionListQuery(search, dt, includeInactive, page, pageSize), req.CancellationToken);
+        return res.Succeeded && res.Value is not null ? new(res.Value.Items.ToList(), res.Value.Total) : new([], 0);
+    }
+
+    private void OpenCreateItem() => createItemModal?.Open();
+
+    private async Task OnItemCreatedAsync(string itemCode)
+    {
+        pageNotice = Text["ItemCreatedSucceeded", itemCode];
+        await RefreshActiveGridAsync();
+    }
+
+    private async Task OpenItemModal(long id, bool edit)
+    {
+        if (itemEditorModal is not null)
+            await itemEditorModal.OpenAsync(id, edit);
+    }
+
+    private void OpenCreateSet() => createSetModal?.Open();
+
+    private void OpenCreateClassification() => createClsModal?.Open();
+
+    private async Task OnClassificationCreatedAsync()
+    {
+        await RefreshScopeContextAsync();
+        await RefreshActiveGridAsync();
+    }
+
+    private async Task OpenClassificationModal(long id, bool edit)
+    {
+        if (clsManagerModal is not null)
+            await clsManagerModal.OpenAsync(id, edit);
+    }
+
+    private async Task OnClassificationSavedAsync()
+    {
+        await RefreshScopeContextAsync();
+        await RefreshActiveGridAsync();
+    }
+
+    private void OpenCreateAttribute() => createAttrModal?.Open();
+
+    private async Task OpenAttributeModal(long id, bool edit)
+    {
+        if (attrEditorModal is not null)
+            await attrEditorModal.OpenAsync(id, edit);
+    }
+
+    private static string DataTypeResourceKey(AttributeDataType dataType) => dataType switch
+    {
+        AttributeDataType.Text => "AttributeDataTypeText",
+        AttributeDataType.Decimal => "AttributeDataTypeDecimal",
+        AttributeDataType.Boolean => "AttributeDataTypeBoolean",
+        _ => "AttributeDataTypeText"
+    };
+
+    private string ScopeLabel(OrganizationScope scope) => scope switch
+    {
+        OrganizationScope.Organization o when scopeLabels.TryGetValue(scope, out var info) && info.OrgCode is not null
+            => $"{info.OrgCode} — {info.OrgName}",
+        OrganizationScope.Organization o => Text["ReadOrganizationScope", o.OrganizationId],
+        OrganizationScope.Site s when scopeLabels.TryGetValue(scope, out var info) && info.SiteCode is not null
+            => $"{info.OrgCode} / {info.SiteCode} — {info.SiteName}",
+        OrganizationScope.Site s => Text["ReadSiteScope", s.OrganizationId, s.SiteId],
+        _ => string.Empty
+    };
+}

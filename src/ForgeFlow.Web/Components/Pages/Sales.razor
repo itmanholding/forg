@@ -1,0 +1,699 @@
+﻿@page "/sales"
+@page "/organizations/{OrganizationId:long}/sales"
+@using ForgeFlow.Application.Inventory
+@using ForgeFlow.Application.Items
+@using ForgeFlow.Application.Organizations
+@using ForgeFlow.Application.Sales
+@using ForgeFlow.Application.Units
+@using ForgeFlow.Domain.Inventory
+@using ForgeFlow.Domain.Sales
+@using ForgeFlow.Web.Components.Pages.SalesSections
+@implements IDisposable
+@inject SalesUseCases SalesService
+@inject StockReservationUseCases ReservationService
+@inject OrganizationUseCases OrgService
+@inject InventoryUseCases InvService
+@inject ItemUseCases ItemService
+@inject UnitUseCases UnitService
+@inject DocumentSequenceUseCases SeqService
+@inject ForgeFlow.Web.Organizations.ReadScopes Scopes
+@inject ITrustedActorAccessor Actors
+@inject IOrganizationPermissionEvaluator Permissions
+@inject CulturePolicy Culture
+@inject DisplayFormatter Format
+@inject IStringLocalizer<SharedResources> Text
+
+<PageTitle>@Text["SalesDispatch"] - @Text["AppTitle"]</PageTitle>
+
+<section class="organization-reader" aria-labelledby="sales-page-title">
+    <div class="read-page-head">
+        <div>
+            <h1 id="sales-page-title">@Text["SalesDispatch"]</h1>
+            <p class="write-hint">@Text["SalesDispatchCaption"]</p>
+        </div>
+        @if (!initialLoading && pageError is null && available.Count > 0)
+        {
+            <div class="read-head-actions">
+                @if (activeTab == TabOrders && scopeCanManageOrders)
+                {
+                    <BitButton Size="BitSize.Small" IconName="Add" Class="read-create-btn" OnClick="OpenCreateOrderModalAsync">
+                        @Text["SalesOrderCreateButton"]
+                    </BitButton>
+                }
+            </div>
+        }
+    </div>
+
+    @if (pageNotice is not null)
+    {
+        <p role="status" class="read-page-notice write-saved">@pageNotice</p>
+    }
+
+    @if (initialLoading)
+    {
+        <p role="status" aria-live="polite">@Text["ReadLoading"]</p>
+    }
+    else if (pageError is not null)
+    {
+        <div class="read-state" role="alert">
+            <p>@Text[pageError]</p>
+            <BitButton Variant="BitVariant.Outline" Size="BitSize.Small" OnClick="ReloadScopeAsync">@Text["WriteReload"]</BitButton>
+        </div>
+    }
+    else if (available.Count == 0)
+    {
+        <p role="status" class="read-empty">@Text["ReadDenied"]</p>
+    }
+    else
+    {
+        <div class="read-tab-bar" role="tablist" aria-label="@Text["SalesDispatch"]">
+            <button type="button" role="tab" aria-selected="@(activeTab == TabOrders)"
+                    class="read-tab-btn @(activeTab == TabOrders ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabOrders)">@Text["SalesTabOrders"]</button>
+            <button type="button" role="tab" aria-selected="@(activeTab == TabDispatches)"
+                    class="read-tab-btn @(activeTab == TabDispatches ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabDispatches)">@Text["SalesTabDispatches"]</button>
+        </div>
+
+        <div class="read-toolbar-card">
+            @if (available.Count > 1)
+            {
+                <div class="read-field">
+                    <label for="sales-scope">@Text["ReadScope"]</label>
+                    <select id="sales-scope" aria-label="@Text["ReadScope"]" value="@scopeIndex" @onchange="ChangeScopeAsync">
+                        @for (var i = 0; i < available.Count; i++)
+                        {
+                            <option value="@i">@ScopeLabel(available[i])</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            @if (CurrentScope is OrganizationScope.Organization && authorizedSites.Count > 1)
+            {
+                <div class="read-field">
+                    <label for="sales-site-filter">@Text["PoSiteColumn"]</label>
+                    <select id="sales-site-filter" value="@siteFilter" @onchange="ChangeSiteFilterAsync">
+                        <option value="0">@Text["PoAllSitesOption"]</option>
+                        @foreach (var s in authorizedSites)
+                        {
+                            <option value="@s.Id">@s.Code — @s.Name</option>
+                        }
+                    </select>
+                </div>
+            }
+            else if (activeTab == TabOrders)
+            {
+                <div class="read-field">
+                    <label for="sales-order-status">@Text["PoStatusColumn"]</label>
+                    <select id="sales-order-status" value="@orderStatusFilter" @onchange="ChangeOrderStatusFilterAsync">
+                        <option value="">@Text["PoAllStatusesOption"]</option>
+                        <option value="1">@Text["SalesOrderStatusDraft"]</option>
+                        <option value="2">@Text["SalesOrderStatusApproved"]</option>
+                        <option value="3">@Text["SalesOrderStatusPartiallyDispatched"]</option>
+                        <option value="4">@Text["SalesOrderStatusDispatched"]</option>
+                        <option value="6">@Text["SalesOrderStatusClosed"]</option>
+                        <option value="5">@Text["SalesOrderStatusCancelled"]</option>
+                    </select>
+                </div>
+            }
+
+            <div class="read-field">
+                <label for="sales-search">@Text["ReadSearch"]</label>
+                <input id="sales-search" type="search" value="@search" @oninput="OnSearchInput" maxlength="64" placeholder="@Text["ReadSearch"]" />
+            </div>
+        </div>
+
+        @if (activeTab == TabOrders)
+        {
+            <SalesOrderGrid @ref="orderGrid"
+                            OnRead="ReadOrdersAsync"
+                            PageSizeOptions="@PageSizeOptions"
+                            GridStrings="@GridStrings"
+                            CanDispatch="@scopeCanDispatch"
+                            OrderStatusCss="OrderStatusCss"
+                            OrderStatusLabel="OrderStatusLabel"
+                            OnOpenDetail="OpenOrderDetailModalAsync"
+                            OnPostDispatch="OpenPostDispatchModalAsync" />
+        }
+        else if (activeTab == TabDispatches)
+        {
+            <DeliveryOrderGrid @ref="dispatchGrid"
+                               OnRead="ReadDispatchesAsync"
+                               PageSizeOptions="@PageSizeOptions"
+                               GridStrings="@GridStrings"
+                               CanDispatch="@scopeCanDispatch"
+                               OnOpenDetail="OpenDispatchDetailModalAsync"
+                               OnReverse="OpenReverseDispatchModal" />
+        }
+    }
+</section>
+
+
+@* Create/Edit Sales Order Modal *@
+<CreateEditSalesOrderModal @ref="createEditOrderModal"
+                           @bind-IsOpen="orderModalOpen"
+                           CurrentScope="CurrentScope"
+                           CurrentOrgId="CurrentOrgId"
+                           AuthorizedSites="authorizedSites"
+                           OnSaved="OnOrderSavedAsync" />
+
+@* Sales Order Detail + Reservations Modal *@
+<SalesOrderDetailModal @bind-IsOpen="orderDetailOpen"
+                       @bind-IsOpen:after="OnOrderDetailOpenChanged"
+                       DialogClasses="@DialogClasses"
+                       Order="@detailOrder"
+                       Reservations="@orderReservations"
+                       DetailError="@detailError"
+                       CanManageOrders="@scopeCanManageOrders"
+                       CanDispatch="@scopeCanDispatch"
+                       OrderStatusLabel="@OrderStatusLabel"
+                       OnReserveLine="OpenReserveModalAsync"
+                       OnReleaseReservation="ReleaseOrderReservationAsync"
+                       OnEdit="OpenEditOrderFromDetailAsync"
+                       OnApprove="ApproveDetailOrderAsync"
+                       OnDispatch="OpenPostDispatchModalAsync"
+                       OnClose="CloseDetailOrderAsync"
+                       OnCancel="OpenCancelOrderModal" />
+
+@* Reserve Stock Modal *@
+<SalesReserveStockModal @ref="reserveStockModal"
+                        @bind-IsOpen="reserveModalOpen"
+                        @bind-IsOpen:after="OnReserveModalOpenChanged"
+                        Scope="@CurrentScope"
+                        OrganizationId="@CurrentOrgId"
+                        SalesOrderId="@(detailOrder?.Summary.Id ?? 0)"
+                        Line="@reserveLine"
+                        Warehouses="@siteWarehouses"
+                        OnReserved="OnReservationSavedAsync" />
+
+@* Post Dispatch (Delivery Order) Modal with Lot Picker & COA *@
+<PostDispatchModal @ref="postDispatchModal"
+                   @bind-IsOpen="dispatchModalOpen"
+                   CurrentScope="@CurrentScope"
+                   CurrentOrgId="@CurrentOrgId"
+                   OnDispatched="OnDispatchSavedAsync"
+                   OnOpenCoa="OpenCoaDialogFromTuple" />
+
+@* Dispatch Detail Modal *@
+<DeliveryOrderDetailModal @bind-IsOpen="dispatchDetailOpen"
+                         @bind-IsOpen:after="OnDispatchDetailOpenChanged"
+                         DialogClasses="@DialogClasses"
+                         Dispatch="@detailDispatch"
+                         OnOpenCoa="OpenCoaDialogFromTuple" />
+
+@* Cancel Order / Reverse Dispatch Reason Modal *@
+<SalesReasonModal @ref="reasonModal"
+                  @bind-IsOpen="reasonModalOpen"
+                  @bind-IsOpen:after="OnReasonModalOpenChanged"
+                  Title="@(reasonMode == ReasonMode.CancelOrder ? Text["ProcCancelBtn"] : Text["SalesReverseButton"])"
+                  Saving="@reasonSaving"
+                  Error="@reasonModalError"
+                  OnConfirm="ConfirmReasonActionAsync" />
+
+<LotCertificateDialog @bind-IsOpen="coaOpen"
+                      Scope="@CurrentScope"
+                      OrganizationId="@(CurrentOrgId)"
+                      ItemId="@coaItemId"
+                      LotCode="@coaLotCode" />
+
+@code {
+    private const string TabOrders = "orders";
+    private const string TabDispatches = "dispatches";
+
+    private enum ReasonMode { CancelOrder, ReverseDispatch }
+
+    private static readonly BitDialogClassStyles DialogClasses = new()
+    {
+        Container = "read-dialog",
+        Header = "read-dialog-header",
+        Body = "read-dialog-body",
+        CloseButton = "read-dialog-close",
+        Overlay = "read-dialog-overlay"
+    };
+    private static readonly BitIconInfo CalendarIcon = BitIconInfo.Css("ff-icon ff-icon--calendar");
+    private static readonly BitIconInfo TodayIcon = BitIconInfo.Css("ff-icon ff-icon--today");
+    private static readonly BitIconInfo PlusIcon = BitIconInfo.Css("ff-icon ff-icon--plus");
+    private static readonly BitIconInfo CloseIcon = BitIconInfo.Css("ff-icon ff-icon--close");
+    private static readonly BitIconInfo NextNavIcon = BitIconInfo.Css("ff-icon ff-icon--chevron-next");
+    private static readonly BitIconInfo PrevNavIcon = BitIconInfo.Css("ff-icon ff-icon--chevron-prev");
+    private static readonly BitIconInfo NextYearIcon = BitIconInfo.Css("ff-icon ff-icon--chevrons-next");
+    private static readonly BitIconInfo PrevYearIcon = BitIconInfo.Css("ff-icon ff-icon--chevrons-prev");
+    private static readonly int[] PageSizeOptions = [10, 25, 50, 100];
+
+    [Parameter] public long? OrganizationId { get; set; }
+
+    private bool initialLoading = true;
+    private string? pageError;
+    private string? pageNotice;
+    private string activeTab = TabOrders;
+
+    private IReadOnlyList<OrganizationScope> available = [];
+    private int scopeIndex;
+    private OrganizationScope? CurrentScope => available.ElementAtOrDefault(scopeIndex);
+    private long CurrentOrgId => CurrentScope switch { OrganizationScope.Organization o => o.OrganizationId, OrganizationScope.Site s => s.OrganizationId, _ => 0 };
+
+    private bool scopeCanManageOrders;
+    private bool scopeCanDispatch;
+
+    private IReadOnlyList<SiteDetails> authorizedSites = [];
+    private long siteFilter;
+    private string orderStatusFilter = string.Empty;
+    private string search = string.Empty;
+
+    private SalesOrderGrid? orderGrid;
+    private DeliveryOrderGrid? dispatchGrid;
+
+    // Reference lists
+    private List<WarehouseSummary> siteWarehouses = [];
+
+    // Order modal
+    private CreateEditSalesOrderModal? createEditOrderModal;
+    private bool orderModalOpen;
+
+    // Order detail & reservations
+    private bool orderDetailOpen;
+    private string? detailError;
+    private SalesOrderDetails? detailOrder;
+    private IReadOnlyList<StockReservationSummary> orderReservations = [];
+
+    // Reserve modal
+    private SalesReserveStockModal? reserveStockModal;
+    private bool reserveModalOpen;
+    private SalesOrderLineDetails? reserveLine;
+
+    // Dispatch modal
+    private PostDispatchModal? postDispatchModal;
+    private bool dispatchModalOpen;
+
+    // Dispatch detail
+    private bool dispatchDetailOpen;
+    private DeliveryOrderDetails? detailDispatch;
+
+    // Reason modal
+    private SalesReasonModal? reasonModal;
+    private bool reasonModalOpen;
+    private bool reasonSaving;
+    private string? reasonModalError;
+    private ReasonMode reasonMode;
+    private DeliveryOrderSummary? reversingDispatch;
+
+    // COA dialog
+    private bool coaOpen;
+    private long coaItemId;
+    private string coaLotCode = string.Empty;
+
+    private string PickerDateFormat => Culture.Language == CulturePolicy.Persian ? "yyyy/MM/dd" : "yyyy-MM-dd";
+
+    private BitDataGridStrings GridStrings => new()
+    {
+        GridLabel = Text["SalesDispatch"],
+        EmptyText = Text["ReadEmpty"],
+        NoMatchesText = Text["ReadEmpty"],
+        LoadingText = Text["ReadLoading"],
+        PagerRangeFormat = Text["GridPagerRange"],
+        PagerPageFormat = Text["GridPagerPage"],
+        PerPageFormat = Text["GridPerPage"],
+        RowsPerPageLabel = Text["GridRowsPerPage"],
+        FirstPageLabel = Text["GridFirstPage"],
+        PreviousPageLabel = Text["GridPreviousPage"],
+        NextPageLabel = Text["GridNextPage"],
+        LastPageLabel = Text["GridLastPage"],
+        AnnouncementPage = Text["GridPagerPage"]
+    };
+
+    private readonly DebouncedSearchController _searchController = new(300);
+
+    public void Dispose()
+    {
+        _searchController.Dispose();
+        detailOrder = null;
+        orderReservations = [];
+        reserveLine = null;
+        detailDispatch = null;
+        reversingDispatch = null;
+        siteWarehouses.Clear();
+        authorizedSites = [];
+    }
+
+    private void OnOrderDetailOpenChanged()
+    {
+        if (!orderDetailOpen)
+        {
+            detailOrder = null;
+            orderReservations = [];
+            detailError = null;
+        }
+    }
+
+    private void OnReserveModalOpenChanged()
+    {
+        if (!reserveModalOpen)
+        {
+            reserveLine = null;
+        }
+    }
+
+    private void OnDispatchDetailOpenChanged()
+    {
+        if (!dispatchDetailOpen)
+        {
+            detailDispatch = null;
+        }
+    }
+
+    private void OnReasonModalOpenChanged()
+    {
+        if (!reasonModalOpen)
+        {
+            reversingDispatch = null;
+            reasonModalError = null;
+        }
+    }
+
+    protected override async Task OnInitializedAsync() => await ReloadScopeAsync();
+
+    private async Task ReloadScopeAsync()
+    {
+        initialLoading = true;
+        pageError = null;
+        pageNotice = null;
+        try
+        {
+            available = await Scopes.LoadSalesScopesAsync();
+            if (OrganizationId is long orgId)
+            {
+                var idx = available.ToList().FindIndex(s => ScopeOrgId(s) == orgId);
+                if (idx >= 0) scopeIndex = idx;
+            }
+            if (available.Count > 0)
+                await LoadScopeStateAsync();
+        }
+        catch
+        {
+            pageError = RolePermissionLocalization.FailureKey(SalesErrors.PersistenceUnavailable);
+        }
+        finally
+        {
+            initialLoading = false;
+        }
+    }
+
+    private async Task LoadScopeStateAsync()
+    {
+        if (CurrentScope is null) return;
+        var actor = await Actors.ResolveAsync(default);
+        if (actor is null) return;
+
+        var manageTask = Permissions.EvaluateAsync(actor, CurrentScope, SalesPermissions.ManageOrders, default).AsTask();
+        var dispatchTask = Permissions.EvaluateAsync(actor, CurrentScope, SalesPermissions.Dispatch, default).AsTask();
+        var sitesTask = OrgService.ListSites(CurrentScope, CurrentOrgId, new OrganizationListQuery(Search: null, IncludeInactive: false, Page: 1, PageSize: 100));
+
+        await Task.WhenAll(manageTask, dispatchTask, sitesTask);
+
+        scopeCanManageOrders = (await manageTask).IsAllowed;
+        scopeCanDispatch = (await dispatchTask).IsAllowed;
+
+        var sitesRes = await sitesTask;
+        authorizedSites = sitesRes.Succeeded ? sitesRes.Value!.Items : [];
+        siteFilter = CurrentScope is OrganizationScope.Site siteScope ? siteScope.SiteId : 0;
+    }
+
+    private async Task ChangeScopeAsync(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var idx) && idx >= 0 && idx < available.Count)
+        {
+            scopeIndex = idx;
+            await LoadScopeStateAsync();
+            await RefreshCurrentGridAsync();
+        }
+    }
+
+    private async Task SwitchTabAsync(string tab)
+    {
+        activeTab = tab;
+        pageNotice = null;
+        await RefreshCurrentGridAsync();
+    }
+
+    private async Task OnSearchInput(ChangeEventArgs e)
+    {
+        await _searchController.OnInputDebouncedAsync(
+            e,
+            val => search = val,
+            async _ =>
+            {
+                await RefreshCurrentGridAsync();
+                await InvokeAsync(StateHasChanged);
+            });
+    }
+
+    private async Task ChangeSiteFilterAsync(ChangeEventArgs e)
+    {
+        siteFilter = long.TryParse(e.Value?.ToString(), out var id) ? id : 0;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshCurrentGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeOrderStatusFilterAsync(ChangeEventArgs e)
+    {
+        orderStatusFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshCurrentGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ApplySearchAsync()
+    {
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await RefreshCurrentGridAsync();
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private static long ScopeOrgId(OrganizationScope? scope) => scope switch
+    {
+        OrganizationScope.Organization o => o.OrganizationId,
+        OrganizationScope.Site s => s.OrganizationId,
+        _ => 0
+    };
+
+    private Task RefreshCurrentGridAsync() => activeTab switch
+    {
+        TabDispatches => dispatchGrid?.RefreshAsync() ?? Task.CompletedTask,
+        _ => orderGrid?.RefreshAsync() ?? Task.CompletedTask
+    };
+
+    private async Task<BitDataGridReadResult<SalesOrderSummary>> ReadOrdersAsync(BitDataGridReadRequest req)
+    {
+        if (CurrentScope is null) return new([], 0);
+        var size = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / size) + 1;
+        SalesOrderStatus? status = byte.TryParse(orderStatusFilter, out var st) ? (SalesOrderStatus)st : null;
+        var res = await SalesService.ListSalesOrders(CurrentScope, CurrentOrgId,
+            new SalesOrderListQuery(siteFilter > 0 ? siteFilter : null, null, status, search, page, size), req.CancellationToken);
+        return res.Succeeded
+            ? new(res.Value!.Items.ToList(), res.Value.Total)
+            : new([], 0);
+    }
+
+    private async Task<BitDataGridReadResult<DeliveryOrderSummary>> ReadDispatchesAsync(BitDataGridReadRequest req)
+    {
+        if (CurrentScope is null) return new([], 0);
+        var size = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / size) + 1;
+        var res = await SalesService.ListDeliveryOrders(CurrentScope, CurrentOrgId,
+            new DeliveryOrderListQuery(siteFilter > 0 ? siteFilter : null, null, null, null, search, page, size), req.CancellationToken);
+        return res.Succeeded
+            ? new(res.Value!.Items.ToList(), res.Value.Total)
+            : new([], 0);
+    }
+
+
+    private async Task OpenCreateOrderModalAsync()
+    {
+        if (CurrentScope is null || createEditOrderModal is null) return;
+        await createEditOrderModal.InitializeForCreateAsync();
+    }
+
+    private async Task OpenEditOrderFromDetailAsync(SalesOrderDetails d)
+    {
+        orderDetailOpen = false;
+        if (CurrentScope is null || createEditOrderModal is null) return;
+        await createEditOrderModal.InitializeForEditAsync(d);
+    }
+
+    private async Task OnOrderSavedAsync()
+    {
+        pageNotice = Text["WriteSaved"];
+        await RefreshCurrentGridAsync();
+    }
+
+    private async Task OpenOrderDetailModalAsync(long salesOrderId)
+    {
+        if (CurrentScope is null) return;
+        detailError = null;
+        var res = await SalesService.GetSalesOrder(CurrentScope, CurrentOrgId, salesOrderId);
+        if (!res.Succeeded) return;
+        detailOrder = res.Value;
+        var resList = await ReservationService.ListSalesOrderReservations(CurrentScope, CurrentOrgId, salesOrderId);
+        orderReservations = resList.Succeeded ? resList.Value! : [];
+        orderDetailOpen = true;
+    }
+
+    private async Task ApproveDetailOrderAsync()
+    {
+        if (CurrentScope is null || detailOrder is null) return;
+        var res = await SalesService.ApproveSalesOrder(CurrentScope, CurrentOrgId, detailOrder.Summary.Id, detailOrder.Summary.RowVersion);
+        if (!res.Succeeded) { detailError = MapError(res.Error!.Code); return; }
+        detailOrder = res.Value;
+        pageNotice = Text["WriteSaved"];
+        await RefreshCurrentGridAsync();
+    }
+
+    private async Task CloseDetailOrderAsync()
+    {
+        if (CurrentScope is null || detailOrder is null) return;
+        var res = await SalesService.CloseSalesOrder(CurrentScope, CurrentOrgId, detailOrder.Summary.Id, detailOrder.Summary.RowVersion);
+        if (!res.Succeeded) { detailError = MapError(res.Error!.Code); return; }
+        detailOrder = res.Value;
+        pageNotice = Text["WriteSaved"];
+        await RefreshCurrentGridAsync();
+    }
+
+    private async Task OpenReserveModalAsync(SalesOrderLineDetails line)
+    {
+        if (CurrentScope is null || detailOrder is null) return;
+        reserveLine = line;
+        var whRes = await InvService.ListWarehouses(CurrentScope, CurrentOrgId, new WarehouseListQuery(SiteId: detailOrder.Summary.SiteId, IncludeInactive: false, PageSize: 100));
+        siteWarehouses = whRes.Succeeded ? whRes.Value!.Items.ToList() : [];
+        reserveStockModal?.Initialize(line, detailOrder.Summary.SourceWarehouseId ?? 0);
+        reserveModalOpen = true;
+    }
+
+    private async Task OnReservationSavedAsync()
+    {
+        if (CurrentScope is null || detailOrder is null) return;
+        var resList = await ReservationService.ListSalesOrderReservations(CurrentScope, CurrentOrgId, detailOrder.Summary.Id);
+        orderReservations = resList.Succeeded ? resList.Value! : [];
+    }
+
+    private async Task ReleaseOrderReservationAsync(StockReservationSummary r)
+    {
+        if (CurrentScope is null || detailOrder is null) return;
+        var res = await ReservationService.ReleaseReservation(CurrentScope, new ReleaseReservationRequest(CurrentOrgId, r.Id, r.RowVersion));
+        if (!res.Succeeded) { detailError = MapError(res.Error!.Code); return; }
+        var resList = await ReservationService.ListSalesOrderReservations(CurrentScope, CurrentOrgId, detailOrder.Summary.Id);
+        orderReservations = resList.Succeeded ? resList.Value! : [];
+    }
+
+    private async Task OpenPostDispatchModalAsync(long salesOrderId)
+    {
+        orderDetailOpen = false;
+        if (postDispatchModal is not null)
+        {
+            await postDispatchModal.OpenAsync(salesOrderId);
+        }
+    }
+
+    private async Task OnDispatchSavedAsync()
+    {
+        pageNotice = Text["WriteSaved"];
+        await RefreshCurrentGridAsync();
+    }
+
+    private void OpenCoaDialogFromTuple((long ItemId, string LotCode) args)
+    {
+        OpenCoaDialog(args.ItemId, args.LotCode);
+    }
+
+    private async Task OpenDispatchDetailModalAsync(long deliveryOrderId)
+    {
+        if (CurrentScope is null) return;
+        var res = await SalesService.GetDeliveryOrder(CurrentScope, CurrentOrgId, deliveryOrderId);
+        if (!res.Succeeded) return;
+        detailDispatch = res.Value;
+        dispatchDetailOpen = true;
+    }
+
+    private void OpenCancelOrderModal()
+    {
+        reasonMode = ReasonMode.CancelOrder;
+        reasonModalError = null;
+        reasonModal?.Initialize();
+        reasonModalOpen = true;
+    }
+
+    private void OpenReverseDispatchModal(DeliveryOrderSummary d)
+    {
+        reasonMode = ReasonMode.ReverseDispatch;
+        reversingDispatch = d;
+        reasonModalError = null;
+        reasonModal?.Initialize();
+        reasonModalOpen = true;
+    }
+
+    private async Task ConfirmReasonActionAsync(string reasonInput)
+    {
+        if (CurrentScope is null || reasonSaving) return;
+        reasonSaving = true;
+        reasonModalError = null;
+        try
+        {
+            if (reasonMode == ReasonMode.CancelOrder && detailOrder is not null)
+            {
+                var res = await SalesService.CancelSalesOrder(CurrentScope, CurrentOrgId, detailOrder.Summary.Id,
+                    new CancelSalesOrderRequest(reasonInput), detailOrder.Summary.RowVersion);
+                if (!res.Succeeded) { reasonModalError = MapError(res.Error!.Code); return; }
+                detailOrder = res.Value;
+            }
+            else if (reasonMode == ReasonMode.ReverseDispatch && reversingDispatch is not null)
+            {
+                var res = await SalesService.ReverseDeliveryOrder(CurrentScope, CurrentOrgId, reversingDispatch.Id,
+                    new ReverseDeliveryOrderRequest(reasonInput), reversingDispatch.RowVersion);
+                if (!res.Succeeded) { reasonModalError = MapError(res.Error!.Code); return; }
+            }
+            reasonModalOpen = false;
+            pageNotice = Text["WriteSaved"];
+            await RefreshCurrentGridAsync();
+        }
+        finally { reasonSaving = false; }
+    }
+
+    private void OpenCoaDialog(long itemId, string lotCode)
+    {
+        coaItemId = itemId;
+        coaLotCode = lotCode;
+        coaOpen = true;
+    }
+
+    private string ScopeLabel(OrganizationScope scope) => scope switch { OrganizationScope.Organization o => Text["ReadOrganizationScope", o.OrganizationId], OrganizationScope.Site s => Text["ReadSiteScope", s.OrganizationId, s.SiteId], _ => string.Empty };
+
+    private string OrderStatusLabel(SalesOrderStatus status) => status switch
+    {
+        SalesOrderStatus.Draft => Text["SalesOrderStatusDraft"],
+        SalesOrderStatus.Approved => Text["SalesOrderStatusApproved"],
+        SalesOrderStatus.PartiallyDispatched => Text["SalesOrderStatusPartiallyDispatched"],
+        SalesOrderStatus.Dispatched => Text["SalesOrderStatusDispatched"],
+        SalesOrderStatus.Cancelled => Text["SalesOrderStatusCancelled"],
+        SalesOrderStatus.Closed => Text["SalesOrderStatusClosed"],
+        _ => status.ToString()
+    };
+
+    private static string OrderStatusCss(SalesOrderStatus status) => status switch
+    {
+        SalesOrderStatus.Approved or SalesOrderStatus.Dispatched => "is-active",
+        SalesOrderStatus.Cancelled => "is-inactive",
+        _ => string.Empty
+    };
+
+    private string MapError(string code) => Text[RolePermissionLocalization.FailureKey(code)];
+
+
+}

@@ -1,0 +1,840 @@
+@page "/quality"
+@page "/organizations/{OrganizationId:long}/quality"
+@using ForgeFlow.Application.Inventory
+@using ForgeFlow.Application.Items
+@using ForgeFlow.Application.Organizations
+@using ForgeFlow.Application.ProductionOrders
+@using ForgeFlow.Application.Quality
+@using ForgeFlow.Application.Units
+@using ForgeFlow.Domain.Quality
+@using ForgeFlow.Web.Components.Pages.QualitySections
+@using ForgeFlow.Web.Roles
+@using System.Globalization
+@implements IDisposable
+@inject QualityUseCases QualityService
+@inject QualitySpecUseCases SpecService
+@inject InventoryUseCases InvService
+@inject ProductionOrderUseCases OrderService
+@inject ItemUseCases ItemService
+@inject UnitUseCases UnitService
+@inject DocumentSequenceUseCases SeqService
+@inject ForgeFlow.Web.Organizations.ReadScopes Scopes
+@inject ITrustedActorAccessor Actors
+@inject IOrganizationPermissionEvaluator Permissions
+@inject CulturePolicy Culture
+@inject DisplayFormatter Format
+@inject IStringLocalizer<SharedResources> Text
+
+<PageTitle>@Text["QualityControl"] - @Text["AppTitle"]</PageTitle>
+
+<section class="organization-reader" aria-labelledby="qc-title">
+    <div class="read-page-head">
+        <div>
+            <h1 id="qc-title">@Text["QualityControl"]</h1>
+            <p class="write-hint">@Text["QualityCaption"]</p>
+        </div>
+        @if (!initialLoading && pageError is null && available.Count > 0 && scopeCanManage)
+        {
+            <div class="read-head-actions">
+                @if (activeTab == TabInspections)
+                {
+                    <BitButton Size="BitSize.Small" OnClick="OpenHoldModalAsync">@Text["QcCreateHoldBtn"]</BitButton>
+                }
+                else if (activeTab == TabLots)
+                {
+                    <BitButton Size="BitSize.Small" OnClick="() => OpenLotModal(null)">@Text["QcLotUpsertBtn"]</BitButton>
+                }
+                else if (activeTab == TabParameters)
+                {
+                    <BitButton Size="BitSize.Small" OnClick="() => OpenParameterModal(null)">@Text["QcCreateParameterBtn"]</BitButton>
+                }
+                else if (activeTab == TabSpecs)
+                {
+                    <BitButton Size="BitSize.Small" OnClick="() => OpenSpecModalAsync(null)">@Text["QcCreateSpecBtn"]</BitButton>
+                }
+            </div>
+        }
+    </div>
+
+    @if (pageNotice is not null)
+    {
+        <p role="status" class="read-page-notice write-saved">@pageNotice</p>
+    }
+
+    @if (initialLoading)
+    {
+        <p role="status" aria-live="polite">@Text["ReadLoading"]</p>
+    }
+    else if (pageError is not null)
+    {
+        <div class="read-state" role="alert">
+            <p>@Text[pageError]</p>
+            <BitButton Variant="BitVariant.Outline" Size="BitSize.Small" OnClick="ReloadScopeAsync">@Text["WriteReload"]</BitButton>
+        </div>
+    }
+    else if (available.Count == 0)
+    {
+        <p role="status" class="read-empty">@Text["ReadDenied"]</p>
+    }
+    else
+    {
+        <div class="read-tab-bar" role="tablist" aria-label="@Text["QualityControl"]">
+            <button type="button" role="tab" aria-selected="@(activeTab == TabInspections)"
+                    class="read-tab-btn @(activeTab == TabInspections ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabInspections)">@Text["QcTabInspections"]</button>
+            <button type="button" role="tab" aria-selected="@(activeTab == TabSpecs)"
+                    class="read-tab-btn @(activeTab == TabSpecs ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabSpecs)">@Text["QcTabSpecs"]</button>
+            <button type="button" role="tab" aria-selected="@(activeTab == TabParameters)"
+                    class="read-tab-btn @(activeTab == TabParameters ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabParameters)">@Text["QcTabParameters"]</button>
+            <button type="button" role="tab" aria-selected="@(activeTab == TabLots)"
+                    class="read-tab-btn @(activeTab == TabLots ? "active" : string.Empty)"
+                    @onclick="() => SwitchTabAsync(TabLots)">@Text["QcTabLots"]</button>
+        </div>
+
+        <div class="read-toolbar-card">
+            @if (available.Count > 1)
+            {
+                <div class="read-field">
+                    <label for="qc-scope">@Text["ReadScope"]</label>
+                    <select id="qc-scope" aria-label="@Text["ReadScope"]" value="@scopeIndex" @onchange="ChangeScopeAsync">
+                        @for (var i = 0; i < available.Count; i++)
+                        {
+                            <option value="@i">@ScopeLabel(available[i])</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            @if (activeTab == TabInspections && CurrentScope is OrganizationScope.Organization && authorizedSites.Count > 1)
+            {
+                <div class="read-field">
+                    <label for="qc-site-filter">@Text["PoSiteColumn"]</label>
+                    <select id="qc-site-filter" value="@siteFilter" @onchange="ChangeSiteFilterAsync">
+                        <option value="0">@Text["PoAllSitesOption"]</option>
+                        @foreach (var s in authorizedSites)
+                        {
+                            <option value="@s.Id">@s.Code — @s.Name</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            @if (activeTab == TabInspections)
+            {
+                <div class="read-field">
+                    <label for="qc-status-filter">@Text["ReadStatus"]</label>
+                    <select id="qc-status-filter" value="@statusFilter" @onchange="ChangeStatusFilterAsync">
+                        <option value="">@Text["PoAllStatusesOption"]</option>
+                        <option value="@((byte)QualityInspectionStatus.Pending)">@StatusLabel(QualityInspectionStatus.Pending)</option>
+                        <option value="@((byte)QualityInspectionStatus.InReview)">@StatusLabel(QualityInspectionStatus.InReview)</option>
+                        <option value="@((byte)QualityInspectionStatus.Completed)">@StatusLabel(QualityInspectionStatus.Completed)</option>
+                        <option value="@((byte)QualityInspectionStatus.Cancelled)">@StatusLabel(QualityInspectionStatus.Cancelled)</option>
+                    </select>
+                </div>
+            }
+            else if (activeTab == TabLots)
+            {
+                <label class="read-inactive">
+                    <input type="checkbox" checked="@onlyExpiringLots" @onchange="ToggleExpiringLotsAsync" />
+                    <span>@Text["QcOnlyExpiringLabel"]</span>
+                </label>
+            }
+            else if (activeTab == TabParameters)
+            {
+                <label class="read-inactive">
+                    <input type="checkbox" checked="@includeInactiveParams" @onchange="ToggleInactiveParamsAsync" />
+                    <span>@Text["ReadInactive"]</span>
+                </label>
+            }
+            else if (activeTab == TabSpecs)
+            {
+                <div class="read-field">
+                    <label for="qc-spec-target-filter">@Text["QcSpecTargetKindLabel"]</label>
+                    <select id="qc-spec-target-filter" value="@specTargetFilter" @onchange="ChangeSpecTargetFilterAsync">
+                        <option value="">@Text["PoAllStatusesOption"]</option>
+                        <option value="@((byte)QualitySpecTargetKind.Item)">@Text["QcTargetItem"]</option>
+                        <option value="@((byte)QualitySpecTargetKind.Classification)">@Text["QcTargetClassification"]</option>
+                    </select>
+                </div>
+                <div class="read-field">
+                    <label for="qc-spec-ckpt-filter">@Text["QcSpecCheckpointLabel"]</label>
+                    <select id="qc-spec-ckpt-filter" value="@specCheckpointFilter" @onchange="ChangeSpecCheckpointFilterAsync">
+                        <option value="">@Text["PoAllStatusesOption"]</option>
+                        <option value="@((byte)QualitySpecCheckpoint.Incoming)">@Text["QcCheckpointIncoming"]</option>
+                        <option value="@((byte)QualitySpecCheckpoint.Production)">@Text["QcCheckpointProduction"]</option>
+                        <option value="@((byte)QualitySpecCheckpoint.All)">@Text["QcCheckpointAll"]</option>
+                    </select>
+                </div>
+                <label class="read-inactive">
+                    <input type="checkbox" checked="@includeInactiveSpecs" @onchange="ToggleInactiveSpecsAsync" />
+                    <span>@Text["ReadInactive"]</span>
+                </label>
+            }
+
+            <div class="read-field">
+                <label for="qc-search">@Text["ReadSearch"]</label>
+                <input id="qc-search" type="search" value="@search" @oninput="OnSearchInput" maxlength="64" placeholder="@Text["ReadSearchPlaceholder"]" />
+            </div>
+        </div>
+
+        @if (activeTab == TabInspections)
+        {
+            <InspectionGrid @ref="inspGrid"
+                            OnRead="ReadInspectionsAsync"
+                            PageSizeOptions="@PageSizeOptions"
+                            GridStrings="@GridStrings"
+                            SourceLabel="SourceLabel"
+                            StatusBadgeClass="StatusBadgeClass"
+                            StatusLabel="StatusLabel"
+                            OnOpenDetails="OpenInspectionDetailsAsync"
+                            OnOpenCoa="args => OpenCoaModal(args.ItemId, args.LotCode)" />
+        }
+        else if (activeTab == TabLots)
+        {
+            <QualityLotGrid @ref="lotGrid"
+                            OnRead="ReadLotsAsync"
+                            PageSizeOptions="@PageSizeOptions"
+                            GridStrings="@GridStrings"
+                            CanManage="@scopeCanManage"
+                            OnOpenCoa="args => OpenCoaModal(args.ItemId, args.LotCode)"
+                            OnEditLot="OpenLotModal" />
+        }
+        else if (activeTab == TabParameters)
+        {
+            <QualityParameterGrid @ref="paramGrid"
+                                  OnRead="ReadParametersAsync"
+                                  PageSizeOptions="@PageSizeOptions"
+                                  GridStrings="@GridStrings"
+                                  CanManage="@scopeCanManage"
+                                  ModalBusy="@modalBusy"
+                                  OnEditParam="OpenParameterModal"
+                                  OnToggleActive="ToggleParameterActiveAsync" />
+        }
+        else if (activeTab == TabSpecs)
+        {
+            <QualitySpecGrid @ref="specGrid"
+                             OnRead="ReadSpecsAsync"
+                             PageSizeOptions="@PageSizeOptions"
+                             GridStrings="@GridStrings"
+                             CanManage="@scopeCanManage"
+                             ModalBusy="@modalBusy"
+                             OnOpenSpec="id => OpenSpecModalAsync(id)"
+                             OnToggleActive="ToggleSpecActiveAsync" />
+        }
+    }
+
+    <QualityHoldModal @ref="holdModal"
+                      @bind-IsOpen="holdModalOpen"
+                      DialogClasses="@DialogClasses"
+                      CurrentScope="@CurrentScope"
+                      CurrentOrgId="@(ScopeOrganizationId(CurrentScope))"
+                      ActiveWarehouses="@activeWarehouses"
+                      ActiveItems="@activeItems"
+                      ActiveUnits="@activeUnits"
+                      OnHoldCreated="OnHoldCreatedAsync" />
+
+    <QualityInspectionDetailsModal @ref="detailsModal"
+                                  @bind-IsOpen="detailsOpen"
+                                  DialogClasses="@DialogClasses"
+                                  CurrentScope="@CurrentScope"
+                                  CurrentOrgId="@(ScopeOrganizationId(CurrentScope))"
+                                  ActiveParameters="@activeParameters"
+                                  CanManage="@scopeCanManage"
+                                  StatusBadgeClass="StatusBadgeClass"
+                                  StatusLabel="StatusLabel"
+                                  OnInspectionChanged="OnInspectionChangedAsync"
+                                  OnOpenCoa="OpenCoaModalFromTuple" />
+
+    <QualityLotModal @ref="lotModal"
+                     @bind-IsOpen="lotModalOpen"
+                     DialogClasses="@DialogClasses"
+                     CurrentScope="@CurrentScope"
+                     CurrentOrgId="@(ScopeOrganizationId(CurrentScope))"
+                     ActiveItems="@activeItems"
+                     OnSaved="OnLotSavedAsync" />
+
+    <QualityParameterModal @ref="paramModal"
+                           @bind-IsOpen="paramModalOpen"
+                           Scope="@CurrentScope"
+                           OrganizationId="@(ScopeOrganizationId(CurrentScope))"
+                           OnSaved="OnParameterSavedAsync" />
+
+    <QualitySpecModal @ref="specModal"
+                      @bind-IsOpen="specModalOpen"
+                      Scope="@CurrentScope"
+                      OrganizationId="@(ScopeOrganizationId(CurrentScope))"
+                      CanManage="@scopeCanManage"
+                      ActiveItems="@activeItems"
+                      ActiveClassifications="@activeClassifications"
+                      ActiveParameters="@activeParameters"
+                      OnSaved="OnSpecSavedAsync" />
+
+    @if (CurrentScope is not null)
+    {
+        <LotCertificateDialog @bind-IsOpen="coaOpen" Scope="@CurrentScope" OrganizationId="@ScopeOrganizationId(CurrentScope)"
+                              ItemId="@coaItemId" LotCode="@coaLotCode" />
+    }
+</section>
+
+@code {
+    [Parameter] public long? OrganizationId { get; set; }
+    [SupplyParameterFromQuery(Name = "tab")] public string? TabQuery { get; set; }
+
+    private const int TabInspections = 0;
+    private const int TabSpecs = 1;
+    private const int TabParameters = 2;
+    private const int TabLots = 3;
+    private static readonly int[] PageSizeOptions = [10, 25, 50, 100];
+    private static readonly BitDialogClassStyles DialogClasses = new()
+    {
+        Container = "read-dialog",
+        Header = "read-dialog-header",
+        Body = "read-dialog-body",
+        CloseButton = "read-dialog-close",
+        Overlay = "read-dialog-overlay"
+    };
+    private static readonly BitIconInfo EditIcon = BitIconInfo.Css("ff-icon ff-icon--edit");
+    private static readonly BitIconInfo DeactivateIcon = BitIconInfo.Css("ff-icon ff-icon--deactivate");
+    private static readonly BitIconInfo ActivateIcon = BitIconInfo.Css("ff-icon ff-icon--activate");
+    private static readonly BitIconInfo PlusIcon = BitIconInfo.Css("ff-icon ff-icon--plus");
+    private static readonly BitIconInfo CalendarIcon = BitIconInfo.Css("ff-icon ff-icon--calendar");
+    private static readonly BitIconInfo TodayIcon = BitIconInfo.Css("ff-icon ff-icon--today");
+    private static readonly BitIconInfo NextNavIcon = BitIconInfo.Css("ff-icon ff-icon--chevron-next");
+    private static readonly BitIconInfo PrevNavIcon = BitIconInfo.Css("ff-icon ff-icon--chevron-prev");
+    private static readonly BitIconInfo NextYearIcon = BitIconInfo.Css("ff-icon ff-icon--chevrons-next");
+    private static readonly BitIconInfo PrevYearIcon = BitIconInfo.Css("ff-icon ff-icon--chevrons-prev");
+    private static readonly BitIconInfo CloseIcon = BitIconInfo.Css("ff-icon ff-icon--close");
+    private string PickerDateFormat => Culture.Language == CulturePolicy.Persian ? "yyyy/MM/dd" : "yyyy-MM-dd";
+
+    private InspectionGrid? inspGrid;
+    private QualityLotGrid? lotGrid;
+    private QualityParameterGrid? paramGrid;
+    private QualitySpecGrid? specGrid;
+
+    private int activeTab = TabInspections;
+    private bool initialLoading = true;
+    private string? pageError;
+    private string? pageNotice;
+    private List<OrganizationScope> available = [];
+    private IReadOnlyDictionary<OrganizationScope, ForgeFlow.Web.Organizations.ScopeDisplayInfo> scopeLabels =
+        new Dictionary<OrganizationScope, ForgeFlow.Web.Organizations.ScopeDisplayInfo>();
+    private int scopeIndex;
+    private bool scopeCanManage;
+
+    private IReadOnlyList<ProductionOrderSiteInfo> authorizedSites = [];
+    private IReadOnlyList<WarehouseSummary> activeWarehouses = [];
+    private IReadOnlyList<ItemSummary> activeItems = [];
+    private IReadOnlyList<UnitSummary> activeUnits = [];
+    private IReadOnlyList<ClassificationSummary> activeClassifications = [];
+    private IReadOnlyList<QualityParameterSummary> activeParameters = [];
+
+    private long siteFilter;
+    private string statusFilter = string.Empty;
+    private bool onlyExpiringLots;
+    private bool includeInactiveParams;
+    private bool includeInactiveSpecs;
+    private string specTargetFilter = string.Empty;
+    private string specCheckpointFilter = string.Empty;
+    private string? search;
+    private string? appliedSearch;
+    private readonly DebouncedSearchController _searchController = new(300);
+
+    public void Dispose()
+    {
+        _searchController.Dispose();
+        editingSpec = null;
+        specLines.Clear();
+        activeWarehouses = [];
+        activeItems = [];
+        activeUnits = [];
+        activeClassifications = [];
+        activeParameters = [];
+    }
+
+    private void OnParamModalOpenChanged(bool open)
+    {
+        paramModalOpen = open;
+    }
+
+    private void OnSpecModalOpenChanged(bool open)
+    {
+        specModalOpen = open;
+        if (!open)
+        {
+            editingSpec = null;
+            specLines.Clear();
+        }
+    }
+    private bool modalBusy;
+
+    private QualityHoldModal? holdModal;
+    private bool holdModalOpen;
+
+    private QualityInspectionDetailsModal? detailsModal;
+    private bool detailsOpen;
+
+    private QualityLotModal? lotModal;
+    private bool lotModalOpen;
+
+    private QualityParameterModal? paramModal;
+    private QualitySpecModal? specModal;
+
+    private bool coaOpen;
+    private long coaItemId;
+    private string coaLotCode = string.Empty;
+
+    private bool paramModalOpen;
+    private bool specModalOpen;
+#pragma warning disable CS0414
+    private QualitySpecSummary? editingSpec;
+#pragma warning restore CS0414
+    private readonly List<SpecLineEditRow> specLines = [];
+
+    private sealed class SpecLineEditRow
+    {
+        public long QualityParameterId { get; set; }
+        public decimal? MinValue { get; set; }
+        public decimal? MaxValue { get; set; }
+        public decimal? TargetValue { get; set; }
+        public string? ExpectedTextSpec { get; set; }
+        public bool IsMandatory { get; set; } = true;
+        public string? Notes { get; set; }
+    }
+
+    private OrganizationScope? CurrentScope => scopeIndex >= 0 && scopeIndex < available.Count ? available[scopeIndex] : null;
+    private static long ScopeOrganizationId(OrganizationScope? scope) => scope switch
+    {
+        OrganizationScope.Organization o => o.OrganizationId,
+        OrganizationScope.Site s => s.OrganizationId,
+        _ => 0
+    };
+
+    private BitDataGridStrings GridStrings => new()
+    {
+        GridLabel = Text["QualityControl"],
+        EmptyText = Text["ReadEmpty"],
+        NoMatchesText = Text["ReadEmpty"],
+        LoadingText = Text["ReadLoading"],
+        PagerRangeFormat = Text["GridPagerRange"],
+        PagerPageFormat = Text["GridPagerPage"],
+        PerPageFormat = Text["GridPerPage"],
+        RowsPerPageLabel = Text["GridRowsPerPage"],
+        FirstPageLabel = Text["GridFirstPage"],
+        PreviousPageLabel = Text["GridPreviousPage"],
+        NextPageLabel = Text["GridNextPage"],
+        LastPageLabel = Text["GridLastPage"],
+        AnnouncementPage = Text["GridPagerPage"]
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(TabQuery))
+        {
+            var target = TabQuery.ToLowerInvariant() switch
+            {
+                "specs" or "spec" => TabSpecs,
+                "parameters" or "params" => TabParameters,
+                "lots" or "lot" => TabLots,
+                _ => TabInspections
+            };
+            activeTab = target;
+        }
+        await ReloadScopeAsync();
+    }
+
+    private async Task ReloadScopeAsync()
+    {
+        initialLoading = true;
+        pageError = null;
+        pageNotice = null;
+        try
+        {
+            var loaded = await Scopes.LoadQualityScopesAsync();
+            available = OrganizationId is long orgId
+                ? loaded.Where(s => ScopeOrganizationId(s) == orgId).ToList()
+                : loaded.ToList();
+            scopeLabels = await Scopes.LoadDisplayInfoAsync(available);
+            if (available.Count == 0 && OrganizationId is long fallbackOrgId)
+                available = [new OrganizationScope.Organization(fallbackOrgId)];
+            scopeIndex = 0;
+            await RefreshScopeStateAsync();
+        }
+        catch { pageError = "ReadError"; }
+        finally { initialLoading = false; }
+    }
+
+    private async Task RefreshScopeStateAsync()
+    {
+        scopeCanManage = false;
+        authorizedSites = [];
+        activeWarehouses = [];
+        activeItems = [];
+        activeUnits = [];
+        activeClassifications = [];
+        activeParameters = [];
+        var scope = CurrentScope;
+        if (scope is null) return;
+
+        var actor = await Actors.ResolveAsync(default);
+        var orgId = ScopeOrganizationId(scope);
+
+        Task<PermissionDecision>? manageTask = actor is not null
+            ? Permissions.EvaluateAsync(actor, scope, QualityPermissions.QualityManage, default).AsTask()
+            : null;
+
+        var sitesTask = OrderService.ListAuthorizedSites(scope, orgId);
+        var whTask = InvService.ListWarehouses(scope, orgId, new WarehouseListQuery(IncludeInactive: false, PageSize: 100));
+        var itemsTask = ItemService.ListActiveItems(scope, orgId);
+        var unitsTask = UnitService.ListActiveUnits(scope, orgId);
+        var clsTask = ItemService.ListActiveClassifications(scope, orgId);
+        var paramTask = SpecService.ListParameters(scope, orgId, new QualityParameterListQuery(IncludeInactive: false, PageSize: 100));
+
+        var tasks = new List<Task> { sitesTask, whTask, itemsTask, unitsTask, clsTask, paramTask };
+        if (manageTask is not null) tasks.Add(manageTask);
+
+        await Task.WhenAll(tasks);
+
+        if (manageTask is not null)
+            scopeCanManage = (await manageTask).IsAllowed;
+
+        var sitesRes = await sitesTask;
+        if (sitesRes.Succeeded) authorizedSites = sitesRes.Value!;
+        var whRes = await whTask;
+        if (whRes.Succeeded) activeWarehouses = whRes.Value!.Items;
+        var itemsRes = await itemsTask;
+        if (itemsRes.Succeeded) activeItems = itemsRes.Value!;
+        var unitsRes = await unitsTask;
+        if (unitsRes.Succeeded) activeUnits = unitsRes.Value!;
+        var clsRes = await clsTask;
+        if (clsRes.Succeeded) activeClassifications = clsRes.Value!;
+        var paramRes = await paramTask;
+        if (paramRes.Succeeded) activeParameters = paramRes.Value!.Items;
+    }
+
+    private async Task SwitchTabAsync(int tab)
+    {
+        if (activeTab == tab) return;
+        activeTab = tab;
+        await ReloadActiveGridAsync(true);
+    }
+
+    private async Task ChangeScopeAsync(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var idx) && idx >= 0 && idx < available.Count)
+        {
+            scopeIndex = idx;
+            siteFilter = 0;
+            await RefreshScopeStateAsync();
+            await ReloadActiveGridAsync(true);
+        }
+    }
+
+    private async Task OnSearchInput(ChangeEventArgs e)
+    {
+        await _searchController.OnInputDebouncedAsync(
+            e,
+            val => search = val,
+            async _ =>
+            {
+                appliedSearch = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+                await ReloadActiveGridAsync(true);
+                await InvokeAsync(StateHasChanged);
+            });
+    }
+
+    private async Task ChangeSiteFilterAsync(ChangeEventArgs e)
+    {
+        siteFilter = long.TryParse(e.Value?.ToString(), out var id) ? id : 0;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await ReloadActiveGridAsync(true);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeStatusFilterAsync(ChangeEventArgs e)
+    {
+        statusFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await ReloadActiveGridAsync(true);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ToggleExpiringLotsAsync(ChangeEventArgs e)
+    {
+        onlyExpiringLots = e.Value is bool b && b;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await ReloadActiveGridAsync(true);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ToggleInactiveParamsAsync(ChangeEventArgs e)
+    {
+        includeInactiveParams = e.Value is bool b && b;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await ReloadActiveGridAsync(true);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ToggleInactiveSpecsAsync(ChangeEventArgs e)
+    {
+        includeInactiveSpecs = e.Value is bool b && b;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await ReloadActiveGridAsync(true);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeSpecTargetFilterAsync(ChangeEventArgs e)
+    {
+        specTargetFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await ReloadActiveGridAsync(true);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ChangeSpecCheckpointFilterAsync(ChangeEventArgs e)
+    {
+        specCheckpointFilter = e.Value?.ToString() ?? string.Empty;
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            await ReloadActiveGridAsync(true);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ApplySearchAsync()
+    {
+        await _searchController.RunImmediateAsync(async _ =>
+        {
+            appliedSearch = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+            await ReloadActiveGridAsync(true);
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task ReloadActiveGridAsync(bool fromFirstPage)
+    {
+        if (activeTab == TabInspections && inspGrid is not null)
+            await inspGrid.RefreshAsync(fromFirstPage);
+        else if (activeTab == TabLots && lotGrid is not null)
+            await lotGrid.RefreshAsync(fromFirstPage);
+        else if (activeTab == TabParameters && paramGrid is not null)
+            await paramGrid.RefreshAsync(fromFirstPage);
+        else if (activeTab == TabSpecs && specGrid is not null)
+            await specGrid.RefreshAsync(fromFirstPage);
+    }
+
+    private async Task<BitDataGridReadResult<QualityInspectionSummary>> ReadInspectionsAsync(BitDataGridReadRequest req)
+    {
+        var scope = CurrentScope;
+        if (scope is null) return new([], 0);
+        var size = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / size) + 1;
+        QualityInspectionStatus? st = byte.TryParse(statusFilter, out var s) && Enum.IsDefined((QualityInspectionStatus)s)
+            ? (QualityInspectionStatus)s
+            : null;
+        var res = await QualityService.ListInspections(scope, ScopeOrganizationId(scope),
+            new QualityInspectionListQuery(siteFilter > 0 ? siteFilter : null, null, null, st, appliedSearch, page, size), req.CancellationToken);
+        if (!res.Succeeded) { pageError = RolePermissionLocalization.FailureKey(res.Error!.Code); StateHasChanged(); return new([], 0); }
+        return new(res.Value!.Items.ToList(), res.Value.Total);
+    }
+
+    private async Task<BitDataGridReadResult<ItemLotSummary>> ReadLotsAsync(BitDataGridReadRequest req)
+    {
+        var scope = CurrentScope;
+        if (scope is null) return new([], 0);
+        var size = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / size) + 1;
+        var res = await QualityService.ListItemLots(scope, ScopeOrganizationId(scope),
+            new ItemLotListQuery(null, appliedSearch, onlyExpiringLots, page, size), req.CancellationToken);
+        if (!res.Succeeded) { pageError = RolePermissionLocalization.FailureKey(res.Error!.Code); StateHasChanged(); return new([], 0); }
+        return new(res.Value!.Items.ToList(), res.Value.Total);
+    }
+
+    private async Task<BitDataGridReadResult<QualityParameterSummary>> ReadParametersAsync(BitDataGridReadRequest req)
+    {
+        var scope = CurrentScope;
+        if (scope is null) return new([], 0);
+        var size = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / size) + 1;
+        var res = await SpecService.ListParameters(scope, ScopeOrganizationId(scope),
+            new QualityParameterListQuery(includeInactiveParams, appliedSearch, page, size), req.CancellationToken);
+        if (!res.Succeeded) { pageError = RolePermissionLocalization.FailureKey(res.Error!.Code); StateHasChanged(); return new([], 0); }
+        return new(res.Value!.Items.ToList(), res.Value.Total);
+    }
+
+    private async Task<BitDataGridReadResult<QualitySpecSummary>> ReadSpecsAsync(BitDataGridReadRequest req)
+    {
+        var scope = CurrentScope;
+        if (scope is null) return new([], 0);
+        var size = Math.Clamp(req.Take ?? 25, 1, 100);
+        var page = (req.Skip / size) + 1;
+        QualitySpecTargetKind? targetKind = byte.TryParse(specTargetFilter, out var tk) && Enum.IsDefined((QualitySpecTargetKind)tk)
+            ? (QualitySpecTargetKind)tk : null;
+        QualitySpecCheckpoint? checkpoint = byte.TryParse(specCheckpointFilter, out var ck) && Enum.IsDefined((QualitySpecCheckpoint)ck)
+            ? (QualitySpecCheckpoint)ck : null;
+        var res = await SpecService.ListSpecs(scope, ScopeOrganizationId(scope),
+            new QualitySpecListQuery(targetKind, checkpoint, includeInactiveSpecs, appliedSearch, page, size), req.CancellationToken);
+        if (!res.Succeeded) { pageError = RolePermissionLocalization.FailureKey(res.Error!.Code); StateHasChanged(); return new([], 0); }
+        return new(res.Value!.Items.ToList(), res.Value.Total);
+    }
+
+    private Task OpenHoldModalAsync()
+    {
+        holdModal?.Open();
+        return Task.CompletedTask;
+    }
+
+    private async Task OnHoldCreatedAsync()
+    {
+        pageNotice = Text["QcHoldCreatedNotice"];
+        await ReloadActiveGridAsync(true);
+    }
+
+    private async Task OpenInspectionDetailsAsync(long id)
+    {
+        if (detailsModal is not null)
+        {
+            await detailsModal.OpenAsync(id);
+        }
+    }
+
+    private async Task OnInspectionChangedAsync(string? notice)
+    {
+        pageNotice = notice;
+        await ReloadActiveGridAsync(false);
+    }
+
+    private void OpenCoaModalFromTuple((long ItemId, string LotCode) args)
+    {
+        OpenCoaModal(args.ItemId, args.LotCode);
+    }
+
+    private void OpenCoaModal(long itemId, string lotCode)
+    {
+        coaItemId = itemId;
+        coaLotCode = lotCode;
+        coaOpen = true;
+    }
+
+    private void OpenParameterModal(QualityParameterSummary? param)
+    {
+        paramModalOpen = true;
+        paramModal?.Open(param);
+        StateHasChanged();
+    }
+
+    private async Task OnParameterSavedAsync()
+    {
+        pageNotice = Text["WriteSaved"];
+        await RefreshScopeStateAsync();
+        await ReloadActiveGridAsync(false);
+    }
+
+    private async Task ToggleParameterActiveAsync(QualityParameterSummary p)
+    {
+        var scope = CurrentScope;
+        if (scope is null) return;
+        modalBusy = true;
+        try
+        {
+            var res = await SpecService.SetParameterActive(scope, new SetQualityParameterActiveRequest(
+                p.OrganizationId, p.Id, !p.IsActive, p.RowVersion));
+            if (!res.Succeeded) { pageError = RolePermissionLocalization.FailureKey(res.Error!.Code); return; }
+            pageNotice = Text["WriteSaved"];
+            await RefreshScopeStateAsync();
+            await ReloadActiveGridAsync(false);
+        }
+        finally { modalBusy = false; }
+    }
+
+    private async Task OpenSpecModalAsync(long? specId)
+    {
+        if (specModal is not null)
+        {
+            await specModal.OpenAsync(specId);
+        }
+    }
+
+    private async Task OnSpecSavedAsync(bool isNew)
+    {
+        pageNotice = Text["WriteSaved"];
+        await ReloadActiveGridAsync(isNew);
+    }
+
+    private async Task ToggleSpecActiveAsync(QualitySpecSummary s)
+    {
+        var scope = CurrentScope;
+        if (scope is null) return;
+        modalBusy = true;
+        try
+        {
+            var res = await SpecService.SetSpecActive(scope, new SetQualitySpecActiveRequest(
+                s.OrganizationId, s.Id, !s.IsActive, s.RowVersion));
+            if (!res.Succeeded) { pageError = RolePermissionLocalization.FailureKey(res.Error!.Code); return; }
+            pageNotice = Text["WriteSaved"];
+            await ReloadActiveGridAsync(false);
+        }
+        finally { modalBusy = false; }
+    }
+
+    private void OpenLotModal(ItemLotSummary? lot)
+    {
+        lotModal?.Open(lot);
+    }
+
+    private async Task OnLotSavedAsync()
+    {
+        pageNotice = Text["WriteSaved"];
+        await ReloadActiveGridAsync(false);
+    }
+
+    private string StatusLabel(QualityInspectionStatus status) => status switch
+    {
+        QualityInspectionStatus.Pending => Text["QcStatusPending"],
+        QualityInspectionStatus.InReview => Text["QcStatusInReview"],
+        QualityInspectionStatus.Completed => Text["QcStatusCompleted"],
+        QualityInspectionStatus.Cancelled => Text["QcStatusCancelled"],
+        _ => status.ToString()
+    };
+
+    private static string StatusBadgeClass(QualityInspectionStatus status) => status switch
+    {
+        QualityInspectionStatus.Pending => "qc-status-pending",
+        QualityInspectionStatus.InReview => "qc-status-review",
+        QualityInspectionStatus.Completed => "qc-status-completed",
+        QualityInspectionStatus.Cancelled => "qc-status-cancelled",
+        _ => "qc-status-pending"
+    };
+
+    private string SourceLabel(QualityInspectionSourceType source) => source switch
+    {
+        QualityInspectionSourceType.Receipt => Text["QcSourceReceipt"],
+        QualityInspectionSourceType.ProductionReceipt => Text["QcSourceProdReceipt"],
+        QualityInspectionSourceType.ManualHold => Text["QcSourceManualHold"],
+        _ => source.ToString()
+    };
+
+    private string ScopeLabel(OrganizationScope scope) => scope switch
+    {
+        OrganizationScope.Organization o when scopeLabels.TryGetValue(scope, out var info) && info.OrgCode is not null
+            => $"{info.OrgCode} — {info.OrgName}",
+        OrganizationScope.Organization o => Text["ReadOrganizationScope", o.OrganizationId],
+        OrganizationScope.Site s when scopeLabels.TryGetValue(scope, out var info) && info.SiteCode is not null
+            => $"{info.OrgCode} / {info.SiteCode} — {info.SiteName}",
+        OrganizationScope.Site s => Text["ReadSiteScope", s.OrganizationId, s.SiteId],
+        _ => string.Empty
+    };
+}

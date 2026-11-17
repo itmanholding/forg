@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Auth.LoginRejected" xml:space="preserve"><value>Sign-in failed. Check your credentials or contact the deployment operator.</value></data>
+  <data name="Auth.SessionInvalid" xml:space="preserve"><value>Your session is no longer valid. Sign in again.</value></data>
+  <data name="Auth.AccessDenied" xml:space="preserve"><value>You do not have access to this operation.</value></data>
+  <data name="Auth.ServiceUnavailable" xml:space="preserve"><value>Authentication is unavailable. Try again later.</value></data>
+  <data name="Auth.LogoutRevocationIncomplete" xml:space="preserve"><value>This browser was signed out, but server session revocation could not be confirmed.</value></data>
+  <data name="Auth.RequestRejected" xml:space="preserve"><value>The request could not be verified. Reload the page and try again.</value></data>
+  <data name="Auth.LoginThrottled" xml:space="preserve"><value>Too many sign-in attempts. Try again later.</value></data>
+  <data name="Culture.ProfileSyncFailed" xml:space="preserve"><value>Language updated in this browser, but saving it to your account profile failed.</value></data>
+  <data name="Auth.PasswordChanged" xml:space="preserve"><value>Your password has been updated and other sessions were signed out.</value></data>
+  <data name="Auth.CurrentPasswordInvalid" xml:space="preserve"><value>The current password is incorrect.</value></data>
+  <data name="Auth.PasswordInvalid" xml:space="preserve"><value>New password must be 12 to 128 characters without control characters.</value></data>
+  <data name="Auth.PasswordMismatch" xml:space="preserve"><value>The new password and confirmation do not match.</value></data>
+  <data name="Auth.TwoFactorInvalidCode" xml:space="preserve"><value>The verification code is invalid or expired.</value></data>
+  <data name="Auth.TwoFactorPendingExpired" xml:space="preserve"><value>Your two-factor sign-in session expired. Sign in again.</value></data>
+  <data name="Auth.TwoFactorNotEnabled" xml:space="preserve"><value>Two-factor authentication is not enabled on this account.</value></data>
+  <data name="Auth.TwoFactorEnabled" xml:space="preserve"><value>Two-factor authentication has been enabled.</value></data>
+  <data name="Auth.TwoFactorDisabled" xml:space="preserve"><value>Two-factor authentication has been disabled.</value></data>
+  <data name="Auth.RecoveryCodesRegenerated" xml:space="preserve"><value>New recovery codes have been generated. Previous codes are no longer valid.</value></data>
+  <data name="Auth.PasskeyRegistered" xml:space="preserve"><value>Passkey registered successfully.</value></data>
+  <data name="Auth.PasskeyRemoved" xml:space="preserve"><value>Passkey removed.</value></data>
+  <data name="Auth.PasskeyInvalid" xml:space="preserve"><value>Passkey verification failed. Try again.</value></data>
+  <data name="Auth.PasskeyNotFound" xml:space="preserve"><value>Passkey was not found.</value></data>
+  <data name="Auth.RateLimitExceeded" xml:space="preserve"><value>Too many authentication attempts. Please try again in {0} seconds.</value></data>
+  <data name="Export.RateLimitExceeded" xml:space="preserve"><value>Too many export requests. Please try again in {0} seconds.</value></data>
+  <data name="Common.RateLimitExceeded" xml:space="preserve"><value>Too many requests. Please try again in {0} seconds.</value></data>
+  <data name="Auth.ConcurrentSessionLimitReached" xml:space="preserve"><value>The maximum number of concurrent sessions has been reached for this account.</value></data>
+  <data name="Auth.SessionRevoked" xml:space="preserve"><value>Your session has been signed out or revoked. Please sign in again.</value></data>
+</root>

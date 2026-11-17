@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ForgeFlow.Application/ForgeFlow.Application.csproj" />
+    <Project Path="src/ForgeFlow.Domain/ForgeFlow.Domain.csproj" />
+    <Project Path="src/ForgeFlow.Infrastructure/ForgeFlow.Infrastructure.csproj" />
+    <Project Path="src/ForgeFlow.Web/ForgeFlow.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ForgeFlow.Web.Tests/ForgeFlow.Web.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/ForgeFlow.Bootstrap/ForgeFlow.Bootstrap.csproj" />
+    <Project Path="tools/ForgeFlow.Setup/ForgeFlow.Setup.csproj" />
+    <Project Path="tools/ForgeFlow.LocalTestRecovery/ForgeFlow.LocalTestRecovery.csproj" />
+    <Project Path="tools/ForgeFlow.LocalTestAccount/ForgeFlow.LocalTestAccount.csproj" />
+  </Folder>
+</Solution>

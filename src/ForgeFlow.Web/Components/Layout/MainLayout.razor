@@ -1,0 +1,669 @@
+@inherits LayoutComponentBase
+@implements IAsyncDisposable
+@inject IStringLocalizer<SharedResources> Text
+@inject AuthenticationStateProvider AuthProvider
+@inject Microsoft.JSInterop.IJSRuntime JS
+@inject ForgeFlow.Web.Organizations.ReadScopes ReadScopes
+@inject CulturePolicy Culture
+@inject UserDisplayPreferences DisplayPreferences
+@inject IServiceProvider Services
+@inject NavigationManager Navigation
+
+<AuthorizeView Context="shellAuth">
+<Authorized>
+<div class="app-shell @(sidebarCollapsed ? "is-sidebar-collapsed" : string.Empty) @(drawerOpen ? "is-drawer-open" : string.Empty)">
+    @if (drawerOpen)
+    {
+        <div class="ff-sidebar-backdrop" @onclick="CloseDrawer" aria-hidden="true"></div>
+    }
+
+    <aside id="primary-navigation" class="ff-sidebar" aria-label="@Text["Navigation"]">
+        <div class="ff-sidebar-brand">
+            <a class="ff-sidebar-brand-link" href="/" aria-label="@Text["AppTitle"]" @onclick="CloseDrawer">
+                <img src="/images/brand/forgeflow-sidebar-logo-light.svg" alt="@Text["AppTitle"]" class="ff-brand-logo ff-brand-logo--light" />
+                <img src="/images/brand/forgeflow-sidebar-logo-dark.svg" alt="@Text["AppTitle"]" class="ff-brand-logo ff-brand-logo--dark" />
+                <img src="/images/brand/forgeflow-symbol.svg" alt="@Text["AppTitle"]" class="ff-brand-symbol" />
+            </a>
+            <button type="button" class="ff-sidebar-close" aria-label="@Text["CloseNavigation"]" @onclick="CloseDrawer">
+                <span class="ff-icon ff-icon--close" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <nav class="ff-sidebar-nav" aria-label="@Text["Navigation"]">
+            @foreach (var navSection in NavSections)
+            {
+                <div class="ff-nav-section">
+                    @if (string.IsNullOrWhiteSpace(navSection.Title))
+                    {
+                        <ul class="ff-nav-list">
+                            @foreach (var item in navSection.Items)
+                            {
+                                var active = IsNavItemActive(item.Url);
+                                <li>
+                                    <a href="@item.Url"
+                                       class="ff-nav-item @(active ? "is-active" : string.Empty)"
+                                       aria-current="@(active ? "page" : null)"
+                                       title="@item.Text"
+                                       @onclick="CloseDrawer">
+                                        <span class="ff-icon @item.IconClass ff-nav-item-icon" aria-hidden="true"></span>
+                                        <span class="ff-nav-item-label">@item.Text</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        var isExpanded = IsSectionExpanded(navSection.Key);
+                        var hasActiveChild = navSection.Items.Any(i => IsNavItemActive(i.Url));
+                        <button type="button"
+                                class="ff-nav-group-btn @(isExpanded ? "is-expanded" : string.Empty) @(hasActiveChild ? "has-active" : string.Empty)"
+                                aria-expanded="@isExpanded.ToString().ToLowerInvariant()"
+                                title="@navSection.Title"
+                                @onclick="() => ToggleSection(navSection.Key)">
+                            <span class="ff-nav-group-start">
+                                @if (!string.IsNullOrWhiteSpace(navSection.IconClass))
+                                {
+                                    <span class="ff-icon @navSection.IconClass ff-nav-group-icon" aria-hidden="true"></span>
+                                }
+                                <span class="ff-nav-group-label">@navSection.Title</span>
+                            </span>
+                            <span class="ff-icon ff-icon--chevron-down ff-nav-group-caret" aria-hidden="true"></span>
+                        </button>
+                        @if (isExpanded && !sidebarCollapsed)
+                        {
+                            <ul class="ff-nav-list ff-nav-list--nested">
+                                @foreach (var item in navSection.Items)
+                                {
+                                    var active = IsNavItemActive(item.Url);
+                                    <li>
+                                        <a href="@item.Url"
+                                           class="ff-nav-item @(active ? "is-active" : string.Empty)"
+                                           aria-current="@(active ? "page" : null)"
+                                           title="@item.Text"
+                                           @onclick="CloseDrawer">
+                                            <span class="ff-icon @item.IconClass ff-nav-item-icon" aria-hidden="true"></span>
+                                            <span class="ff-nav-item-label">@item.Text</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    }
+                </div>
+            }
+        </nav>
+    </aside>
+
+    <main id="main-content" class="ff-main">
+        <header class="app-header">
+            <div class="app-header-start">
+                <button type="button"
+                        class="ff-sidebar-toggle"
+                        aria-label="@((sidebarCollapsed && !drawerOpen) ? Text["OpenNavigation"] : Text["CollapseNavigation"])"
+                        title="@((sidebarCollapsed && !drawerOpen) ? Text["OpenNavigation"] : Text["CollapseNavigation"])"
+                        aria-controls="primary-navigation"
+                        aria-expanded="@((!sidebarCollapsed || drawerOpen).ToString().ToLowerInvariant())"
+                        @onclick="ToggleSidebarAsync">
+                    <span class="ff-icon ff-icon--sidebar" aria-hidden="true"></span>
+                </button>
+                @{
+                    var crumb = ResolveBreadcrumb();
+                }
+                <nav class="ff-breadcrumb" aria-label="@Text["Navigation"]">
+                    @if (!string.IsNullOrWhiteSpace(crumb.SectionTitle))
+                    {
+                        <span class="ff-crumb-group">@crumb.SectionTitle</span>
+                        <span class="ff-icon ff-icon--chevron-end ff-crumb-sep" aria-hidden="true"></span>
+                    }
+                    <span class="ff-crumb-current">@crumb.PageTitle</span>
+                </nav>
+            </div>
+            <div class="app-header-end">
+                @{
+                    var targetCulture = Culture.Language == CulturePolicy.Persian ? CulturePolicy.English : CulturePolicy.Persian;
+                    var targetLabel = Culture.Language == CulturePolicy.Persian ? Text["LanguageEnglish"] : Text["LanguagePersian"];
+                }
+                <button type="button" class="header-lang-btn" data-auth-culture="@targetCulture"
+                        aria-label="@Text["SwitchLanguageTo", targetLabel]">
+                    <span>@targetLabel</span>
+                </button>
+                <NotificationBell />
+                <UserMenu />
+            </div>
+        </header>
+
+        <div id="auth-ui-notice" class="auth-ui-notice" role="status" hidden></div>
+
+        <div class="ff-main-body">
+            @Body
+        </div>
+    </main>
+</div>
+
+<BitDialog Width="480px" MaxWidth="calc(100vw - 24px)" Classes="@ShortcutDialogClasses" @bind-IsOpen="commandPaletteOpen"
+           Title="@Text["CommandPaletteTitle"]" AriaLabel="@Text["CommandPaletteTitle"]"
+           CloseButtonTitle="@Text["ReadClose"]" ShowOkButton="false" ShowCancelButton="false" ShowCloseButton="true"
+           AutoFocus="true" TrapFocus="true" RestoreFocus="true" CloseOnEscape="true">
+    <Body>
+        <div class="cmd-palette">
+            <input type="search"
+                   class="cmd-palette-input"
+                   placeholder="@Text["CommandPalettePlaceholder"]"
+                   @bind="commandQuery"
+                   @bind:event="oninput" />
+            <div class="cmd-palette-list" role="list">
+                @foreach (var cmd in FilteredCommands)
+                {
+                    <button type="button" role="listitem" class="cmd-palette-item" @onclick="() => ExecuteCommand(cmd.Url)">
+                        <span>@cmd.Label</span>
+                        <span class="cmd-palette-url" dir="ltr">@cmd.Url</span>
+                    </button>
+                }
+            </div>
+        </div>
+    </Body>
+</BitDialog>
+
+<BitDialog Width="440px" MaxWidth="calc(100vw - 24px)" Classes="@ShortcutDialogClasses" @bind-IsOpen="shortcutsHelpOpen"
+           Title="@Text["HelpShortcutsTitle"]" AriaLabel="@Text["HelpShortcutsTitle"]"
+           CloseButtonTitle="@Text["ReadClose"]" ShowOkButton="false" ShowCancelButton="false" ShowCloseButton="true"
+           AutoFocus="true" TrapFocus="true" RestoreFocus="true" CloseOnEscape="true">
+    <Body>
+        <div class="help-shortcut-modal">
+            <div class="help-shortcut-row">
+                <span>@Text["HelpShortcutSearch"]</span>
+                <kbd class="help-kbd" dir="ltr">/</kbd>
+            </div>
+            <div class="help-shortcut-row">
+                <span>@Text["HelpShortcutCommands"]</span>
+                <kbd class="help-kbd" dir="ltr">Ctrl + K</kbd>
+            </div>
+            <div class="help-shortcut-row">
+                <span>@Text["HelpShortcutAll"]</span>
+                <kbd class="help-kbd" dir="ltr">?</kbd>
+            </div>
+        </div>
+    </Body>
+</BitDialog>
+
+</Authorized>
+<NotAuthorized>
+    <AnonymousRedirect />
+</NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public sealed record NavItemDescriptor(string Text, string IconClass, string Url);
+    public sealed record NavSectionDescriptor(string Key, string? Title, string? IconClass, IReadOnlyList<NavItemDescriptor> Items);
+
+    private bool drawerOpen;
+    private bool sidebarCollapsed;
+    private readonly HashSet<string> expandedSections = new(StringComparer.Ordinal);
+    private bool wasAuthenticated;
+    private bool commandPaletteOpen;
+    private bool shortcutsHelpOpen;
+    private string commandQuery = string.Empty;
+    private Microsoft.JSInterop.IJSObjectReference? authUi;
+    private DotNetObjectReference<MainLayout>? shortcutRef;
+
+    private static readonly BitDialogClassStyles ShortcutDialogClasses = new()
+    {
+        Root = "read-dialog",
+        Header = "read-dialog-header",
+        Body = "read-dialog-body",
+        CloseButton = "read-dialog-close",
+        Overlay = "read-dialog-overlay"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthProvider.AuthenticationStateChanged += AuthenticationStateChanged;
+        Navigation.LocationChanged += OnLocationChanged;
+        DisplayPreferences.Changed += OnDisplayPreferencesChanged;
+
+        try
+        {
+            if (!DisplayPreferences.IsLoadedFromDatabase)
+            {
+                var sessionSource = Services.GetService<ForgeFlow.Infrastructure.Identity.ICurrentAuthenticatedSession>();
+                var sessions = Services.GetService<ForgeFlow.Infrastructure.Identity.RuntimeSessions>();
+                if (sessionSource is not null && sessions is not null)
+                {
+                    var reference = await sessionSource.GetAsync(CancellationToken.None);
+                    if (reference is not null)
+                    {
+                        var snapshot = await sessions.GetPreferencesAsync(reference, CancellationToken.None);
+                        if (snapshot is not null)
+                            DisplayPreferences.Apply(snapshot, fromDatabase: true);
+                    }
+                }
+            }
+        }
+        catch { }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        authUi = await JS.InvokeAsync<Microsoft.JSInterop.IJSObjectReference>("import", "./auth-ui.mjs");
+        shortcutRef = DotNetObjectReference.Create(this);
+        try { await authUi.InvokeVoidAsync("registerGlobalShortcuts", shortcutRef); }
+        catch (Microsoft.JSInterop.JSException) { }
+        if (DisplayPreferences.IsLoadedFromDatabase)
+        {
+            try { await authUi.InvokeVoidAsync("applyThemePreference", DisplayPreferences.Theme); }
+            catch (Microsoft.JSInterop.JSException) { }
+        }
+        try
+        {
+            var sessionSource = Services.GetService<ForgeFlow.Infrastructure.Identity.ICurrentAuthenticatedSession>();
+            var sessions = Services.GetService<ForgeFlow.Infrastructure.Identity.RuntimeSessions>();
+            if (sessionSource is not null && sessions is not null)
+            {
+                var reference = await sessionSource.GetAsync(CancellationToken.None);
+                if (reference is not null)
+                    await sessions.TouchSessionActivityAsync(reference, CancellationToken.None);
+            }
+        }
+        catch { }
+        var state = await AuthProvider.GetAuthenticationStateAsync();
+        wasAuthenticated = state.User.Identity?.IsAuthenticated == true;
+        try
+        {
+            orgScopes = await ReadScopes.LoadOrganizationScopesAsync();
+            readScopes = await ReadScopes.Load();
+            userScopes = await ReadScopes.LoadUserScopesAsync();
+            roleScopes = await ReadScopes.LoadRoleScopesAsync();
+            auditScopes = await ReadScopes.LoadAuditScopesAsync();
+            unitScopes = await ReadScopes.LoadUnitScopesAsync();
+            itemScopes = await ReadScopes.LoadItemScopesAsync();
+            bomScopes = await ReadScopes.LoadBomScopesAsync();
+            routingScopes = await ReadScopes.LoadRoutingScopesAsync();
+            productionOrderScopes = await ReadScopes.LoadProductionOrderScopesAsync();
+            inventoryScopes = await ReadScopes.LoadInventoryScopesAsync();
+            reportScopes = await ReadScopes.LoadReportScopesAsync();
+            qualityScopes = await ReadScopes.LoadQualityScopesAsync();
+            procurementScopes = await ReadScopes.LoadProcurementScopesAsync();
+            salesScopes = await ReadScopes.LoadSalesScopesAsync();
+            docSequenceScopes = await ReadScopes.LoadDocumentSequenceScopesAsync();
+            diagnosticScopes = await ReadScopes.LoadDiagnosticScopesAsync();
+            businessPartnerScopes = await ReadScopes.LoadBusinessPartnerScopesAsync();
+        }
+        catch
+        {
+            orgScopes = [];
+            readScopes = [];
+            userScopes = [];
+            roleScopes = [];
+            auditScopes = [];
+            unitScopes = [];
+            itemScopes = [];
+            bomScopes = [];
+            routingScopes = [];
+            productionOrderScopes = [];
+            inventoryScopes = [];
+            reportScopes = [];
+            qualityScopes = [];
+            procurementScopes = [];
+            salesScopes = [];
+            docSequenceScopes = [];
+            diagnosticScopes = [];
+            businessPartnerScopes = [];
+        }
+        StateHasChanged();
+    }
+
+    private async void AuthenticationStateChanged(Task<AuthenticationState> stateTask)
+    {
+        try
+        {
+            var state = await stateTask;
+            var isAuthenticated = state.User.Identity?.IsAuthenticated == true;
+            if (wasAuthenticated && !isAuthenticated && authUi is not null)
+                await authUi.InvokeVoidAsync("clearDrafts");
+            wasAuthenticated = isAuthenticated;
+        }
+        catch (Microsoft.JSInterop.JSDisconnectedException) { }
+        catch (Microsoft.JSInterop.JSException) { }
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        drawerOpen = false;
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public Task OpenCommandPaletteFromJs()
+    {
+        commandQuery = string.Empty;
+        commandPaletteOpen = true;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    [JSInvokable]
+    public Task OpenShortcutsHelpFromJs()
+    {
+        shortcutsHelpOpen = true;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private IEnumerable<(string Label, string Url)> FilteredCommands
+    {
+        get
+        {
+            var all = new List<(string Label, string Url)>
+            {
+                (Text["MyProfileTitle"], "/account/profile"),
+                (Text["MyActivityTitle"], "/account/activity"),
+                (Text["ActiveSessionsTitle"], "/account/sessions"),
+                (Text["NotificationsTitle"], "/account/notifications"),
+                (Text["NotificationSettingsTitle"], "/account/notifications-settings"),
+                (Text["MyPreferencesTitle"], "/account/preferences"),
+                (Text["ChangePasswordTitle"], "/account/change-password")
+            };
+            foreach (var navSection in NavSections)
+            {
+                foreach (var item in navSection.Items)
+                    all.Add((item.Text, item.Url));
+            }
+            if (string.IsNullOrWhiteSpace(commandQuery))
+                return all;
+            var q = commandQuery.Trim();
+            return all.Where(x => x.Label.Contains(q, StringComparison.OrdinalIgnoreCase) || x.Url.Contains(q, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    private void ExecuteCommand(string url)
+    {
+        commandPaletteOpen = false;
+        Navigation.NavigateTo(url);
+    }
+
+    private void OnDisplayPreferencesChanged()
+    {
+        navSignature = null;
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ToggleSidebarAsync()
+    {
+        var isDesktop = true;
+        if (authUi is not null)
+        {
+            try { isDesktop = await authUi.InvokeAsync<bool>("isDesktopViewport"); }
+            catch (Microsoft.JSInterop.JSException) { }
+        }
+        if (isDesktop)
+            sidebarCollapsed = !sidebarCollapsed;
+        else
+            drawerOpen = !drawerOpen;
+    }
+
+    private void CloseDrawer() => drawerOpen = false;
+
+    private bool IsSectionExpanded(string key) => expandedSections.Contains(key);
+
+    private void ToggleSection(string key)
+    {
+        if (sidebarCollapsed)
+        {
+            sidebarCollapsed = false;
+            expandedSections.Add(key);
+            return;
+        }
+        if (!expandedSections.Remove(key))
+            expandedSections.Add(key);
+    }
+
+    private string CurrentRelativePath()
+    {
+        var rel = Navigation.ToBaseRelativePath(Navigation.Uri);
+        var q = rel.IndexOfAny(['?', '#']);
+        if (q >= 0) rel = rel[..q];
+        rel = "/" + rel.Trim('/');
+        if (rel.StartsWith("/organizations/", StringComparison.OrdinalIgnoreCase))
+        {
+            var segments = rel.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (segments.Length >= 3 && long.TryParse(segments[1], out _))
+                rel = "/" + string.Join('/', segments.Skip(2));
+        }
+        return rel == "/" ? "/" : rel.TrimEnd('/');
+    }
+
+    private bool IsNavItemActive(string itemUrl)
+    {
+        var current = CurrentRelativePath();
+        if (itemUrl == "/") return current == "/";
+        return string.Equals(current, itemUrl, StringComparison.OrdinalIgnoreCase)
+            || current.StartsWith(itemUrl + "/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private (string? SectionTitle, string PageTitle) ResolveBreadcrumb()
+    {
+        var current = CurrentRelativePath();
+        foreach (var sec in NavSections)
+        {
+            foreach (var item in sec.Items)
+            {
+                if (IsNavItemActive(item.Url))
+                    return (sec.Title, item.Text);
+            }
+        }
+        return current switch
+        {
+            "/account/profile" => (null, Text["MyProfileTitle"]),
+            "/account/activity" => (null, Text["MyActivityTitle"]),
+            "/account/sessions" => (null, Text["ActiveSessionsTitle"]),
+            "/account/notifications" => (null, Text["NotificationsTitle"]),
+            "/account/notifications-settings" => (null, Text["NotificationSettingsTitle"]),
+            "/account/preferences" => (null, Text["MyPreferencesTitle"]),
+            "/account/change-password" => (null, Text["ChangePasswordTitle"]),
+            _ => (null, Text["Home"])
+        };
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        AuthProvider.AuthenticationStateChanged -= AuthenticationStateChanged;
+        Navigation.LocationChanged -= OnLocationChanged;
+        DisplayPreferences.Changed -= OnDisplayPreferencesChanged;
+        if (authUi is not null)
+        {
+            try
+            {
+                await authUi.InvokeVoidAsync("unregisterGlobalShortcuts");
+                await authUi.DisposeAsync();
+            }
+            catch (Microsoft.JSInterop.JSDisconnectedException) { }
+            catch (Microsoft.JSInterop.JSException) { }
+        }
+        shortcutRef?.Dispose();
+    }
+
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> orgScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> readScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> userScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> roleScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> auditScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> unitScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> itemScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> bomScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> routingScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> productionOrderScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> inventoryScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> reportScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> qualityScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> procurementScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> salesScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> docSequenceScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> diagnosticScopes = [];
+    private IReadOnlyList<ForgeFlow.Application.Organizations.OrganizationScope> businessPartnerScopes = [];
+
+    private List<NavSectionDescriptor> cachedNavSections = [];
+    private string? navSignature;
+
+    private IReadOnlyList<NavSectionDescriptor> NavSections
+    {
+        get
+        {
+            var sig = string.Concat(
+                System.Globalization.CultureInfo.CurrentUICulture.Name, "|",
+                orgScopes.Count, ",", readScopes.Count, ",", userScopes.Count, ",",
+                roleScopes.Count, ",", auditScopes.Count, ",", unitScopes.Count, ",",
+                itemScopes.Count, ",", bomScopes.Count, ",", routingScopes.Count, ",", productionOrderScopes.Count, ",",
+                inventoryScopes.Count, ",", reportScopes.Count, ",", qualityScopes.Count, ",",
+                procurementScopes.Count, ",", salesScopes.Count, ",", docSequenceScopes.Count, ",", diagnosticScopes.Count, ",", businessPartnerScopes.Count);
+            if (string.Equals(navSignature, sig, StringComparison.Ordinal))
+                return cachedNavSections;
+
+            var sections = new List<NavSectionDescriptor>
+            {
+                new("home", null, "ff-icon--home", [new(Text["Home"], "ff-icon--home", "/")])
+            };
+
+            var masterData = MasterDataItems;
+            if (masterData.Count > 0)
+                sections.Add(new("masterData", Text["MasterDataNavGroup"], "ff-icon--catalog", masterData));
+
+            var procurement = ProcurementItems;
+            if (procurement.Count > 0)
+                sections.Add(new("procurement", Text["ProcurementNavGroup"], "ff-icon--procurement", procurement));
+
+            var production = ProductionItems;
+            if (production.Count > 0)
+                sections.Add(new("production", Text["ProductionNavGroup"], "ff-icon--production", production));
+
+            var quality = QualityItems;
+            if (quality.Count > 0)
+                sections.Add(new("quality", Text["QualityNavGroup"], "ff-icon--quality", quality));
+
+            var sales = SalesItems;
+            if (sales.Count > 0)
+                sections.Add(new("sales", Text["SalesNavGroup"], "ff-icon--sales", sales));
+
+            var analytics = AnalyticsItems;
+            if (analytics.Count > 0)
+                sections.Add(new("analytics", Text["TraceabilityReportingNavGroup"], "ff-icon--reports", analytics));
+
+            var admin = AdminItems;
+            if (admin.Count > 0)
+                sections.Add(new("admin", Text["AdminNavGroup"], "ff-icon--settings", admin));
+
+            cachedNavSections = sections;
+            navSignature = sig;
+            return cachedNavSections;
+        }
+    }
+
+    private List<NavItemDescriptor> MasterDataItems
+    {
+        get
+        {
+            var items = new List<NavItemDescriptor>();
+            if (businessPartnerScopes.Count > 0)
+                items.Add(new(Text["BusinessPartners"], "ff-icon--suppliers", "/business-partners"));
+            if (itemScopes.Count > 0)
+                items.Add(new(Text["Items"], "ff-icon--items", "/items"));
+            if (unitScopes.Count > 0)
+                items.Add(new(Text["Units"], "ff-icon--units", "/units"));
+            if (routingScopes.Count > 0)
+                items.Add(new(Text["WorkCenters"], "ff-icon--work-centers", "/work-centers"));
+            if (bomScopes.Count > 0)
+                items.Add(new(Text["Boms"], "ff-icon--boms", "/boms"));
+            if (routingScopes.Count > 0)
+                items.Add(new(Text["Routings"], "ff-icon--routings", "/routings"));
+            return items;
+        }
+    }
+
+    private List<NavItemDescriptor> ProcurementItems
+    {
+        get
+        {
+            var items = new List<NavItemDescriptor>();
+            if (procurementScopes.Count > 0)
+                items.Add(new(Text["PurchaseOrders"], "ff-icon--purchase-orders", "/purchase-orders"));
+            return items;
+        }
+    }
+
+    private List<NavItemDescriptor> ProductionItems
+    {
+        get
+        {
+            var items = new List<NavItemDescriptor>();
+            if (productionOrderScopes.Count > 0)
+                items.Add(new(Text["ProductionOrders"], "ff-icon--production", "/production-orders"));
+            if (inventoryScopes.Count > 0)
+                items.Add(new(Text["Inventory"], "ff-icon--inventory", "/inventory"));
+            return items;
+        }
+    }
+
+    private List<NavItemDescriptor> QualityItems
+    {
+        get
+        {
+            var items = new List<NavItemDescriptor>();
+            if (qualityScopes.Count > 0)
+            {
+                items.Add(new(Text["QcMenuInspections"], "ff-icon--quality", "/quality?tab=inspections"));
+                items.Add(new(Text["QcMenuSpecs"], "ff-icon--audit", "/quality?tab=specs"));
+                items.Add(new(Text["QcMenuParameters"], "ff-icon--settings", "/quality?tab=parameters"));
+                items.Add(new(Text["QcMenuLots"], "ff-icon--trace", "/quality?tab=lots"));
+            }
+            return items;
+        }
+    }
+
+    private List<NavItemDescriptor> SalesItems
+    {
+        get
+        {
+            var items = new List<NavItemDescriptor>();
+            if (salesScopes.Count > 0)
+                items.Add(new(Text["SalesDispatch"], "ff-icon--sales", "/sales"));
+            return items;
+        }
+    }
+
+    private List<NavItemDescriptor> AnalyticsItems
+    {
+        get
+        {
+            var items = new List<NavItemDescriptor>();
+            if (qualityScopes.Count > 0)
+                items.Add(new(Text["LotTraceability"], "ff-icon--trace", "/traceability"));
+            if (reportScopes.Count > 0)
+                items.Add(new(Text["Reports"], "ff-icon--reports", "/reports"));
+            return items;
+        }
+    }
+
+    private List<NavItemDescriptor> AdminItems
+    {
+        get
+        {
+            var items = new List<NavItemDescriptor>();
+            if (orgScopes.Count > 0)
+                items.Add(new(Text["Organizations"], "ff-icon--org", "/organizations"));
+            if (readScopes.Count > 0)
+                items.Add(new(Text["Sites"], "ff-icon--site", "/sites"));
+            if (userScopes.Count > 0)
+                items.Add(new(Text["Users"], "ff-icon--user", "/users"));
+            if (roleScopes.Count > 0)
+                items.Add(new(Text["Roles"], "ff-icon--role", "/roles"));
+            if (docSequenceScopes.Count > 0)
+                items.Add(new(Text["DocumentNumbering"], "ff-icon--settings", "/numbering-rules"));
+            if (auditScopes.Count > 0)
+                items.Add(new(Text["Audit"], "ff-icon--audit", "/audit"));
+            if (diagnosticScopes.Count > 0)
+                items.Add(new(Text["ErrorLogs"], "ff-icon--errors", "/errors"));
+            return items;
+        }
+    }
+}

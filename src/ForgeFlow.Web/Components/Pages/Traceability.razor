@@ -1,0 +1,371 @@
+@page "/traceability"
+@page "/organizations/{OrganizationId:long}/traceability"
+@using ForgeFlow.Application.Items
+@using ForgeFlow.Application.Organizations
+@using ForgeFlow.Application.Quality
+@using ForgeFlow.Domain.Inventory
+@using ForgeFlow.Domain.Quality
+@using ForgeFlow.Web.Roles
+@implements IDisposable
+@inject QualityUseCases QualityService
+@inject ItemUseCases ItemService
+@inject ForgeFlow.Web.Organizations.ReadScopes Scopes
+@inject DisplayFormatter Format
+@inject IStringLocalizer<SharedResources> Text
+
+<PageTitle>@Text["LotTraceability"] - @Text["AppTitle"]</PageTitle>
+
+<section class="organization-reader" aria-labelledby="trace-title">
+    <div class="read-page-head">
+        <div>
+            <h1 id="trace-title">@Text["LotTraceability"]</h1>
+            <p class="write-hint">@Text["LotTraceCaption"]</p>
+        </div>
+    </div>
+
+    @if (initialLoading)
+    {
+        <p role="status" aria-live="polite">@Text["ReadLoading"]</p>
+    }
+    else if (pageError is not null)
+    {
+        <div class="read-state" role="alert">
+            <p>@Text[pageError]</p>
+            <BitButton Variant="BitVariant.Outline" Size="BitSize.Small" OnClick="ReloadScopeAsync">@Text["WriteReload"]</BitButton>
+        </div>
+    }
+    else if (available.Count == 0)
+    {
+        <p role="status" class="read-empty">@Text["ReadDenied"]</p>
+    }
+    else
+    {
+        <div class="trace-stack">
+            <div class="read-toolbar-card trace-filter-card">
+                @if (available.Count > 1)
+                {
+                    <div class="read-field">
+                        <label for="tr-scope">@Text["ReadScope"]</label>
+                        <select id="tr-scope" value="@scopeIndex" @onchange="ChangeScopeAsync">
+                            @for (var i = 0; i < available.Count; i++)
+                            {
+                                <option value="@i">@ScopeLabel(available[i])</option>
+                            }
+                        </select>
+                    </div>
+                }
+                <div class="read-field trace-filter-item">
+                    <label for="tr-item">@Text["BomLineItemColumn"]</label>
+                    <select id="tr-item" @bind="selectedItemId">
+                        <option value="0">@Text["InvSelectItemOption"]</option>
+                        @foreach (var it in activeItems)
+                        {
+                            <option value="@it.Id">@it.Code — @it.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="read-field trace-filter-lot">
+                    <label for="tr-lot">@Text["InvLotCodeLabel"]</label>
+                    <input id="tr-lot" type="text" dir="ltr" maxlength="32" @bind="lotCodeInput" placeholder="LOT-001" />
+                </div>
+                <div class="read-field trace-filter-dir">
+                    <label for="tr-dir">@Text["LotTraceDirectionLabel"]</label>
+                    <select id="tr-dir" @bind="selectedDirection">
+                        <option value="@LotTraceDirection.Both">@Text["LotTraceDirBoth"]</option>
+                        <option value="@LotTraceDirection.Backward">@Text["LotTraceDirBackward"]</option>
+                        <option value="@LotTraceDirection.Forward">@Text["LotTraceDirForward"]</option>
+                    </select>
+                </div>
+                <div class="read-toolbar-actions">
+                    <BitButton Class="trace-run-btn" Size="BitSize.Medium" IsEnabled="@(!tracing && selectedItemId > 0 && !string.IsNullOrWhiteSpace(lotCodeInput))" OnClick="RunTraceAsync">
+                        @Text["LotTraceRunBtn"]
+                    </BitButton>
+                </div>
+            </div>
+
+            @if (traceError is not null)
+            {
+                <p role="alert" class="write-error">@Text[traceError]</p>
+            }
+
+            @if (report is not null)
+            {
+                var root = report.RootLot;
+                <div class="trace-summary-card">
+                    <div class="ff-detail-hero">
+                        <div class="ff-detail-hero-main">
+                            <span class="ff-detail-hero-code" dir="ltr">@root.ItemCode · @root.LotCode</span>
+                            <span class="ff-detail-hero-sub">@root.ItemName</span>
+                        </div>
+                        <div class="ff-detail-hero-badges">
+                            @if (root.ExpirationDate.HasValue)
+                            {
+                                <span class="read-badge @(root.IsExpired ? "rpt-shortage-badge" : root.IsExpiringSoon ? "qc-status-pending" : "qc-status-completed")">
+                                    @Text["QcLotExpDateLabel"]: <bdi dir="ltr">@root.ExpirationDate.Value.ToString("yyyy-MM-dd")</bdi>
+                                </span>
+                            }
+                            <BitButton Variant="BitVariant.Outline" Size="BitSize.Small" Icon="@AuditIcon" OnClick="() => coaOpen = true">@Text["QcCoaBtn"]</BitButton>
+                        </div>
+                    </div>
+                    <div class="ff-kpi-strip">
+                        <div class="ff-kpi-tile">
+                            <span class="ff-kpi-tile-label">@Text["InvOnHandLabel"]</span>
+                            <strong class="ff-kpi-tile-val" dir="ltr">@Format.Number(root.TotalOnHandBaseQuantity) @root.BaseUnitSymbol</strong>
+                        </div>
+                        <div class="ff-kpi-tile @(root.TotalBlockedBaseQuantity > 0m ? "rpt-kpi-card--warn" : string.Empty)">
+                            <span class="ff-kpi-tile-label">@Text["InvBlockedLabel"]</span>
+                            <strong class="ff-kpi-tile-val" dir="ltr">@Format.Number(root.TotalBlockedBaseQuantity) @root.BaseUnitSymbol</strong>
+                        </div>
+                        <div class="ff-kpi-tile">
+                            <span class="ff-kpi-tile-label">@Text["InvAvailableLabel"]</span>
+                            <strong class="ff-kpi-tile-val" dir="ltr">@Format.Number(root.TotalAvailableBaseQuantity) @root.BaseUnitSymbol</strong>
+                        </div>
+                    </div>
+                </div>
+
+                @if (report.BackwardEdges.Count > 0)
+                {
+                    <div class="trace-section-card">
+                        <div class="trace-section-head">
+                            <h2>@Text["LotTraceBackwardTitle"]</h2>
+                            <span class="cap-badge"><bdi dir="ltr">@report.BackwardEdges.Count</bdi></span>
+                        </div>
+                        <div class="audit-fields-box" style="overflow-x:auto;">
+                            <table class="audit-fields-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">@Text["PoOrderNumberColumn"]</th>
+                                        <th scope="col">@Text["LotTraceSourceLotCol"]</th>
+                                        <th scope="col">@Text["BomQuantityColumn"]</th>
+                                        <th scope="col">@Text["LotTraceTargetLotCol"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <Virtualize Items="report.BackwardEdges.AsCollection()" Context="edge" ItemSize="40" OverscanCount="5" SpacerElement="tr">
+                                        <tr>
+                                            <td>
+                                                <span class="bom-tree-level" dir="ltr">L@(edge.Level)</span>
+                                                <bdi dir="ltr"> @edge.OrderNumber (@edge.SiteCode)</bdi>
+                                            </td>
+                                            <td>
+                                                <a class="qc-lot-link" href="@($"/traceability?itemId={edge.SourceItemId}&lotCode={Uri.EscapeDataString(edge.SourceLotCode)}")">
+                                                    <bdi dir="ltr">@edge.SourceItemCode / @edge.SourceLotCode</bdi>
+                                                </a>
+                                            </td>
+                                            <td dir="ltr">@Format.Number(edge.SourceNetBaseQuantity) @edge.SourceUnitSymbol</td>
+                                            <td dir="ltr">@edge.TargetItemCode / @edge.TargetLotCode (@Format.Number(edge.TargetNetBaseQuantity) @edge.TargetUnitSymbol)</td>
+                                        </tr>
+                                    </Virtualize>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+
+                @if (report.ForwardEdges.Count > 0)
+                {
+                    <div class="trace-section-card">
+                        <div class="trace-section-head">
+                            <h2>@Text["LotTraceForwardTitle"]</h2>
+                            <span class="cap-badge"><bdi dir="ltr">@report.ForwardEdges.Count</bdi></span>
+                        </div>
+                        <div class="audit-fields-box" style="overflow-x:auto;">
+                            <table class="audit-fields-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">@Text["PoOrderNumberColumn"]</th>
+                                        <th scope="col">@Text["LotTraceSourceLotCol"]</th>
+                                        <th scope="col">@Text["LotTraceTargetLotCol"]</th>
+                                        <th scope="col">@Text["BomQuantityColumn"]</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <Virtualize Items="report.ForwardEdges.AsCollection()" Context="edge" ItemSize="40" OverscanCount="5" SpacerElement="tr">
+                                        <tr>
+                                            <td>
+                                                <span class="bom-tree-level" dir="ltr">L@(edge.Level)</span>
+                                                <bdi dir="ltr"> @edge.OrderNumber (@edge.SiteCode)</bdi>
+                                            </td>
+                                            <td dir="ltr">@edge.SourceItemCode / @edge.SourceLotCode (@Format.Number(edge.SourceNetBaseQuantity) @edge.SourceUnitSymbol)</td>
+                                            <td>
+                                                <a class="qc-lot-link" href="@($"/traceability?itemId={edge.TargetItemId}&lotCode={Uri.EscapeDataString(edge.TargetLotCode)}")">
+                                                    <bdi dir="ltr">@edge.TargetItemCode / @edge.TargetLotCode</bdi>
+                                                </a>
+                                            </td>
+                                            <td dir="ltr">@Format.Number(edge.TargetNetBaseQuantity) @edge.TargetUnitSymbol</td>
+                                        </tr>
+                                    </Virtualize>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+
+                <div class="trace-section-card">
+                    <div class="trace-section-head">
+                        <h2>@Text["LotTraceMovementsTitle"]</h2>
+                        <span class="cap-badge"><bdi dir="ltr">@root.Movements.Count</bdi></span>
+                    </div>
+                    <div class="audit-fields-box" style="overflow-x:auto;">
+                        <table class="audit-fields-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">@Text["AuditTimeColumn"]</th>
+                                    <th scope="col">@Text["InvDocNumberLabel"]</th>
+                                    <th scope="col">@Text["InvWarehouseLabel"]</th>
+                                    <th scope="col">@Text["PoOrderNumberColumn"]</th>
+                                    <th scope="col">@Text["InvBaseQtyDeltaLabel"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <Virtualize Items="root.Movements.AsCollection()" Context="m" ItemSize="40" OverscanCount="5" SpacerElement="tr">
+                                    <tr>
+                                        <td dir="ltr">@Format.Timestamp(m.OccurredAtUtc)</td>
+                                        <td dir="ltr">@m.DocumentNumber @(m.IsReversed ? $"({Text["InvReversedBadge"]})" : string.Empty)</td>
+                                        <td dir="ltr">@m.SiteCode / @m.WarehouseCode</td>
+                                        <td dir="ltr">@(m.ProductionOrderNumber ?? "—")</td>
+                                        <td dir="ltr">
+                                            <span class="@(m.BaseQuantityDelta >= 0m ? "inv-delta-in" : "inv-delta-out")">
+                                                @(m.BaseQuantityDelta > 0m ? "+" : string.Empty)@Format.Number(m.BaseQuantityDelta) @m.BaseUnitSymbol
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </Virtualize>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (CurrentScope is not null && report is not null)
+    {
+        <LotCertificateDialog @bind-IsOpen="coaOpen" Scope="@CurrentScope" OrganizationId="@ScopeOrganizationId(CurrentScope)"
+                              ItemId="@report.RootLot.ItemId" LotCode="@report.RootLot.LotCode" />
+    }
+</section>
+
+@code {
+    [Parameter] public long? OrganizationId { get; set; }
+    [SupplyParameterFromQuery(Name = "itemId")] public long? QueryItemId { get; set; }
+    [SupplyParameterFromQuery(Name = "lotCode")] public string? QueryLotCode { get; set; }
+
+    private static readonly BitIconInfo AuditIcon = BitIconInfo.Css("ff-icon ff-icon--audit");
+
+    private bool initialLoading = true;
+    private bool tracing;
+    private string? pageError;
+    private string? traceError;
+    private List<OrganizationScope> available = [];
+    private IReadOnlyDictionary<OrganizationScope, ForgeFlow.Web.Organizations.ScopeDisplayInfo> scopeLabels =
+        new Dictionary<OrganizationScope, ForgeFlow.Web.Organizations.ScopeDisplayInfo>();
+    private int scopeIndex;
+    private IReadOnlyList<ItemSummary> activeItems = [];
+
+    private long selectedItemId;
+    private string lotCodeInput = string.Empty;
+    private LotTraceDirection selectedDirection = LotTraceDirection.Both;
+    private LotTraceabilityReport? report;
+    private bool coaOpen;
+
+    private OrganizationScope? CurrentScope => scopeIndex >= 0 && scopeIndex < available.Count ? available[scopeIndex] : null;
+    private static long ScopeOrganizationId(OrganizationScope scope) => scope switch
+    {
+        OrganizationScope.Organization o => o.OrganizationId,
+        OrganizationScope.Site s => s.OrganizationId,
+        _ => 0
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ReloadScopeAsync();
+        if (QueryItemId is long qItem && qItem > 0 && !string.IsNullOrWhiteSpace(QueryLotCode))
+        {
+            selectedItemId = qItem;
+            lotCodeInput = QueryLotCode.Trim();
+            await RunTraceAsync();
+        }
+    }
+
+    private async Task ReloadScopeAsync()
+    {
+        initialLoading = true;
+        pageError = null;
+        try
+        {
+            var loaded = await Scopes.LoadQualityScopesAsync();
+            available = OrganizationId is long orgId
+                ? loaded.Where(s => ScopeOrganizationId(s) == orgId).ToList()
+                : loaded.ToList();
+            scopeLabels = await Scopes.LoadDisplayInfoAsync(available);
+            if (available.Count == 0 && OrganizationId is long fallbackOrgId)
+                available = [new OrganizationScope.Organization(fallbackOrgId)];
+            scopeIndex = 0;
+            await LoadItemsAsync();
+        }
+        catch { pageError = "ReadError"; }
+        finally { initialLoading = false; }
+    }
+
+    private async Task LoadItemsAsync()
+    {
+        var scope = CurrentScope;
+        if (scope is null) return;
+        var res = await ItemService.ListActiveItems(scope, ScopeOrganizationId(scope));
+        if (res.Succeeded)
+        {
+            activeItems = res.Value!;
+            if (selectedItemId == 0 && activeItems.Count > 0)
+                selectedItemId = activeItems[0].Id;
+        }
+    }
+
+    private async Task ChangeScopeAsync(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var idx) && idx >= 0 && idx < available.Count)
+        {
+            scopeIndex = idx;
+            report = null;
+            await LoadItemsAsync();
+        }
+    }
+
+    private async Task RunTraceAsync()
+    {
+        var scope = CurrentScope;
+        if (scope is null || selectedItemId <= 0 || string.IsNullOrWhiteSpace(lotCodeInput)) return;
+        tracing = true;
+        traceError = null;
+        report = null;
+        try
+        {
+            var res = await QualityService.TraceLot(scope, ScopeOrganizationId(scope),
+                new LotTraceQuery(selectedItemId, lotCodeInput.Trim(), null, selectedDirection));
+            if (!res.Succeeded)
+            {
+                traceError = RolePermissionLocalization.FailureKey(res.Error!.Code);
+                return;
+            }
+            report = res.Value!;
+        }
+        finally { tracing = false; }
+    }
+
+    private string ScopeLabel(OrganizationScope scope) => scope switch
+    {
+        OrganizationScope.Organization o when scopeLabels.TryGetValue(scope, out var info) && info.OrgCode is not null
+            => $"{info.OrgCode} — {info.OrgName}",
+        OrganizationScope.Organization o => Text["ReadOrganizationScope", o.OrganizationId],
+        OrganizationScope.Site s when scopeLabels.TryGetValue(scope, out var info) && info.SiteCode is not null
+            => $"{info.OrgCode} / {info.SiteCode} — {info.SiteName}",
+        OrganizationScope.Site s => Text["ReadSiteScope", s.OrganizationId, s.SiteId],
+        _ => string.Empty
+    };
+
+    public void Dispose()
+    {
+        report = null;
+        activeItems = [];
+    }
+}

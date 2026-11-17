@@ -1,0 +1,808 @@
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using ForgeFlow.Web.Localization;
+using Xunit;
+
+namespace ForgeFlow.Web.Tests;
+
+public sealed class ResourceContractTests
+{
+    // An explicit registry makes dynamic keys and parameter counts reviewable.
+    private static readonly Dictionary<string, Dictionary<string, int>> Contracts = new()
+    {
+        [nameof(SampleResources)] = new()
+        {
+            ["Title"] = 0, ["Introduction"] = 0, ["NameLabel"] = 0, ["NameRequired"] = 0,
+            ["ValidateButton"] = 0, ["ValidationSucceeded"] = 1, ["DateLabel"] = 0, ["NumberLabel"] = 0,
+            ["FormLegend"] = 0, ["LanguageLabel"] = 0, ["LanguagePersian"] = 0, ["LanguageEnglish"] = 0,
+            ["AmountLabel"] = 0, ["AmountInvalid"] = 0, ["AmountPreview"] = 0, ["NotesLabel"] = 0,
+            ["DiscardButton"] = 0, ["DraftDiscarded"] = 0, ["DraftRejected"] = 0,
+            ["DraftUnavailable"] = 0, ["SwitchFailed"] = 0,
+            ["DialogOpen"] = 0, ["DialogTitle"] = 0, ["DialogContent"] = 0, ["DialogClose"] = 0,
+            ["TableTitle"] = 0, ["TableCaption"] = 0, ["TableFieldHeading"] = 0, ["TableValueHeading"] = 0,
+            ["SyntheticName"] = 0, ["SyntheticAmount"] = 0, ["TooltipButton"] = 0, ["TooltipContent"] = 0,
+            ["SampleRefresh"] = 0, ["SampleLoading"] = 0, ["SampleEmpty"] = 0, ["FeedbackTitle"] = 0,
+            ["NotificationTrigger"] = 0, ["NotificationTitle"] = 0, ["NotificationContent"] = 0,
+            ["MessageDismiss"] = 0, ["IdentityFixtureTitle"] = 0, ["IdentityFixtureScope"] = 0,
+            ["IdentityFixtureTrigger"] = 0, ["IdentityErrorDuplicateUserName"] = 1,
+            ["DateInputLabel"] = 0, ["DateInputHint"] = 0, ["DateInvalid"] = 0, ["DatePreview"] = 0,
+            ["CurrencyLabel"] = 0, ["CurrencyUsd"] = 0, ["CurrencyEur"] = 0, ["CurrencyIrr"] = 0,
+            ["CurrencyInvalid"] = 0, ["CurrencyPreview"] = 0, ["ChooseCurrency"] = 0,
+            ["SampleModeLabel"] = 0, ["SampleModeSummary"] = 0, ["SampleModeDetailed"] = 0,
+            ["SampleModeInvalid"] = 0, ["ChooseMode"] = 0, ["CanonicalValuesTitle"] = 0,
+            ["SubmittedDate"] = 0, ["SubmittedAmount"] = 0, ["SubmittedCurrency"] = 0, ["SubmittedMode"] = 0
+        },
+        [nameof(SharedResources)] = new Dictionary<string, int>()
+        {
+            ["Navigation"] = 0, ["Home"] = 0,
+            ["AppTitle"] = 0, ["OpenNavigation"] = 0, ["CloseNavigation"] = 0, ["CollapseNavigation"] = 0,
+            ["ErrorTitle"] = 0, ["UnexpectedError"] = 0, ["ServerUnavailable"] = 0,
+            ["ReconnectTitle"] = 0, ["ReconnectShowing"] = 0, ["ReconnectRetrying"] = 0,
+            ["ReconnectAttemptLabel"] = 0, ["ReconnectSeconds"] = 0,
+            ["ReconnectFailedTitle"] = 0, ["ReconnectFailed"] = 0, ["ReconnectRetry"] = 0, ["ReconnectReload"] = 0,
+            ["ReconnectPausedTitle"] = 0, ["ReconnectPaused"] = 0, ["ReconnectResume"] = 0, ["ReconnectResumeFailed"] = 0,
+            ["Reload"] = 0, ["NotFoundTitle"] = 0, ["NotFoundMessage"] = 0,
+            ["AccessDeniedTitle"] = 0, ["AccessDeniedMessage"] = 0,
+            ["LoginTitle"] = 0, ["LoginIntroduction"] = 0, ["UsernameLabel"] = 0, ["PasswordLabel"] = 0,
+            ["PasswordVisibilityToggle"] = 0, ["LoginSubmit"] = 0, ["LoginLoading"] = 0,
+            ["LoginRequired"] = 0, ["LoginUnavailable"] = 0, ["LoginLanguageLabel"] = 0, ["SwitchLanguageTo"] = 1,
+            ["LanguagePersian"] = 0, ["LanguageEnglish"] = 0, ["UserMenu"] = 0, ["UserAccountSubtitle"] = 0, ["Logout"] = 0,
+            ["LogoutUnavailable"] = 0, ["Sites"] = 0, ["ReadDenied"] = 0, ["ReadActive"] = 0,
+            ["ReadOrganizationScope"] = 1, ["ReadClose"] = 0, ["ReadScope"] = 0, ["ReadStatus"] = 0,
+            ["ReadInactive"] = 0, ["ReadEmpty"] = 0, ["ReadNotFound"] = 0, ["ReadCode"] = 0, ["ReadInactiveStatus"] = 0,
+            ["ReadError"] = 0, ["Organizations"] = 0, ["AdminNavGroup"] = 0, ["ReadName"] = 0, ["ReadLoading"] = 0,
+            ["ReadActions"] = 0, ["ReadDetails"] = 0, ["ReadEdit"] = 0, ["ReadSiteScope"] = 2,
+            ["ReadSearch"] = 0, ["ReadSearchPlaceholder"] = 0,
+            ["GridPagerRange"] = 3, ["GridPagerPage"] = 2, ["GridPerPage"] = 1, ["GridRowsPerPage"] = 0,
+            ["GridFirstPage"] = 0, ["GridPreviousPage"] = 0, ["GridNextPage"] = 0, ["GridLastPage"] = 0,
+            ["CreateOrganizationButton"] = 0, ["CreateSiteButton"] = 0, ["CreateOrganizationTitle"] = 0,
+            ["CreateSiteTitle"] = 0, ["CreateCodeHint"] = 0, ["CreateSubmit"] = 0, ["CreateCodeInvalid"] = 0,
+            ["CreateCodeDuplicate"] = 0, ["CreateOrgSucceeded"] = 1, ["CreateSiteSucceeded"] = 1, ["CreateOrgNoReadScope"] = 0,
+            ["WriteSave"] = 0, ["WriteSaving"] = 0, ["WriteSaved"] = 0, ["WriteActivate"] = 0,
+            ["WriteDeactivate"] = 0, ["WriteConfirm"] = 0, ["WriteCancel"] = 0, ["WriteConfirmActivate"] = 1,
+            ["WriteConfirmDeactivate"] = 1, ["WriteReload"] = 0, ["WriteReloadConfirm"] = 0,
+            ["WriteDiscardConfirm"] = 0, ["WriteDiscard"] = 0, ["WriteKeepEditing"] = 0,
+            ["WriteNameInvalid"] = 0, ["WriteConflict"] = 0,
+            ["WriteOutcomeUnknown"] = 0, ["WriteParentInactive"] = 0, ["WriteHasActiveSites"] = 0, ["WriteUnavailable"] = 0,
+            ["Users"] = 0, ["UserSearchPlaceholder"] = 0, ["UserUsername"] = 0, ["UserAccountStatus"] = 0,
+            ["UserMembershipStatus"] = 0, ["UserRoleColumn"] = 0, ["UserSitesColumn"] = 0, ["UserSitesCount"] = 1,
+            ["UserAccountDisabled"] = 0, ["UserLockedBadge"] = 0, ["UserMembershipActive"] = 0, ["UserMembershipInactive"] = 0,
+            ["UserOrgAdminRole"] = 0, ["UserSiteOperatorRole"] = 0, ["UserStandardRole"] = 0,
+            ["CreateUserButton"] = 0, ["CreateUserTitle"] = 0, ["AttachUserButton"] = 0, ["AttachUserTitle"] = 0,
+            ["UserNameHint"] = 0, ["UserPasswordLabel"] = 0, ["UserPasswordHint"] = 0, ["UserAssignOrgAdmin"] = 0,
+            ["UserAssignSitesLabel"] = 0, ["UserUnlockButton"] = 0,
+            ["UserActivateAccount"] = 0, ["UserDeactivateAccount"] = 0, ["UserActivateMembership"] = 0, ["UserDeactivateMembership"] = 0,
+            ["UserGrantOrgAdmin"] = 0, ["UserRevokeOrgAdmin"] = 0,
+            ["UserAddSiteLabel"] = 0, ["UserAddSiteButton"] = 0,
+            ["UserConfirmDisableAccount"] = 1, ["UserConfirmEnableAccount"] = 1,
+            ["UserConfirmDisableMembership"] = 1, ["UserConfirmEnableMembership"] = 1,
+            ["UserConfirmRevokeOrgAdmin"] = 1, ["UserCreatedSucceeded"] = 1, ["UserAttachedSucceeded"] = 1,
+            ["UserErrorInvalidName"] = 0, ["UserErrorDuplicate"] = 0, ["UserErrorPasswordInvalid"] = 0,
+            ["UserErrorSelfDeactivation"] = 0, ["UserErrorLastOrgAdmin"] = 0, ["UserErrorLastPlatformAdmin"] = 0,
+            ["UserErrorOrgMembershipRequired"] = 0, ["UserErrorSiteMembershipRequired"] = 0,
+            ["UserErrorParentSiteInactive"] = 0, ["UserErrorRoleScopeInvalid"] = 0, ["UserEmptySites"] = 0,
+            ["ChangePasswordLink"] = 0, ["ChangePasswordTitle"] = 0, ["CurrentPasswordLabel"] = 0,
+            ["NewPasswordLabel"] = 0, ["ConfirmPasswordLabel"] = 0, ["ChangePasswordSubmit"] = 0,
+            ["ChangePasswordMismatch"] = 0, ["UserResetPasswordTitle"] = 0, ["UserNewPasswordLabel"] = 0,
+            ["UserResetPasswordButton"] = 0, ["UserConfirmResetPassword"] = 1,
+            ["Roles"] = 0, ["RolesCaption"] = 0, ["RoleCreateButton"] = 0, ["RoleCreateTitle"] = 0, ["RoleCreateSubmit"] = 0,
+            ["RoleEditTitle"] = 0, ["RoleDetailTitle"] = 0, ["RoleNameLabel"] = 0, ["RoleNameHint"] = 0,
+            ["RoleTypeColumn"] = 0, ["RoleSystemBadge"] = 0, ["RoleCustomBadge"] = 0, ["RolePermissionsColumn"] = 0,
+            ["RoleSystemNotice"] = 0, ["RoleConfirmDisable"] = 1, ["RoleConfirmEnable"] = 1,
+            ["RoleBuiltInOrgAdmin"] = 0, ["RoleBuiltInSiteOperator"] = 0, ["RoleBuiltInProvisioner"] = 0,
+            ["PermPageOrganizations"] = 0, ["PermPageSites"] = 0, ["PermPageUsers"] = 0, ["PermPageRoles"] = 0,
+            ["PermOpRead"] = 0, ["PermOpCreate"] = 0, ["PermOpUpdate"] = 0, ["PermOpSetActive"] = 0,
+            ["PermOpUnlock"] = 0, ["PermOpResetPassword"] = 0, ["PermOpManageMemberships"] = 0,
+            ["PermOpAssignFixedRoles"] = 0, ["PermOpManageRoles"] = 0, ["PermOpAssignPermissions"] = 0, ["PermSelectAllPage"] = 0,
+            ["UserPermissionsButton"] = 0, ["UserPermissionsTitle"] = 1,
+            ["UserAssignRoleLabel"] = 0, ["UserAssignRoleButton"] = 0,
+            ["UserPermScopeLabel"] = 0, ["UserPermScopeOrg"] = 0, ["UserPermScopeSite"] = 2, ["UserPermSaveButton"] = 0,
+            ["RoleErrorInvalidName"] = 0, ["RoleErrorDuplicateName"] = 0,
+            ["RoleErrorSystemImmutable"] = 0, ["RoleErrorPermissionUnknown"] = 0,
+            ["RoleErrorPermissionScopeInvalid"] = 0,
+            ["PermPageAudit"] = 0, ["Audit"] = 0, ["AuditCaption"] = 0,
+            ["AuditCategoryLabel"] = 0, ["AuditCategoryAll"] = 0, ["AuditCategoryBusiness"] = 0, ["AuditCategorySecurity"] = 0,
+            ["AuditEventCodeLabel"] = 0, ["AuditEventCodeAll"] = 0,
+            ["AuditTimeColumn"] = 0, ["AuditEventColumn"] = 0, ["AuditActorColumn"] = 0,
+            ["AuditSubjectColumn"] = 0, ["AuditOutcomeColumn"] = 0,
+            ["AuditOutcomeSuccess"] = 0, ["AuditOutcomeFailure"] = 0, ["AuditOutcomeRecorded"] = 0,
+            ["AuditDetailsButton"] = 0, ["AuditDetailsTitle"] = 0, ["AuditCorrelationLabel"] = 0,
+            ["AuditFieldsSection"] = 0, ["AuditRawJsonSection"] = 0,
+            ["AuditFieldKeyColumn"] = 0, ["AuditFieldValueColumn"] = 0, ["AuditSystemActor"] = 0,
+            ["PermPageUnits"] = 0, ["PermOpManageUnits"] = 0,
+            ["PermPageSelectLabel"] = 0, ["PermModuleSummary"] = 3,
+            ["Units"] = 0, ["UnitsCaption"] = 0, ["UnitsTab"] = 0, ["UnitConversionsTab"] = 0,
+            ["UnitCreateButton"] = 0, ["UnitCreateTitle"] = 0, ["UnitEditTitle"] = 0, ["UnitDetailTitle"] = 0,
+            ["UnitConversionCreateButton"] = 0, ["UnitConversionCreateTitle"] = 0, ["UnitConversionEditTitle"] = 0, ["UnitConversionDetailTitle"] = 0,
+            ["UnitsSeedButton"] = 0, ["UnitsSeededNotice"] = 2,
+            ["UnitConverterButton"] = 0, ["UnitConverterTitle"] = 0, ["UnitConverterQuantityLabel"] = 0,
+            ["UnitConverterCalculate"] = 0, ["UnitConverterHops"] = 2,
+            ["UnitSymbolLabel"] = 0, ["UnitDimensionLabel"] = 0, ["UnitDimensionAll"] = 0,
+            ["UnitDimensionMass"] = 0, ["UnitDimensionVolume"] = 0, ["UnitDimensionLength"] = 0,
+            ["UnitDimensionArea"] = 0, ["UnitDimensionCount"] = 0, ["UnitDimensionTime"] = 0,
+            ["UnitPrecisionLabel"] = 0, ["UnitConversionFromLabel"] = 0, ["UnitConversionToLabel"] = 0,
+            ["UnitConversionFactorLabel"] = 0, ["UnitConversionRelationLabel"] = 0,
+            ["UnitFilterAll"] = 0, ["UnitSearchPlaceholder"] = 0,
+            ["UnitCreatedSucceeded"] = 1, ["UnitConversionCreatedSucceeded"] = 0,
+            ["UnitErrorSymbolInvalid"] = 0, ["UnitErrorDimensionInvalid"] = 0, ["UnitErrorPrecisionInvalid"] = 0,
+            ["UnitErrorInactive"] = 0, ["UnitErrorConversionDuplicate"] = 0, ["UnitErrorConversionSameUnit"] = 0,
+            ["UnitErrorConversionFactorInvalid"] = 0, ["UnitErrorConversionPathNotFound"] = 0,
+            ["UnitErrorConversionConflictingPath"] = 0, ["UnitErrorConversionQuantityInvalid"] = 0,
+            ["PermPageItems"] = 0, ["PermOpManageItems"] = 0,
+            ["Items"] = 0, ["ItemsCaption"] = 0, ["ItemsTab"] = 0, ["ItemsClassificationsTab"] = 0, ["ItemsAttributesTab"] = 0,
+            ["ItemCreateButton"] = 0, ["ItemCreateTitle"] = 0, ["ItemEditTitle"] = 0, ["ItemDetailTitle"] = 0,
+            ["ItemDescriptionLabel"] = 0, ["ItemBaseUnitLabel"] = 0, ["ItemCapabilitiesLabel"] = 0,
+            ["ItemCapFilterAll"] = 0, ["ItemCapPurchase"] = 0, ["ItemCapManufacture"] = 0, ["ItemCapSell"] = 0, ["ItemCapConsume"] = 0,
+            ["ItemSearchPlaceholder"] = 0, ["ItemCreatedSucceeded"] = 1,
+            ["ItemSectionGeneral"] = 0, ["ItemSectionClassifications"] = 0, ["ItemSectionConversions"] = 0, ["ItemSectionAttributes"] = 0,
+            ["ClassificationSetCreateButton"] = 0, ["ClassificationCreateButton"] = 0,
+            ["ClassificationSetLabel"] = 0, ["ClassificationSetAll"] = 0, ["ClassificationSetAllowMultiple"] = 0,
+            ["ClassificationParentLabel"] = 0, ["ClassificationFilterAll"] = 0,
+            ["AttributeCreateButton"] = 0, ["AttributeDataTypeLabel"] = 0, ["AttributeDataTypeAll"] = 0,
+            ["AttributeDataTypeText"] = 0, ["AttributeDataTypeDecimal"] = 0, ["AttributeDataTypeBoolean"] = 0,
+            ["AttributeRequiredLabel"] = 0, ["AttributeRequiredYes"] = 0, ["AttributeRequiredNo"] = 0,
+            ["AttributeBoolTrue"] = 0, ["AttributeBoolFalse"] = 0,
+            ["ItemErrorDescriptionInvalid"] = 0, ["ItemErrorBaseUnitInvalid"] = 0, ["ItemErrorCapabilityRequired"] = 0,
+            ["ItemErrorClassificationParentInvalid"] = 0, ["ItemErrorClassificationCircularParent"] = 0,
+            ["ItemErrorAttributeValueInvalid"] = 0, ["ItemErrorAttributeRequired"] = 0,
+            ["Boms"] = 0, ["BomsCaption"] = 0, ["PermPageBoms"] = 0, ["PermOpManageBoms"] = 0,
+            ["BomsTab"] = 0, ["BomDimensionsTab"] = 0, ["BomSimulatorTab"] = 0,
+            ["BomCreateButton"] = 0, ["BomDimCreateButton"] = 0, ["BomDimSeedButton"] = 0,
+            ["BomPrimaryItemLabel"] = 0, ["BomPrimaryItemAll"] = 0, ["BomSearchPlaceholder"] = 0,
+            ["BomVersionCountColumn"] = 0, ["BomVersionsAction"] = 0,
+            ["BomSimulatorHeading"] = 0, ["BomSimulatorHint"] = 0, ["BomSelectItemOption"] = 0,
+            ["BomProductionDateLabel"] = 0, ["BomRequestedQtyLabel"] = 0, ["BomRequestedUnitLabel"] = 0, ["BomDefaultBaseUnitOption"] = 0,
+            ["BomContextPairsLabel"] = 0, ["BomAddContextPairBtn"] = 0, ["BomNoContextPairsHint"] = 0,
+            ["BomDimLabel"] = 0, ["BomConditionValuePlaceholder"] = 0, ["BomRemoveRowBtn"] = 0,
+            ["BomResolveBtn"] = 0, ["BomExplodeBtn"] = 0, ["BomBaseOutputSummary"] = 4,
+            ["BomExplosionInputsHeading"] = 0, ["BomExplosionOutputsHeading"] = 0,
+            ["BomLevelColumn"] = 0, ["BomParentItemColumn"] = 0, ["BomLineItemColumn"] = 0,
+            ["BomNetQtyColumn"] = 0, ["BomScrapColumn"] = 0, ["BomGrossQtyColumn"] = 0, ["BomLineUnitColumn"] = 0,
+            ["BomSubAssemblyBadge"] = 0, ["BomOptionalBadge"] = 0, ["BomOutputTypeColumn"] = 0, ["BomProducedQtyColumn"] = 0,
+            ["BomCreateHeading"] = 0, ["BomCreateHint"] = 0, ["BomEditHeading"] = 0, ["BomVersionsHeading"] = 0,
+            ["BomNoVersionsEmpty"] = 0, ["BomVersionNumberLabel"] = 0, ["BomBaseOutputColumn"] = 0,
+            ["BomEffectiveDatesColumn"] = 0, ["BomApplicabilityColumn"] = 0, ["BomRulesCountBadge"] = 1,
+            ["BomUnconditionalLabel"] = 0, ["BomOpenVersionBtn"] = 0, ["BomCreateVersionHeading"] = 0,
+            ["BomBaseOutputQtyLabel"] = 0, ["BomBaseOutputUnitLabel"] = 0, ["BomEffectiveFromLabel"] = 0, ["BomEffectiveToLabel"] = 0,
+            ["BomNotesLabel"] = 0, ["BomCreateVersionBtn"] = 0, ["BomVersionWorkbenchTitle"] = 0, ["BomVersionImmutableNotice"] = 0,
+            ["BomActionApprove"] = 0, ["BomActionActivate"] = 0, ["BomActionSupersede"] = 0, ["BomActionObsolete"] = 0,
+            ["BomVersionHeaderSection"] = 0, ["BomSaveHeaderBtn"] = 0, ["BomInputsSection"] = 0, ["BomAddInputBtn"] = 0,
+            ["BomQuantityColumn"] = 0, ["BomOutputsSection"] = 0, ["BomAddOutputBtn"] = 0, ["BomSaveLinesBtn"] = 0,
+            ["BomAddConditionBtn"] = 0, ["BomEnableApplicabilityLabel"] = 0, ["BomSaveApplicabilityBtn"] = 0,
+            ["BomDimCreateHeading"] = 0, ["BomDimEditHeading"] = 0, ["BomDimSeededNotice"] = 1,
+            ["BomStatusDraft"] = 0, ["BomStatusApproved"] = 0, ["BomStatusActive"] = 0, ["BomStatusSuperseded"] = 0, ["BomStatusObsolete"] = 0,
+            ["BomOutMainProduct"] = 0, ["BomOutCoProduct"] = 0, ["BomOutByProduct"] = 0, ["BomOutWaste"] = 0,
+            ["BomOpEquals"] = 0, ["BomOpNotEquals"] = 0, ["BomOpIn"] = 0, ["BomOpNotIn"] = 0,
+            ["BomErrorItemInvalid"] = 0, ["BomErrorPrimaryNotManufacturable"] = 0, ["BomErrorVersionNumberInvalid"] = 0,
+            ["BomErrorVersionImmutable"] = 0, ["BomErrorVersionTransitionInvalid"] = 0, ["BomErrorQuantityInvalid"] = 0,
+            ["BomErrorEffectiveDatesInvalid"] = 0, ["BomErrorMainOutputRequired"] = 0, ["BomErrorInputsRequired"] = 0,
+            ["BomErrorScrapInvalid"] = 0, ["BomErrorUnitInvalid"] = 0, ["BomErrorDirectSelfCycle"] = 0,
+            ["BomErrorCircularDependency"] = 0, ["BomErrorApplicabilityInvalid"] = 0,
+            ["BomErrorNoActiveBomFound"] = 0, ["BomErrorAmbiguousResolution"] = 0,
+            ["BomDateToday"] = 0, ["BomDateClear"] = 0,
+            ["BomDimStdPlant"] = 0, ["BomDimStdProductionLine"] = 0, ["BomDimStdMarket"] = 0,
+            ["BomDimStdCustomer"] = 0, ["BomDimStdManufacturingMethod"] = 0,
+            ["ProductionNavGroup"] = 0, ["ProductionOrders"] = 0, ["ProductionOrdersCaption"] = 0,
+            ["PermPageProductionOrders"] = 0, ["PermOpManageProductionOrders"] = 0,
+            ["PoCreateButton"] = 0, ["PoCreateSubmit"] = 0, ["PoSiteColumn"] = 0, ["PoAllSitesOption"] = 0,
+            ["PoStatusColumn"] = 0, ["PoAllStatusesOption"] = 0,
+            ["PoStatusDraft"] = 0, ["PoStatusReleased"] = 0, ["PoStatusInProgress"] = 0, ["PoStatusCompleted"] = 0, ["PoStatusCancelled"] = 0,
+            ["PoOrderNumberColumn"] = 0, ["PoItemColumn"] = 0, ["PoRequestedQtyColumn"] = 0, ["PoDatesColumn"] = 0,
+            ["PoPlannedStartDate"] = 0, ["PoPlannedDueDate"] = 0, ["PoBomSnapshotColumn"] = 0, ["PoActualsColumn"] = 0,
+            ["PoNotesLabel"] = 0, ["PoContextSection"] = 0, ["PoContextHint"] = 0,
+            ["PoCreateTitle"] = 0, ["PoWorkbenchTitle"] = 0, ["PoEditDraftSection"] = 0,
+            ["PoSaveDraftButton"] = 0, ["PoRefreshBomButton"] = 0, ["PoReleaseButton"] = 0,
+            ["PoReleaseHint"] = 0, ["PoFrozenSnapshotNotice"] = 0, ["PoStartButton"] = 0,
+            ["PoExecutionSection"] = 0, ["PoActualProducedLabel"] = 0, ["PoActualScrapLabel"] = 0,
+            ["PoRecordActualsButton"] = 0, ["PoCompleteButton"] = 0,
+            ["PoCancelSection"] = 0, ["PoCancelReasonLabel"] = 0, ["PoCancelButton"] = 0,
+            ["PoInputsSnapshotHeading"] = 0, ["PoOutputsSnapshotHeading"] = 0, ["PoTimelineHeading"] = 0,
+            ["PoReleasedAtLabel"] = 0, ["PoStartedAtLabel"] = 0, ["PoCompletedAtLabel"] = 0, ["PoCancelledAtLabel"] = 0,
+            ["PoSavedNotice"] = 0, ["PoCreatedNotice"] = 0,
+            ["PoErrorSiteInvalid"] = 0, ["PoErrorSiteInactive"] = 0, ["PoErrorImmutable"] = 0,
+            ["PoErrorTransitionInvalid"] = 0, ["PoErrorActualQtyInvalid"] = 0,
+            ["PoErrorCancelReasonInvalid"] = 0, ["PoErrorNotesInvalid"] = 0,
+            ["PoPostInventoryBtn"] = 0,
+            ["Inventory"] = 0, ["InventoryCaption"] = 0,
+            ["PermPageInventory"] = 0, ["PermOpManageInventory"] = 0,
+            ["InvWarehouseCreateBtn"] = 0, ["InvPostMovementBtn"] = 0,
+            ["InvTabBalances"] = 0, ["InvTabMovements"] = 0, ["InvTabWarehouses"] = 0,
+            ["InvWarehouseLabel"] = 0, ["InvDestWarehouseLabel"] = 0, ["InvAllWarehousesOption"] = 0,
+            ["InvTxnTypeLabel"] = 0, ["InvAllTypesOption"] = 0, ["InvIncludeZeroLabel"] = 0,
+            ["InvLotCodeLabel"] = 0, ["InvOnHandLabel"] = 0, ["InvLastMovedLabel"] = 0,
+            ["InvDocNumberLabel"] = 0, ["InvReversedBadge"] = 0, ["InvDefaultWarehouseBadge"] = 0,
+            ["InvDefaultForSiteLabel"] = 0, ["InvWarehouseCreateTitle"] = 0, ["InvWarehouseEditTitle"] = 0,
+            ["InvSelectWarehouseOption"] = 0, ["InvSelectOrderOption"] = 0, ["InvSelectItemOption"] = 0,
+            ["InvLinesSection"] = 0, ["InvAddLineBtn"] = 0, ["InvPostSubmitBtn"] = 0,
+            ["InvTxnDetailsTitle"] = 0, ["InvEnteredQtyLabel"] = 0, ["InvBaseQtyDeltaLabel"] = 0,
+            ["InvReverseSection"] = 0, ["InvReverseDocNumLabel"] = 0, ["InvReverseBtn"] = 0,
+            ["InvSavedNotice"] = 0, ["InvPostedNotice"] = 0, ["InvReversedNotice"] = 0,
+            ["InvTypeReceipt"] = 0, ["InvTypeIssue"] = 0, ["InvTypeAdjustment"] = 0,
+            ["InvTypeTransferOut"] = 0, ["InvTypeTransferIn"] = 0, ["InvTypeProdIssue"] = 0,
+            ["InvTypeProdReceipt"] = 0, ["InvTypeReversal"] = 0, ["InvTypeSalesDispatch"] = 0,
+            ["InvErrorWarehouseInactive"] = 0, ["InvErrorAlreadyReversed"] = 0, ["InvErrorCannotReverseReversal"] = 0,
+            ["InvErrorLinesRequired"] = 0, ["InvErrorQuantityInvalid"] = 0, ["InvErrorLotCodeInvalid"] = 0,
+            ["InvErrorDestWarehouseInvalid"] = 0, ["InvErrorTransferSameWarehouse"] = 0, ["InvErrorOrderInvalid"] = 0,
+            ["InvErrorOrderStateInvalid"] = 0, ["InvErrorInsufficientStock"] = 0, ["InvErrorIdempotencyInvalid"] = 0,
+            ["Reports"] = 0, ["ReportsCaption"] = 0,
+            ["PermPageReports"] = 0, ["PermOpExportReports"] = 0,
+            ["RptErrorOrderNotFound"] = 0, ["RptErrorExportInvalid"] = 0,
+            ["RptTabShortage"] = 0, ["RptTabVariance"] = 0, ["RptExportCsvBtn"] = 0,
+            ["RptDueFromLabel"] = 0, ["RptDueToLabel"] = 0, ["RptOnlyShortagesLabel"] = 0,
+            ["RptKpiOpenOrders"] = 0, ["RptKpiMaterialsEvaluated"] = 0, ["RptKpiShortageItems"] = 0, ["RptKpiTotalShortage"] = 0,
+            ["RptKpiEvaluatedOrders"] = 0, ["RptKpiAvgYield"] = 0, ["RptKpiOverConsumed"] = 0, ["RptKpiUnderYield"] = 0,
+            ["RptColMaterial"] = 0, ["RptColItemName"] = 0, ["RptColBaseUnit"] = 0,
+            ["RptColRequiredQty"] = 0, ["RptColOnHandQty"] = 0, ["RptColShortageQty"] = 0,
+            ["RptColExcessQty"] = 0, ["RptColCoveragePct"] = 0, ["RptColOpenOrdersCount"] = 0,
+            ["RptColPlannedVsActual"] = 0, ["RptColPlannedQty"] = 0, ["RptColScrapQty"] = 0,
+            ["RptColYieldPct"] = 0, ["RptColInputsPlannedVsIssued"] = 0, ["RptColPlannedInput"] = 0,
+            ["RptColIssuedQty"] = 0, ["RptColVariance"] = 0, ["RptColRemainingToIssue"] = 0,
+            ["RptColConsumptionPct"] = 0, ["RptColReceivedQty"] = 0, ["RptColAchievementPct"] = 0, ["RptColPostedReceipt"] = 0,
+            ["RptShortageBreakdownBtn"] = 0, ["RptShortageBreakdownTitle"] = 0, ["RptVarianceDetailTitle"] = 0,
+            ["RptOrderInputsTitle"] = 0, ["RptOrderOutputsTitle"] = 0, ["RptNoShortageOrders"] = 0,
+            ["RptCsvHeaderDemandOrders"] = 0, ["RptShortageFileName"] = 0, ["RptVarianceFileName"] = 0, ["RptExportSuccessNotice"] = 0,
+            ["ErrorReferenceLabel"] = 0, ["ErrorCorrelationLabel"] = 0,
+            ["PermPageDiagnostics"] = 0, ["PermOpExportAudit"] = 0,
+            ["PermOpReadErrorLogs"] = 0, ["PermOpManageErrorLogs"] = 0,
+            ["DiagErrorRetentionInvalid"] = 0,
+            ["AuditCategoryOperations"] = 0, ["AuditActorFilterLabel"] = 0, ["AuditAllActorsOption"] = 0,
+            ["AuditOutcomeFilterLabel"] = 0, ["AuditFromDateLabel"] = 0, ["AuditToDateLabel"] = 0,
+            ["AuditExportCsvBtn"] = 0, ["AuditExportFileName"] = 0, ["AuditExportSuccessNotice"] = 0,
+            ["AuditColSite"] = 0, ["AuditColCorrelation"] = 0,
+            ["ErrorLogs"] = 0, ["ErrorLogsCaption"] = 0,
+            ["ErrorLogsKpi24h"] = 0, ["ErrorLogsKpiCritical"] = 0, ["ErrorLogsKpiSql"] = 0, ["ErrorLogsKpiPipeline"] = 0,
+            ["ErrorLogsSeverityLabel"] = 0, ["ErrorLogsSourceLabel"] = 0,
+            ["ErrorLogsRefColumn"] = 0, ["ErrorLogsTypeColumn"] = 0, ["ErrorLogsMessageColumn"] = 0,
+            ["ErrorLogsSqlColumn"] = 0, ["ErrorLogsPathColumn"] = 0, ["ErrorLogsDetailsTitle"] = 0,
+            ["ErrorLogsStackTraceLabel"] = 0, ["ErrorLogsUserAgentLabel"] = 0,
+            ["ErrorLogsSevWarning"] = 0, ["ErrorLogsSevError"] = 0, ["ErrorLogsSevCritical"] = 0,
+            ["ErrorLogsSrcHttp"] = 0, ["ErrorLogsSrcCircuit"] = 0, ["ErrorLogsSrcComponent"] = 0,
+            ["ErrorLogsSrcStore"] = 0, ["ErrorLogsSrcHost"] = 0,
+            ["ErrorLogsPurgeBtn"] = 0, ["ErrorLogsPurgeDaysLabel"] = 0, ["ErrorLogsPurgeSuccess"] = 1,
+            ["UserMenuLastLoginTitle"] = 0, ["UserMenuFirstLoginNotice"] = 0,
+            ["PermPageQuality"] = 0, ["PermOpManageQuality"] = 0,
+            ["QualityControl"] = 0, ["LotTraceability"] = 0, ["QualityCaption"] = 0,
+            ["QcMenuInspections"] = 0, ["QcMenuSpecs"] = 0, ["QcMenuParameters"] = 0, ["QcMenuLots"] = 0,
+            ["ItemLotTrackedBadge"] = 0, ["ItemQcRequiredBadge"] = 0, ["ItemRequiresLotTrackingLabel"] = 0,
+            ["ItemQcModeLabel"] = 0, ["ItemQcModeNone"] = 0, ["ItemQcModeIncoming"] = 0,
+            ["ItemQcModeProduction"] = 0, ["ItemQcModeAll"] = 0, ["ItemErrorQcModeInvalid"] = 0,
+            ["InvBlockedLabel"] = 0, ["InvAvailableLabel"] = 0, ["InvBlockedShort"] = 1,
+            ["InvTypeQualityScrap"] = 0, ["InvErrorLotRequired"] = 0, ["InvErrorLotExpired"] = 0,
+            ["RptBlockedSubLabel"] = 2,
+            ["QcCreateHoldBtn"] = 0, ["QcLotUpsertBtn"] = 0, ["QcTabInspections"] = 0, ["QcTabLots"] = 0,
+            ["QcOnlyExpiringLabel"] = 0, ["QcNumberColumn"] = 0, ["QcSourceColumn"] = 0, ["QcQuantitiesColumn"] = 0,
+            ["QcQtyBreakdown"] = 3, ["QcLotMfgDateLabel"] = 0, ["QcLotExpDateLabel"] = 0,
+            ["QcLotExpiredBadge"] = 0, ["QcLotExpiringBadge"] = 0, ["QcCreateHoldTitle"] = 0,
+            ["QcDefectCodeLabel"] = 0, ["QcDetailsTitle"] = 0, ["QcMeasurementsSection"] = 0, ["QcAddLineBtn"] = 0,
+            ["QcParamNamePlaceholder"] = 0, ["QcExpectedSpecPlaceholder"] = 0, ["QcMeasuredValPlaceholder"] = 0,
+            ["QcPassedCheck"] = 0, ["QcFailedLabel"] = 0, ["QcSaveMeasurementsBtn"] = 0,
+            ["QcDispositionSection"] = 0, ["QcAcceptQtyLabel"] = 0, ["QcRejectScrapQtyLabel"] = 0,
+            ["QcScrapDocLabel"] = 0, ["QcRecordDispositionBtn"] = 0, ["QcCancelHoldBtn"] = 0,
+            ["QcHoldCreatedNotice"] = 0, ["QcDispositionSavedNotice"] = 0, ["QcHoldCancelledNotice"] = 0,
+            ["QcLotUpsertTitle"] = 0, ["QcStatusPending"] = 0, ["QcStatusInReview"] = 0,
+            ["QcStatusCompleted"] = 0, ["QcStatusCancelled"] = 0,
+            ["QcSourceReceipt"] = 0, ["QcSourceProdReceipt"] = 0, ["QcSourceManualHold"] = 0,
+            ["QcErrorTerminal"] = 0, ["QcErrorHasDispositions"] = 0, ["QcErrorDispositionExceeds"] = 0,
+            ["QcErrorDefectReasonInvalid"] = 0, ["QcErrorParameterInvalid"] = 0, ["QcErrorLotDatesInvalid"] = 0,
+            ["QcTabParameters"] = 0, ["QcTabSpecs"] = 0, ["QcCreateParameterBtn"] = 0, ["QcCreateSpecBtn"] = 0,
+            ["QcCreateParameterTitle"] = 0, ["QcEditParameterTitle"] = 0, ["QcParamModalSubtitle"] = 0,
+            ["QcCreateSpecTitle"] = 0, ["QcEditSpecTitle"] = 0, ["QcSpecModalSubtitle"] = 0,
+            ["QcParamSymbolLabel"] = 0, ["QcParamUnitLabel"] = 0, ["QcParamMethodLabel"] = 0, ["QcParamDecimalLabel"] = 0,
+            ["QcSpecTargetKindLabel"] = 0, ["QcSpecTargetLabel"] = 0, ["QcSpecCheckpointLabel"] = 0,
+            ["QcSpecVersionLabel"] = 0, ["QcSpecLinesCountCol"] = 0, ["QcSpecLinesHeading"] = 0,
+            ["QcAddSpecLineBtn"] = 0, ["QcSpecMinLabel"] = 0, ["QcSpecMaxLabel"] = 0, ["QcSpecTargetValLabel"] = 0,
+            ["QcMandatoryLabel"] = 0, ["QcTargetItem"] = 0, ["QcTargetClassification"] = 0,
+            ["QcCheckpointIncoming"] = 0, ["QcCheckpointProduction"] = 0, ["QcCheckpointAll"] = 0,
+            ["QcLoadTemplateBtn"] = 0, ["QcTemplateLoadedNotice"] = 0, ["QcCustomParamOption"] = 0,
+            ["QcCertNumberLabel"] = 0, ["QcCertNumberShort"] = 0, ["QcConcessionWarning"] = 0,
+            ["QcCoaBtn"] = 0, ["QcCoaTitle"] = 0, ["QcLotDatesSummaryLabel"] = 0, ["QcActiveSpecLabel"] = 0,
+            ["QcCoaNoInspections"] = 0, ["QcCoaNoMeasurements"] = 0, ["QcViewTraceabilityLink"] = 0,
+            ["QcErrorParameterSymbolInvalid"] = 0, ["QcErrorParameterUnitInvalid"] = 0, ["QcErrorParameterInactive"] = 0,
+            ["QcErrorSpecTargetInvalid"] = 0, ["QcErrorSpecActiveConflict"] = 0, ["QcErrorSpecRangeInvalid"] = 0,
+            ["QcErrorSpecLinesRequired"] = 0, ["QcErrorConcessionReasonRequired"] = 0,
+            ["LotTraceCaption"] = 0, ["LotTraceDirectionLabel"] = 0, ["LotTraceDirBoth"] = 0,
+            ["LotTraceDirBackward"] = 0, ["LotTraceDirForward"] = 0, ["LotTraceRunBtn"] = 0,
+            ["LotTraceBackwardTitle"] = 0, ["LotTraceForwardTitle"] = 0,
+            ["LotTraceSourceLotCol"] = 0, ["LotTraceTargetLotCol"] = 0, ["LotTraceMovementsTitle"] = 0,
+            ["ProfileNavLabel"] = 0, ["MyProfileTitle"] = 0, ["MyProfileSubtitle"] = 0,
+            ["ProfileUsernameLabel"] = 0, ["ProfileUsernameLockedHint"] = 0,
+            ["ProfileDisplayNameLabel"] = 0, ["ProfileEmailLabel"] = 0, ["ProfilePhoneLabel"] = 0,
+            ["ProfileAvatarLabel"] = 0, ["ProfileAvatarHint"] = 0,
+            ["ProfileAvatarChoose"] = 0, ["ProfileAvatarRemove"] = 0,
+            ["ProfileSaveSubmit"] = 0, ["ProfileSavedNotice"] = 0,
+            ["ProfileDisplayNameInvalidError"] = 0, ["ProfileEmailInvalidError"] = 0,
+            ["ProfilePhoneInvalidError"] = 0, ["ProfileAvatarInvalidError"] = 0, ["ProfileSaveFailedError"] = 0,
+            ["MyPreferencesTitle"] = 0, ["MyPreferencesMenuSubtitle"] = 0, ["MyPreferencesSubtitle"] = 0,
+            ["PreferencesLanguageTitle"] = 0, ["PreferencesLanguageHint"] = 0,
+            ["PreferencesCalendarTitle"] = 0, ["PreferencesCalendarSamplePrefix"] = 1,
+            ["PreferencesCalendarPersian"] = 0, ["PreferencesCalendarGregorian"] = 0,
+            ["PreferencesThemeTitle"] = 0, ["PreferencesThemeHint"] = 0,
+            ["PreferencesThemeLight"] = 0, ["PreferencesThemeDark"] = 0, ["PreferencesThemeSystem"] = 0,
+            ["PreferencesTimeZoneTitle"] = 0, ["PreferencesTimeZoneHint"] = 0,
+            ["PreferencesResetButton"] = 0, ["PreferencesSaveButton"] = 0,
+            ["PreferencesSavedNotice"] = 0, ["PreferencesSaveFailedError"] = 0,
+            ["UserMenuActiveSiteLabel"] = 0, ["UserMenuViewSessionsLink"] = 0, ["UserMenuFailedAttemptsWarning"] = 1,
+            ["MyActivityTitle"] = 0, ["ActiveSessionsTitle"] = 0, ["ActiveSessionsSubtitle"] = 0,
+            ["RevokeAllOtherSessionsButton"] = 0, ["SessionIpPrefix"] = 1, ["SessionCurrentDeviceBadge"] = 0,
+            ["SessionSignOutOneButton"] = 0, ["SessionsSecurityFootnote"] = 0,
+            ["SessionLastActivityNow"] = 0, ["SessionLastActivityMinutes"] = 1,
+            ["SessionLastActivityHours"] = 1, ["SessionLastActivityTimestamp"] = 1,
+            ["SessionRevokedNotice"] = 0, ["SessionOthersRevokedNotice"] = 1, ["SessionRevokeFailedError"] = 0,
+            ["ChangePasswordSessionsLink"] = 0,
+            ["MyActivitySubtitle"] = 0, ["MyActivityLockedBadge"] = 0,
+            ["MyActivityRangeLabel"] = 0, ["MyActivityRange7Days"] = 0,
+            ["MyActivityRange30Days"] = 0, ["MyActivityRange90Days"] = 0, ["MyActivityRangeAll"] = 0,
+            ["MyActivitySearchPlaceholder"] = 0, ["MyActivityIpColumn"] = 0, ["MyActivityDeviceColumn"] = 0,
+            ["MyActivityOutcomeRecorded"] = 0,
+            ["NotificationsTitle"] = 0, ["NotificationsSubtitle"] = 0, ["NotifUnreadAriaCount"] = 1,
+            ["NotificationsMarkAllRead"] = 0, ["NotificationsEmpty"] = 0, ["NotificationsViewAll"] = 0,
+            ["NotifTabAll"] = 0, ["NotifTabUnread"] = 0, ["NotifTabSecurity"] = 0, ["NotifTabOrders"] = 0,
+            ["NotifGroupToday"] = 0, ["NotifGroupOlder"] = 0,
+            ["NotifPagerSummary"] = 3, ["NotifPagerPage"] = 2,
+            ["NotifTitle_NewDeviceSignIn"] = 0, ["NotifBody_NewDeviceSignIn"] = 2,
+            ["NotifTitle_FailedSignInAttempts"] = 1, ["NotifBody_FailedSignInAttempts"] = 1,
+            ["NotifTitle_RoleOrAccessChanged"] = 0, ["NotifBody_RoleOrAccessChanged"] = 2,
+            ["NotifTitle_MyOrderChanged"] = 1, ["NotifBody_MyOrderChanged"] = 2,
+            ["NotifTitle_PasswordChanged"] = 0, ["NotifBody_PasswordChanged"] = 1,
+            ["NotifAction_ViewSessions"] = 0, ["NotifAction_ViewActivity"] = 0, ["NotifAction_ViewOrder"] = 0,
+            ["NotifTimeNow"] = 0, ["NotifTimeMinutes"] = 1, ["NotifTimeHours"] = 1,
+            ["NotifTimeYesterday"] = 1, ["NotifTimeDays"] = 1,
+            ["NotificationSettingsTitle"] = 0, ["NotificationSettingsSubtitle"] = 0,
+            ["NotifMatrixEventColumn"] = 0, ["NotifMatrixInAppColumn"] = 0, ["NotifMatrixEmailColumn"] = 0,
+            ["NotifEmailUnavailableTag"] = 0, ["NotifSmtpUnavailableHint"] = 0,
+            ["NotifPref_NewDeviceSignInTitle"] = 0, ["NotifPref_NewDeviceSignInDesc"] = 0,
+            ["NotifPref_FailedSignInTitle"] = 0, ["NotifPref_FailedSignInDesc"] = 0,
+            ["NotifPref_RoleChangedTitle"] = 0, ["NotifPref_RoleChangedDesc"] = 0,
+            ["NotifPref_MyOrdersTitle"] = 0, ["NotifPref_MyOrdersDesc"] = 0,
+            ["NotifPrefsSavedNotice"] = 0, ["NotifPrefsSaveFailed"] = 0,
+            ["HelpShortcutsTitle"] = 0, ["HelpShortcutSearch"] = 0, ["HelpShortcutCommands"] = 0,
+            ["HelpShortcutAll"] = 0, ["HelpSupportTitle"] = 0,
+            ["HelpUserGuideLink"] = 0, ["HelpReportIssueLink"] = 0, ["HelpContactSupportLink"] = 0,
+            ["HelpUserGuideOverview"] = 0, ["HelpUserGuideShortcuts"] = 0,
+            ["HelpUserGuideSessions"] = 0, ["HelpUserGuidePreferences"] = 0,
+            ["HelpIssueSummaryLabel"] = 0, ["HelpIssueSummaryPlaceholder"] = 0,
+            ["HelpIssueSubmitBtn"] = 0, ["HelpIssueSubmittedNotice"] = 1, ["HelpSupportDescription"] = 0,
+            ["CommandPaletteTitle"] = 0, ["CommandPalettePlaceholder"] = 0,
+            ["NotifRoleOrgMembership"] = 0, ["NotifRoleSiteMembership"] = 0, ["NotifRoleDirectPermissions"] = 0,
+            ["Suppliers"] = 0, ["PurchaseOrders"] = 0,
+            ["PermPageProcurement"] = 0, ["PermOpManageSuppliers"] = 0, ["PermOpManageOrders"] = 0, ["PermOpReceiveOrders"] = 0,
+            ["SuppliersCaption"] = 0, ["SupCreateButton"] = 0, ["SupCreateTitle"] = 0, ["SupDetailTitle"] = 0,
+            ["SupContactLabel"] = 0, ["SupAddressLabel"] = 0,
+            ["ProcErrorSupplierInactive"] = 0, ["ProcErrorContactInvalid"] = 0, ["ProcErrorAddressInvalid"] = 0,
+            ["PurchaseOrdersCaption"] = 0, ["ProcPoCreateButton"] = 0, ["ProcPoCreateTitle"] = 0, ["ProcPoEditTitle"] = 0,
+            ["ProcPoDetailTitle"] = 0, ["ProcPoNumberLabel"] = 0, ["ProcSupplierLabel"] = 0, ["ProcAllSuppliersOption"] = 0,
+            ["ProcOrderDateLabel"] = 0, ["ProcExpectedDateLabel"] = 0, ["ProcTargetWarehouseLabel"] = 0,
+            ["ProcCurrencyLabel"] = 0,
+            ["ProcProgressColumn"] = 0, ["ProcEstimatedTotalLabel"] = 0, ["ProcLinesSection"] = 0, ["ProcAddLineBtn"] = 0,
+            ["ProcUnitPriceLabel"] = 0, ["ProcOrderedCol"] = 0, ["ProcReceivedCol"] = 0, ["ProcRemainingCol"] = 0,
+            ["ProcReceiptsHistoryTitle"] = 0, ["ProcPostedBadge"] = 0,
+            ["ProcApproveBtn"] = 0, ["ProcReceiveBtn"] = 0, ["ProcShortCloseBtn"] = 0, ["ProcCancelBtn"] = 0,
+            ["ProcReceiveTitle"] = 0, ["ProcPostReceiptBtn"] = 0, ["ProcReceiptPostedNotice"] = 1,
+            ["ProcStatusApproved"] = 0, ["ProcStatusPartial"] = 0, ["ProcStatusReceived"] = 0, ["ProcStatusClosed"] = 0,
+            ["ProcErrorCurrencyInvalid"] = 0, ["ProcErrorEmptyOrder"] = 0, ["ProcErrorDuplicateItem"] = 0,
+            ["ProcErrorItemNotPurchasable"] = 0, ["ProcErrorUnitPriceInvalid"] = 0, ["ProcErrorNotDraft"] = 0,
+            ["ProcErrorInvalidTransition"] = 0, ["ProcErrorHasReceiptsCannotCancel"] = 0, ["ProcErrorOverReceipt"] = 0,
+            ["ProcPoModalSubtitle"] = 0, ["ProcGeneralInfoSection"] = 0, ["ProcSelectSupplierPlaceholder"] = 0,
+            ["ProcSelectDatePlaceholder"] = 0, ["ProcSelectWarehousePlaceholder"] = 0, ["ProcNotesOptionalPlaceholder"] = 0,
+            ["ProcSelectItemPlaceholder"] = 0, ["ProcLineAmountLabel"] = 0, ["ProcGrandTotalLabel"] = 0,
+            ["ProcErrorSupplierRequired"] = 0, ["ProcErrorItemRequired"] = 0,
+            ["UnitCurrenciesTab"] = 0, ["CurrencyCreateButton"] = 0, ["CurrencyEditTitle"] = 0,
+            ["CurrencyDetailTitle"] = 0, ["CurrencyCreateTitle"] = 0, ["CurrencyCodeHint"] = 0,
+            ["UnitErrorCurrencyInactive"] = 0,
+            ["RptColOnOrderQty"] = 0,
+            ["WorkCenters"] = 0, ["Routings"] = 0,
+            ["PermPageRoutings"] = 0, ["PermOpManageRoutings"] = 0, ["PermOpExecuteOperations"] = 0,
+            ["WorkCentersCaption"] = 0, ["WcCreateButton"] = 0, ["WcCreateTitle"] = 0, ["WcDetailTitle"] = 0,
+            ["WcTypeLabel"] = 0, ["WcTypeMachine"] = 0, ["WcTypeAssemblyLine"] = 0, ["WcTypeWorkCell"] = 0,
+            ["WcTypeQualityStation"] = 0, ["WcTypeExternalVendor"] = 0,
+            ["WcCapacityLabel"] = 0, ["WcDailyHoursLabel"] = 0, ["WcHourlyCostLabel"] = 0,
+            ["WcCreatedNotice"] = 0, ["WcSavedNotice"] = 0, ["WcActivatedNotice"] = 0, ["WcDeactivatedNotice"] = 0,
+            ["WcLoadSection"] = 0, ["WcActiveOpsCol"] = 0, ["WcPlannedMinsCol"] = 0, ["WcUtilizationCol"] = 0,
+            ["RoutingsCaption"] = 0, ["RtCreateButton"] = 0, ["RtCreateTitle"] = 0, ["RtCreateSubtitle"] = 0, ["RtNamePlaceholder"] = 0, ["RtDetailTitle"] = 0,
+            ["RtBomVersionLabel"] = 0, ["RtNoBomLinkOption"] = 0, ["RtIsDefaultLabel"] = 0, ["RtIsDefaultDesc"] = 0, ["RtNotesOptionalPlaceholder"] = 0, ["RtDefaultBadge"] = 0,
+            ["RtStatusDraft"] = 0, ["RtStatusActive"] = 0, ["RtStatusObsolete"] = 0, ["RtOpsSummaryCol"] = 0,
+            ["RtSaveHeaderBtn"] = 0, ["RtOperationsHeading"] = 0, ["RtAddOpBtn"] = 0, ["RtSaveOpsBtn"] = 0,
+            ["RtActivateBtn"] = 0, ["RtMarkObsoleteBtn"] = 0,
+            ["RtCreatedNotice"] = 0, ["RtSavedNotice"] = 0, ["RtOpsSavedNotice"] = 0, ["RtActivatedNotice"] = 0, ["RtObsoletedNotice"] = 0,
+            ["RtOpCodeCol"] = 0, ["RtOpNameCol"] = 0, ["RtWorkCenterCol"] = 0, ["RtSetupMinCol"] = 0,
+            ["RtRunPerUnitCol"] = 0, ["RtQueueMinCol"] = 0, ["RtWaitMinCol"] = 0, ["RtQcCol"] = 0, ["RtInstructionsCol"] = 0,
+            ["PoRoutingColumn"] = 0, ["PoAutoDefaultRouting"] = 0, ["PoNoRouting"] = 0, ["PoOperationsHeading"] = 0,
+            ["PoOpPlannedCol"] = 0, ["PoOpActualCol"] = 0, ["PoOpQtyCol"] = 0,
+            ["PoOpStatusPending"] = 0, ["PoOpStatusReady"] = 0, ["PoOpStatusInProgress"] = 0,
+            ["PoOpStatusPaused"] = 0, ["PoOpStatusCompleted"] = 0, ["PoOpStatusSkipped"] = 0,
+            ["PoOpStartBtn"] = 0, ["PoOpPauseBtn"] = 0, ["PoOpCompleteBtn"] = 0, ["PoOpSkipBtn"] = 0,
+            ["PoOpActualSetupLabel"] = 0, ["PoOpActualRunLabel"] = 0, ["PoOpCompletedQtyLabel"] = 0, ["PoOpScrapQtyLabel"] = 0,
+            ["PoOpSavedNotice"] = 0,
+            ["RoutingErrorWorkCenterInactive"] = 0, ["RoutingErrorTypeInvalid"] = 0, ["RoutingErrorCapacityInvalid"] = 0,
+            ["RoutingErrorBomVersionInvalid"] = 0, ["RoutingErrorNotDraft"] = 0, ["RoutingErrorInvalidTransition"] = 0,
+            ["RoutingErrorEmptyOperations"] = 0, ["RoutingErrorSequenceInvalid"] = 0, ["RoutingErrorTimeInvalid"] = 0,
+            ["RoutingErrorQuantityInvalid"] = 0, ["PoErrorRoutingInvalid"] = 0,
+            ["DashTitle"] = 0, ["DashSubtitle"] = 0, ["DashRefreshBtn"] = 0,
+            ["DashNoScopeHint"] = 0, ["DashNoCapabilities"] = 0,
+            ["DashKpiActiveOrders"] = 0, ["DashKpiDraftCount"] = 1, ["DashKpiOverdueCount"] = 1,
+            ["DashKpiShortages"] = 0, ["DashKpiReservedTotal"] = 1,
+            ["DashKpiQualityQueue"] = 0, ["DashKpiBlockedTotal"] = 1,
+            ["DashKpiOpenPo"] = 0, ["DashKpiAllOnSchedule"] = 0,
+            ["DashPanelOrdersTitle"] = 0, ["DashPanelShortagesTitle"] = 0, ["DashPanelWorkCentersTitle"] = 0,
+            ["DashPanelQualityTitle"] = 0, ["DashPanelProcurementTitle"] = 0,
+            ["DashViewAll"] = 0, ["DashOverdueBadge"] = 0, ["DashNoShortages"] = 0,
+            ["InvTabReservations"] = 0, ["InvReservedShort"] = 1, ["InvResOpenOnlyLabel"] = 0,
+            ["InvResOrderColumn"] = 0, ["InvResRemainingColumn"] = 0, ["InvResTotalsSub"] = 2,
+            ["InvResReleaseBtn"] = 0, ["InvResReleasedNotice"] = 0,
+            ["InvResStatusActive"] = 0, ["InvResStatusPartial"] = 0, ["InvResStatusConsumed"] = 0, ["InvResStatusReleased"] = 0,
+            ["InvResErrorInvalidState"] = 0, ["InvResErrorExceedsAvailable"] = 0, ["InvResErrorOrderState"] = 0,
+            ["PoResReservedCol"] = 0, ["PoResReserveBtn"] = 0, ["PoReservationsHeading"] = 0,
+            ["PoResNoneYet"] = 0, ["PoResModalTitle"] = 0, ["PoResAutoFifoOption"] = 0,
+            ["PoResLotOptionalHint"] = 0, ["PoResConfirmBtn"] = 0, ["PoResSavedNotice"] = 0,
+            ["RptReservedSubLabel"] = 1,
+            ["AccountSecurityTitle"] = 0, ["AccountSecuritySubtitle"] = 0, ["RecommendedBadge"] = 0,
+            ["SecurityPostureWeak"] = 0, ["SecurityPostureMedium"] = 0, ["SecurityPostureStrong"] = 0,
+            ["SecurityPostureCount"] = 2, ["SecurityPostureHintEnable2FA"] = 0, ["SecurityPostureHintComplete"] = 0,
+            ["SecurityRowPasswordTitle"] = 0, ["SecurityRowPasswordLastChanged"] = 1, ["SecurityRowPasswordStatusSet"] = 0, ["SecurityRowPasswordAction"] = 0,
+            ["SecurityRow2FATitle"] = 0, ["SecurityRow2FADesc"] = 0, ["SecurityRow2FAOn"] = 0, ["SecurityRow2FAOff"] = 0,
+            ["SecurityRow2FAEnableBtn"] = 0, ["SecurityRow2FADisableBtn"] = 0,
+            ["SecurityRowRecoveryTitle"] = 0, ["SecurityRowRecoveryDescDisabled"] = 0, ["SecurityRowRecoveryDescEnabled"] = 1,
+            ["SecurityRowRecoveryViewBtn"] = 0, ["SecurityRowRecoveryRegenerateBtn"] = 0,
+            ["SecurityRowPasskeyTitle"] = 0, ["SecurityRowPasskeyDesc"] = 0, ["SecurityRowPasskeySoonBadge"] = 0, ["SecurityRowPasskeyAddBtn"] = 0,
+            ["SecurityRowIdleTitle"] = 0, ["SecurityRowIdleDesc"] = 0, ["SecurityIdleOff"] = 0, ["SecurityIdleMinutes"] = 1, ["SecurityIdleSavedNotice"] = 0,
+            ["SecurityRowSessionsTitle"] = 0, ["SecurityRowSessionsDesc"] = 1, ["SecurityRowSessionsAlertOn"] = 0, ["SecurityRowSessionsAlertOff"] = 0, ["SecurityRowSessionsBtn"] = 0,
+            ["TotpSetupTitle"] = 0, ["TotpStep1Title"] = 0, ["TotpStep1Desc"] = 0, ["TotpStep2Title"] = 0, ["TotpStep2ManualHint"] = 0,
+            ["TotpCopyKeyBtn"] = 0, ["TotpKeyCopied"] = 0, ["TotpStep3Title"] = 0, ["TotpVerifyAndEnableBtn"] = 0, ["TotpCancelBtn"] = 0,
+            ["RecoveryDialogTitle"] = 0, ["RecoveryDialogWarning"] = 0, ["RecoveryCopyAllBtn"] = 0, ["RecoveryCopiedAll"] = 0,
+            ["RecoveryDownloadBtn"] = 0, ["RecoverySavedCheckbox"] = 0, ["RecoveryDoneBtn"] = 0,
+            ["RecoveryRegenerateTitle"] = 0, ["RecoveryRegenerateDesc"] = 0, ["RecoveryRegenerateConfirmBtn"] = 0,
+            ["Disable2FADialogTitle"] = 0, ["Disable2FADialogDesc"] = 0, ["Disable2FAConfirmBtn"] = 0,
+            ["Login2FATitle"] = 0, ["Login2FASubtitle"] = 0, ["Login2FARecoverySubtitle"] = 0,
+            ["Login2FACodeLabel"] = 0, ["Login2FARecoveryCodeLabel"] = 0, ["Login2FARememberDevice"] = 0,
+            ["Login2FAVerifyBtn"] = 0, ["Login2FAUseRecoveryLink"] = 0, ["Login2FAUseAuthenticatorLink"] = 0, ["Login2FABackToLogin"] = 0,
+            ["Home2FABannerTitle"] = 0, ["Home2FABannerBody"] = 0, ["Home2FABannerEnableBtn"] = 0, ["Home2FABannerLaterBtn"] = 0,
+            ["ChangePwd2FAPromptTitle"] = 0, ["ChangePwd2FAPromptBody"] = 0, ["ChangePwd2FAPromptBtn"] = 0,
+            ["NotifTitle_TwoFactorReminder"] = 0, ["NotifBody_TwoFactorReminder"] = 0, ["NotifAction_ReviewSecurity"] = 0,
+            ["SecurityErrorInvalidCode"] = 0, ["SecurityErrorCurrentPassword"] = 0, ["SecurityError2FANotEnabled"] = 0,
+            ["SecuritySuccess2FAEnabled"] = 0, ["SecuritySuccess2FADisabled"] = 0, ["SecuritySuccessRecoveryRegenerated"] = 0,
+            ["MySettingsMenuTitle"] = 0, ["SecurityOverviewTab"] = 0,
+            ["SecurityRowPasskeyCount"] = 1, ["SecurityRowPasskeyNone"] = 0,
+            ["SecurityPasskeyModalTitle"] = 0, ["SecurityPasskeyNameLabel"] = 0, ["SecurityPasskeyNamePlaceholder"] = 0,
+            ["SecurityPasskeyCreateBtn"] = 0, ["SecurityPasskeyRemoveBtn"] = 0, ["SecurityPasskeyUnsupported"] = 0,
+            ["SecurityPasskeyRegisteredNotice"] = 0, ["SecurityPasskeyRemovedNotice"] = 0, ["LoginPasskeyBtn"] = 0,
+            ["UserEditModalTitle"] = 0, ["UserTabAccess"] = 0, ["UserTabSecurity"] = 0, ["UserOrgMembershipCardTitle"] = 0,
+            ["UserLockStatusLabel"] = 0, ["UserLockStatusOpen"] = 0, ["UserLockStatusLocked"] = 0,
+            ["User2FAStatusTitle"] = 0, ["User2FAEnabledMeta"] = 2, ["User2FADisabledHint"] = 0, ["User2FAResetHint"] = 0, ["User2FAResetBtn"] = 0,
+            ["UserSessionsCardTitle"] = 0, ["UserActiveSessionsCount"] = 1, ["UserRevokeAllSessionsBtn"] = 0, ["UserRevokeSessionsSuccess"] = 0,
+            ["User2FAResetDialogTitle"] = 0, ["User2FAResetWarning"] = 0, ["User2FAResetBody"] = 1,
+            ["User2FAResetReasonLabel"] = 0, ["User2FAResetReasonPlaceholder"] = 0, ["User2FAResetIdentityCheck"] = 0,
+            ["User2FAResetConfirmBtn"] = 0, ["User2FAResetSuccess"] = 0,
+            ["UserMustChangePasswordLabel"] = 0,
+            ["UserCreateInOrgSubtitle"] = 1, ["UserUsernamePlaceholder"] = 0, ["UserUsernameAllowedHint"] = 0,
+            ["UserUsernameInvalidError"] = 0, ["UserGenerateRandomPassword"] = 0,
+            ["UserPasswordStrengthMin"] = 0, ["UserPasswordStrengthMedium"] = 0, ["UserPasswordStrengthStrong"] = 0,
+            ["UserOrgAdminSwitchDesc"] = 0, ["UserSitesSelectedCount"] = 2,
+            ["PermOpResetTwoFactor"] = 0, ["UserErrorCannotResetOwnTwoFactor"] = 0, ["UserErrorTwoFactorReasonRequired"] = 0,
+            ["NotifTitle_TwoFactorResetAlert"] = 0, ["NotifBody_TwoFactorResetAlert"] = 1,
+            ["PermSummaryCount"] = 2, ["PermSummaryBreakdown"] = 2, ["PermSummaryFullAccess"] = 0,
+            ["PermRolesLabel"] = 0, ["PermAddRoleChipBtn"] = 0, ["PermRemoveRoleAria"] = 1,
+            ["PermFilterAll"] = 0, ["PermFilterGranted"] = 0, ["PermFilterDirect"] = 0, ["PermFilterChanges"] = 0,
+            ["PermSearchPageOrOpPlaceholder"] = 0, ["PermAccordionRowCount"] = 2, ["PermChangesBadge"] = 1,
+            ["PermSelectAllEditable"] = 0, ["PermClearDirect"] = 0, ["PermBadgeRole"] = 0, ["PermBadgeNew"] = 0,
+            ["PermLegendRole"] = 0, ["PermLegendDirect"] = 0, ["PermLegendUnsaved"] = 0, ["PermLegendNone"] = 0,
+            ["PermTooltipViaRole"] = 1, ["PermUnsavedChangesCount"] = 1, ["PermEmptyFilterResult"] = 0,
+            ["SalesDispatch"] = 0, ["SalesDispatchCaption"] = 0, ["SalesTabOrders"] = 0, ["SalesTabDispatches"] = 0,
+            ["SalesCustomerColumn"] = 0, ["SalesShippingAddress"] = 0,
+            ["SalesOrderCreateButton"] = 0, ["SalesOrderEditTitle"] = 0, ["SalesOrderNumber"] = 0,
+            ["SalesRequestedDate"] = 0, ["SalesSourceWarehouse"] = 0, ["SalesOrderStatusDraft"] = 0,
+            ["SalesOrderStatusApproved"] = 0, ["SalesOrderStatusPartiallyDispatched"] = 0,
+            ["SalesOrderStatusDispatched"] = 0, ["SalesOrderStatusCancelled"] = 0, ["SalesOrderStatusClosed"] = 0,
+            ["SalesDispatchedQty"] = 0, ["SalesRemainingQty"] = 0, ["SalesReserveStockButton"] = 0,
+            ["SalesReservationsTitle"] = 0, ["SalesReleaseReservation"] = 0, ["SalesDispatchButton"] = 0,
+            ["SalesDispatchModalTitle"] = 0, ["SalesPostDispatchButton"] = 0, ["SalesDispatchNumber"] = 0,
+            ["SalesDispatchDate"] = 0, ["SalesDispatchPosted"] = 0, ["SalesDispatchReversed"] = 0,
+            ["SalesReverseButton"] = 0, ["SalesCarrierName"] = 0, ["SalesTrackingNumber"] = 0,
+            ["SalesDispatchPickLots"] = 0, ["PermPageSales"] = 0, ["PermOpManageCustomers"] = 0,
+            ["PermOpDispatchSales"] = 0, ["SalesOrderModalSubtitle"] = 0, ["SalesSelectCustomerPlaceholder"] = 0,
+            ["SalesStockAvailableBadge"] = 2, ["SalesStockZeroBadge"] = 1, ["SalesInventoryInfoHint"] = 0,
+            ["DocumentNumbering"] = 0, ["DocSeqCaption"] = 0, ["DocSeqTypeCol"] = 0, ["DocSeqPrefixCol"] = 0,
+            ["DocSeqSeparatorCol"] = 0, ["DocSeqYearModeCol"] = 0, ["DocSeqPaddingCol"] = 0, ["DocSeqNextNumCol"] = 0,
+            ["DocSeqPreviewCol"] = 0, ["DocSeqOverrideCol"] = 0, ["DocSeqOverrideAllowed"] = 0, ["DocSeqOverrideLocked"] = 0,
+            ["DocSeqEditTitle"] = 0, ["DocSeqSepNone"] = 0, ["DocSeqYearNone"] = 0, ["DocSeqYearPersian"] = 0,
+            ["DocSeqYearGregorian"] = 0, ["DocSeqOverrideHint"] = 0, ["DocSeqTypeSalesOrder"] = 0,
+            ["DocSeqTypeDeliveryOrder"] = 0, ["DocSeqTypePurchaseOrder"] = 0, ["DocSeqTypePurchaseReceipt"] = 0,
+            ["DocSeqTypeProductionOrder"] = 0, ["DocSeqTypeInventoryTxn"] = 0, ["DocSeqTypeInventoryRev"] = 0,
+            ["DocSeqTypeQualityInsp"] = 0, ["DocSeqTypeQualityScrap"] = 0,
+            ["PermPageDocumentSequences"] = 0, ["PermOpManageDocSequences"] = 0,
+            ["MasterDataNavGroup"] = 0, ["ProcurementNavGroup"] = 0, ["QualityNavGroup"] = 0, ["SalesNavGroup"] = 0,
+            ["TraceabilityReportingNavGroup"] = 0,
+            ["BusinessPartners"] = 0, ["BusinessPartnersCaption"] = 0, ["DocSeqTypeBusinessPartner"] = 0,
+            ["PermPageBusinessPartners"] = 0, ["PermOpManageBusinessPartners"] = 0,
+            ["BpPersonType"] = 0, ["BpPersonLegal"] = 0, ["BpPersonNatural"] = 0,
+            ["BpRolesLabel"] = 0, ["BpRoleSupplier"] = 0, ["BpRoleCustomer"] = 0, ["BpRoleContractor"] = 0,
+            ["BpGeneralInfo"] = 0, ["BpFullName"] = 0, ["BpNationalCode"] = 0, ["BpCode"] = 0,
+            ["BpEconomicCode"] = 0, ["BpCompanyName"] = 0, ["BpNationalLegalId"] = 0,
+            ["BpContactInfo"] = 0, ["BpMobile"] = 0, ["BpPhone"] = 0, ["BpEmail"] = 0, ["BpWebsite"] = 0,
+            ["BpAddressInfo"] = 0, ["BpCountryProvince"] = 0, ["BpCityAddress"] = 0, ["BpCity"] = 0,
+            ["BpCountry"] = 0, ["BpProvince"] = 0, ["BpAddress"] = 0,
+            ["BpCreateButton"] = 0, ["BpCreateTitle"] = 0, ["BpEditTitle"] = 0, ["BpDetailTitle"] = 0,
+            ["BpRoleRequired"] = 0, ["BpConfirmDeactivate"] = 1, ["BpConfirmActivate"] = 1,
+            ["BpAllRoles"] = 0, ["BpFilterRole"] = 0,
+            ["BpFirstName"] = 0, ["BpLastName"] = 0, ["BpContactFirstName"] = 0, ["BpContactLastName"] = 0,
+            ["BpContactPerson"] = 0, ["BpRolesHint"] = 0, ["BpSelectProvince"] = 0, ["BpSelectCity"] = 0,
+            ["BpRequiredFieldHint"] = 0, ["BpNationalCodeLengthError"] = 0, ["BpNationalLegalIdFormatError"] = 0,
+            ["BpEconomicCodeFormatError"] = 0, ["BpMobileFormatError"] = 0, ["BpPhoneFormatError"] = 0,
+            ["BpFirstLastNameRequired"] = 0, ["BpCompanyNameRequired"] = 0, ["BpAddressPlaceholder"] = 0,
+            ["BpNationalCodePlaceholder"] = 0, ["BpNationalLegalIdPlaceholder"] = 0,
+            ["BpMobilePlaceholder"] = 0, ["BpPhonePlaceholder"] = 0, ["BpEmailPlaceholder"] = 0, ["BpWebsitePlaceholder"] = 0,
+            ["PartnerPickerSelectSupplier"] = 0, ["PartnerPickerSelectCustomer"] = 0, ["PartnerPickerSelectPartner"] = 0,
+            ["PartnerPickerSearchPlaceholder"] = 0, ["PartnerPickerChange"] = 0, ["PartnerPickerClear"] = 0,
+            ["PartnerPickerEmpty"] = 0, ["PartnerPickerTotalSuppliers"] = 1, ["PartnerPickerTotalCustomers"] = 1,
+            ["PartnerPickerTotalPartners"] = 1, ["PartnerPickerCreateNewSupplier"] = 0, ["PartnerPickerCreateNewCustomer"] = 0,
+            ["PartnerPickerCreateNewPartner"] = 0, ["PartnerPickerPage"] = 2, ["PartnerPickerPrev"] = 0,
+            ["PartnerPickerNext"] = 0, ["PartnerPickerTitleSupplier"] = 0, ["PartnerPickerTitleCustomer"] = 0,
+            ["PartnerPickerTitlePartner"] = 0,
+            ["BpSearchPlaceholder"] = 0, ["BpAllPersonTypes"] = 0,
+            ["BpPersonLegalTooltip"] = 0, ["BpPersonNaturalTooltip"] = 0,
+            ["BpAdaptiveLegal"] = 0, ["BpAdaptiveNatural"] = 0,
+            ["SalesErrorCustomerNotFound"] = 0, ["SalesErrorCustomerInactive"] = 0,
+            ["SalesErrorCarrierInvalid"] = 0, ["SalesErrorTrackingNumberInvalid"] = 0,
+            ["SalesErrorEmptyOrder"] = 0, ["SalesErrorEmptyDispatch"] = 0,
+            ["SalesErrorItemNotSellable"] = 0, ["SalesErrorLotQuarantinedOrInsufficient"] = 0,
+            ["SalesErrorNotDraft"] = 0, ["SalesErrorHasDispatchesCannotCancel"] = 0,
+            ["SalesErrorOverDispatch"] = 0,
+            ["DocSeqErrorDocumentTypeInvalid"] = 0, ["DocSeqErrorPrefixInvalid"] = 0,
+            ["DocSeqErrorSeparatorInvalid"] = 0, ["DocSeqErrorYearModeInvalid"] = 0,
+            ["DocSeqErrorPaddingInvalid"] = 0, ["DocSeqErrorNextNumberInvalid"] = 0,
+            ["BpPersonTypeInvalid"] = 0, ["BpWebsiteInvalid"] = 0,
+            ["DiagErrorReferenceInvalid"] = 0, ["DiagOperationCodeInvalid"] = 0,
+            ["DiagSiteRequiresOrganization"] = 0,
+            ["Auth.RateLimitExceeded"] = 1, ["Export.RateLimitExceeded"] = 1, ["Common.RateLimitExceeded"] = 1
+        }.Concat(ForgeFlow.Application.Audit.AuditEventCatalog.All.ToDictionary(d => d.ResourceKey, _ => 0))
+         .ToDictionary(kv => kv.Key, kv => kv.Value)
+    };
+
+    [Fact]
+    public void Explicit_catalogs_have_complete_keys_and_matching_placeholder_contracts()
+    {
+        var directory = Path.Combine(AppContext.BaseDirectory, "Catalogs", "Localization");
+        var files = Directory.GetFiles(directory, "*.resx");
+        Assert.Equal(Contracts.Count * CulturePolicy.Supported.Count, files.Length);
+        foreach (var (resource, contract) in Contracts)
+        {
+            Dictionary<string, string>? baseline = null;
+            foreach (var culture in CulturePolicy.Supported)
+            {
+                var path = Path.Combine(directory, $"{resource}.{culture}.resx");
+                Assert.True(File.Exists(path), path);
+                var catalog = ReadCatalog(XDocument.Load(path));
+                RequireKeys(catalog, contract.Keys);
+                foreach (var (key, parameterCount) in contract)
+                {
+                    var signature = Signature(catalog[key]);
+                    Assert.Equal(Enumerable.Range(0, parameterCount), signature.Select(x => x.Index).Distinct().Order());
+                    if (baseline is not null)
+                        Assert.Equal(Signature(baseline[key]), signature);
+                }
+                baseline = catalog;
+            }
+        }
+    }
+
+    [Fact]
+    public void Every_Razor_key_is_registered_and_every_registered_key_is_used()
+    {
+        var used = Contracts.ToDictionary(x => x.Key, _ => new HashSet<string>());
+        foreach (var path in Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "Sources"), "*.razor", SearchOption.AllDirectories))
+        {
+            var source = File.ReadAllText(path);
+            var resource = Regex.Match(source, @"IStringLocalizer<(?<resource>\w+)> Text");
+            foreach (Match reference in Regex.Matches(source, "Text\\[\"(?<key>[^\"]+)\""))
+            {
+                Assert.True(resource.Success, path);
+                var resourceName = resource.Groups["resource"].Value;
+                var key = reference.Groups["key"].Value;
+                Assert.Contains(key, Contracts[resourceName].Keys);
+                used[resourceName].Add(key);
+            }
+        }
+        // Keys selected by variable or ternary (status/failure/mode mapping) rather than a literal Text["..."] reference.
+        used[nameof(SharedResources)].UnionWith(
+            ["ReadDenied", "ReadActive", "ReadNotFound", "ReadInactiveStatus", "ReadError", "CreateCodeInvalid",
+             "CreateCodeDuplicate", "CreateOrganizationButton", "CreateSiteButton", "CreateOrganizationTitle",
+             "CreateSiteTitle", "CreateOrgSucceeded", "CreateSiteSucceeded", "WriteNameInvalid", "WriteConflict",
+             "WriteOutcomeUnknown", "WriteParentInactive", "WriteHasActiveSites", "WriteUnavailable",
+             "UserAccountDisabled", "UserMembershipActive", "UserMembershipInactive", "UserOrgAdminRole", "UserStandardRole",
+             "UserConfirmDisableAccount", "UserConfirmEnableAccount", "UserConfirmDisableMembership",
+             "UserConfirmEnableMembership", "UserConfirmRevokeOrgAdmin", "UserConfirmResetPassword",
+             "UserErrorInvalidName", "UserErrorDuplicate", "UserErrorPasswordInvalid", "UserErrorSelfDeactivation",
+             "UserErrorLastOrgAdmin", "UserErrorLastPlatformAdmin", "UserErrorOrgMembershipRequired",
+             "UserErrorSiteMembershipRequired", "UserErrorParentSiteInactive", "UserErrorRoleScopeInvalid",
+             "RoleEditTitle", "RoleDetailTitle", "RoleSystemBadge", "RoleCustomBadge", "RoleConfirmDisable", "RoleConfirmEnable",
+             "RoleBuiltInOrgAdmin", "RoleBuiltInSiteOperator", "RoleBuiltInProvisioner",
+             "PermPageOrganizations", "PermPageSites", "PermPageUsers", "PermPageRoles", "PermPageAudit", "PermPageUnits", "PermPageItems", "PermPageBoms", "PermPageProductionOrders", "PermPageInventory",
+             "PermOpRead", "PermOpCreate", "PermOpUpdate", "PermOpSetActive", "PermOpUnlock", "PermOpResetPassword", "PermOpManageMemberships", "PermOpAssignFixedRoles", "PermOpManageRoles", "PermOpAssignPermissions", "PermOpManageUnits", "PermOpManageItems", "PermOpManageBoms", "PermOpManageProductionOrders", "PermOpManageInventory",
+             "RoleErrorInvalidName", "RoleErrorDuplicateName", "RoleErrorSystemImmutable", "RoleErrorPermissionUnknown", "RoleErrorPermissionScopeInvalid",
+             "UnitDimensionMass", "UnitDimensionVolume", "UnitDimensionLength", "UnitDimensionArea", "UnitDimensionCount", "UnitDimensionTime",
+             "UnitCreateButton", "UnitEditTitle", "UnitDetailTitle",
+             "UnitConversionCreateButton", "UnitConversionEditTitle", "UnitConversionDetailTitle",
+             "UnitErrorSymbolInvalid", "UnitErrorDimensionInvalid", "UnitErrorPrecisionInvalid", "UnitErrorInactive",
+             "UnitErrorConversionDuplicate", "UnitErrorConversionSameUnit", "UnitErrorConversionFactorInvalid",
+             "UnitErrorConversionPathNotFound", "UnitErrorConversionConflictingPath", "UnitErrorConversionQuantityInvalid",
+             "ItemEditTitle", "ItemDetailTitle",
+             "AttributeDataTypeText", "AttributeDataTypeDecimal", "AttributeDataTypeBoolean",
+             "AttributeRequiredYes", "AttributeRequiredNo",
+             "ItemErrorDescriptionInvalid", "ItemErrorBaseUnitInvalid", "ItemErrorCapabilityRequired",
+             "ItemErrorClassificationParentInvalid", "ItemErrorClassificationCircularParent",
+             "ItemErrorAttributeValueInvalid", "ItemErrorAttributeRequired",
+             "BomStatusDraft", "BomStatusApproved", "BomStatusActive", "BomStatusSuperseded", "BomStatusObsolete",
+             "BomOutMainProduct", "BomOutCoProduct", "BomOutByProduct", "BomOutWaste",
+             "BomOpEquals", "BomOpNotEquals", "BomOpIn", "BomOpNotIn",
+             "BomErrorItemInvalid", "BomErrorPrimaryNotManufacturable", "BomErrorVersionNumberInvalid",
+             "BomErrorVersionImmutable", "BomErrorVersionTransitionInvalid", "BomErrorQuantityInvalid",
+             "BomErrorEffectiveDatesInvalid", "BomErrorMainOutputRequired", "BomErrorInputsRequired",
+             "BomErrorScrapInvalid", "BomErrorUnitInvalid", "BomErrorDirectSelfCycle",
+             "BomErrorCircularDependency", "BomErrorApplicabilityInvalid",
+             "BomErrorNoActiveBomFound", "BomErrorAmbiguousResolution",
+             "BomDimStdPlant", "BomDimStdProductionLine", "BomDimStdMarket",
+             "BomDimStdCustomer", "BomDimStdManufacturingMethod",
+             "PoSavedNotice", "PoOpSavedNotice",
+             "PoErrorSiteInvalid", "PoErrorSiteInactive", "PoErrorImmutable", "PoErrorTransitionInvalid",
+             "PoErrorActualQtyInvalid", "PoErrorCancelReasonInvalid", "PoErrorNotesInvalid",
+             "InvErrorWarehouseInactive", "InvErrorAlreadyReversed", "InvErrorCannotReverseReversal",
+             "InvErrorLinesRequired", "InvErrorQuantityInvalid", "InvErrorLotCodeInvalid",
+             "InvErrorDestWarehouseInvalid", "InvErrorTransferSameWarehouse", "InvErrorOrderInvalid",
+             "InvErrorOrderStateInvalid", "InvErrorInsufficientStock", "InvErrorIdempotencyInvalid",
+             "PermPageReports", "PermOpExportReports", "RptErrorOrderNotFound", "RptErrorExportInvalid",
+             "PermPageDiagnostics", "PermOpExportAudit", "PermOpReadErrorLogs", "PermOpManageErrorLogs",
+             "DiagErrorRetentionInvalid",
+             "PermPageQuality", "PermOpManageQuality",
+             "ItemErrorQcModeInvalid", "InvErrorLotRequired", "InvErrorLotExpired",
+             "QcErrorTerminal", "QcErrorHasDispositions", "QcErrorDispositionExceeds",
+             "QcErrorDefectReasonInvalid", "QcErrorParameterInvalid", "QcErrorLotDatesInvalid",
+             "QcErrorParameterSymbolInvalid", "QcErrorParameterUnitInvalid", "QcErrorParameterInactive",
+             "QcErrorSpecTargetInvalid", "QcErrorSpecActiveConflict", "QcErrorSpecRangeInvalid",
+             "QcErrorSpecLinesRequired", "QcErrorConcessionReasonRequired",
+             "QcFailedLabel", "QcStatusPending", "QcStatusInReview", "QcStatusCompleted", "QcStatusCancelled",
+             "QcSourceReceipt", "QcSourceProdReceipt", "QcSourceManualHold",
+             "QcCreateParameterTitle", "QcEditParameterTitle", "QcCreateSpecTitle", "QcEditSpecTitle",
+             "QcTargetItem", "QcTargetClassification", "QcCheckpointIncoming", "QcCheckpointProduction", "QcCheckpointAll",
+             "ProfileDisplayNameInvalidError", "ProfileEmailInvalidError", "ProfilePhoneInvalidError",
+             "ProfileAvatarInvalidError", "ProfileSaveFailedError",
+             "SessionLastActivityNow", "SessionLastActivityMinutes", "SessionLastActivityHours", "SessionLastActivityTimestamp",
+             "MyActivityOutcomeRecorded",
+             "NotifTitle_NewDeviceSignIn", "NotifBody_NewDeviceSignIn",
+             "NotifTitle_FailedSignInAttempts", "NotifBody_FailedSignInAttempts",
+             "NotifTitle_RoleOrAccessChanged", "NotifBody_RoleOrAccessChanged",
+             "NotifTitle_MyOrderChanged", "NotifBody_MyOrderChanged",
+             "NotifTitle_PasswordChanged", "NotifBody_PasswordChanged",
+             "NotifTitle_TwoFactorReminder", "NotifBody_TwoFactorReminder",
+             "NotifTitle_TwoFactorResetAlert", "NotifBody_TwoFactorResetAlert",
+             "PermOpResetTwoFactor", "UserErrorCannotResetOwnTwoFactor", "UserErrorTwoFactorReasonRequired",
+             "NotifAction_ViewSessions", "NotifAction_ViewActivity", "NotifAction_ViewOrder", "NotifAction_ReviewSecurity",
+             "NotifTimeNow", "NotifTimeMinutes", "NotifTimeHours", "NotifTimeYesterday", "NotifTimeDays",
+             "NotifPref_NewDeviceSignInTitle", "NotifPref_NewDeviceSignInDesc",
+             "NotifPref_FailedSignInTitle", "NotifPref_FailedSignInDesc",
+             "NotifPref_RoleChangedTitle", "NotifPref_RoleChangedDesc",
+             "NotifPref_MyOrdersTitle", "NotifPref_MyOrdersDesc",
+             "NotifRoleOrgMembership", "NotifRoleSiteMembership", "NotifRoleDirectPermissions",
+             "PermPageProcurement", "PermOpManageSuppliers", "PermOpManageOrders", "PermOpReceiveOrders",
+             "PermPageSales", "PermOpManageCustomers", "PermOpDispatchSales",
+             "PermPageDocumentSequences", "PermOpManageDocSequences",
+             "PermPageBusinessPartners", "PermOpManageBusinessPartners",
+             "PermPageRoutings", "PermOpManageRoutings", "PermOpExecuteOperations",
+             "ProcErrorSupplierInactive", "ProcErrorContactInvalid", "ProcErrorAddressInvalid",
+             "ProcErrorCurrencyInvalid", "ProcErrorEmptyOrder", "ProcErrorDuplicateItem",
+             "ProcErrorItemNotPurchasable", "ProcErrorUnitPriceInvalid", "ProcErrorNotDraft",
+             "ProcErrorInvalidTransition", "ProcErrorHasReceiptsCannotCancel", "ProcErrorOverReceipt",
+             "RoutingErrorWorkCenterInactive", "RoutingErrorTypeInvalid", "RoutingErrorCapacityInvalid",
+             "RoutingErrorBomVersionInvalid", "RoutingErrorNotDraft", "RoutingErrorInvalidTransition",
+             "RoutingErrorEmptyOperations", "RoutingErrorSequenceInvalid", "RoutingErrorTimeInvalid",
+             "RoutingErrorQuantityInvalid", "PoErrorRoutingInvalid",
+             "CurrencyCreateButton", "CurrencyEditTitle", "CurrencyDetailTitle", "UnitErrorCurrencyInactive",
+             "InvResStatusActive", "InvResStatusPartial", "InvResStatusConsumed", "InvResStatusReleased",
+             "InvResErrorInvalidState", "InvResErrorExceedsAvailable", "InvResErrorOrderState", "PoResSavedNotice",
+             "ChangePasswordLink", "MyPreferencesMenuSubtitle", "SecurityRowPasskeySoonBadge", "PermModuleSummary", "PermPageSelectLabel", "PermSelectAllPage",
+             "SalesErrorCustomerNotFound", "SalesErrorCustomerInactive", "SalesErrorCarrierInvalid", "SalesErrorTrackingNumberInvalid",
+             "SalesErrorEmptyOrder", "SalesErrorEmptyDispatch", "SalesErrorItemNotSellable", "SalesErrorLotQuarantinedOrInsufficient",
+             "SalesErrorNotDraft", "SalesErrorHasDispatchesCannotCancel", "SalesErrorOverDispatch",
+             "DocSeqErrorDocumentTypeInvalid", "DocSeqErrorPrefixInvalid", "DocSeqErrorSeparatorInvalid",
+             "DocSeqErrorYearModeInvalid", "DocSeqErrorPaddingInvalid", "DocSeqErrorNextNumberInvalid",
+             "BpPersonTypeInvalid", "BpWebsiteInvalid",
+             "DiagErrorReferenceInvalid", "DiagOperationCodeInvalid", "DiagSiteRequiresOrganization",
+             "Auth.RateLimitExceeded", "Export.RateLimitExceeded", "Common.RateLimitExceeded"]);
+        used[nameof(SharedResources)].UnionWith(ForgeFlow.Application.Audit.AuditEventCatalog.All.Select(d => d.ResourceKey));
+        Assert.Equal(Contracts[nameof(SharedResources)].Keys.Order(), used[nameof(SharedResources)].Order());
+    }
+
+    [Fact]
+    public void Currency_and_sample_mode_resource_maps_are_exhaustive_for_both_cultures()
+    {
+        var directory = Path.Combine(AppContext.BaseDirectory, "Catalogs", "Localization");
+        var currencyKeys = DisplayFormatter.SupportedCurrencyCodes.Select(DisplayFormatter.CurrencyResourceKey).ToArray();
+        var modeValues = Enum.GetValues<SampleMode>();
+        var modeKeys = modeValues.Select(DisplayFormatter.SampleModeResourceKey).ToArray();
+        Assert.Equal(DisplayFormatter.SupportedCurrencyCodes.Count, currencyKeys.Distinct().Count());
+        Assert.Equal(modeValues.Length, modeKeys.Distinct().Count());
+        foreach (var culture in CulturePolicy.Supported)
+        {
+            var catalog = ReadCatalog(XDocument.Load(Path.Combine(directory, $"SampleResources.{culture}.resx")));
+            Assert.All(currencyKeys.Concat(modeKeys), key => Assert.Contains(key, catalog.Keys));
+        }
+    }
+
+    [Theory]
+    [InlineData("<root><data name='A'><value>One</value></data><data name='A'><value>Two</value></data></root>")]
+    [InlineData("<root><data name='A'><value> </value></data></root>")]
+    [InlineData("<root><data><value>One</value></data></root>")]
+    public void Invalid_catalog_fixtures_are_rejected(string xml)
+        => Assert.Throws<InvalidDataException>(() => ReadCatalog(XDocument.Parse(xml)));
+
+    [Theory]
+    [InlineData("<root><data name='A'><value>One</value></data></root>")]
+    [InlineData("<root><data name='A'><value>One</value></data><data name='B'><value>Two</value></data><data name='C'><value>Extra</value></data></root>")]
+    public void Missing_or_extra_key_fixtures_are_rejected(string xml)
+        => Assert.Throws<InvalidDataException>(() => RequireKeys(ReadCatalog(XDocument.Parse(xml)), ["A", "B"]));
+
+    [Theory]
+    [InlineData("{0", "{0}")]
+    [InlineData("{0}", "{1}")]
+    [InlineData("{0:N2}", "{0:N3}")]
+    [InlineData("{0}", "No parameter")]
+    public void Malformed_or_incompatible_placeholder_fixtures_are_rejected(string first, string second)
+    {
+        var rejected = false;
+        try { rejected = !Signature(first).SequenceEqual(Signature(second)); }
+        catch (FormatException) { rejected = true; }
+        Assert.True(rejected);
+    }
+
+    [Fact]
+    public void Escaped_braces_reordering_and_repeated_parameters_are_supported()
+    {
+        Assert.Equal(Signature("{{label}} {0:N2} {1} {0:N2}"), Signature("{1} {{{0:N2}}}"));
+        Assert.Empty(Signature("{{0}}"));
+    }
+
+    private static Dictionary<string, string> ReadCatalog(XDocument document)
+    {
+        var result = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var data in document.Root!.Elements("data"))
+        {
+            var name = (string?)data.Attribute("name");
+            var value = (string?)data.Element("value");
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(value) || !result.TryAdd(name, value))
+                throw new InvalidDataException("Invalid resource entry");
+        }
+        return result;
+    }
+
+    private static void RequireKeys(Dictionary<string, string> catalog, IEnumerable<string> keys)
+    {
+        if (!catalog.Keys.Order().SequenceEqual(keys.Order()))
+        {
+            var missing = keys.Except(catalog.Keys).ToList();
+            var extra = catalog.Keys.Except(keys).ToList();
+            throw new InvalidDataException($"Resource key mismatch. Missing: {string.Join(", ", missing)}. Extra: {string.Join(", ", extra)}");
+        }
+    }
+
+    private static (int Index, string Format)[] Signature(string message)
+    {
+        _ = CompositeFormat.Parse(message);
+        var result = new HashSet<(int Index, string Format)>();
+        for (var position = 0; position < message.Length; position++)
+        {
+            if (message[position] != '{') continue;
+            if (position + 1 < message.Length && message[position + 1] == '{')
+            {
+                position++;
+                continue;
+            }
+            var end = message.IndexOf('}', position);
+            var token = message[(position + 1)..end];
+            var match = Regex.Match(token, @"^(?<index>\d+)(?:\s*,\s*-?\d+)?(?:\:(?<format>.*))?$");
+            if (!match.Success) throw new FormatException();
+            result.Add((int.Parse(match.Groups["index"].Value, CultureInfo.InvariantCulture), match.Groups["format"].Value));
+            position = end;
+        }
+        return result.OrderBy(x => x.Index).ThenBy(x => x.Format, StringComparer.Ordinal).ToArray();
+    }
+}
